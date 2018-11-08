@@ -2,6 +2,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <math.h>
+
 class Vector{
 private:
 
@@ -16,9 +18,9 @@ public:
 	double getY();
 	double getZ();
 	// set functions
-	double setX();
-	double setY();
-	double setZ();
+	void setX(double n);
+	void setY(double n);
+	void setZ(double n);
 
 
 	void Add(Vector v);// modifies this Vector

@@ -8,7 +8,7 @@ Vector::Vector(double X, double Y, double Z)
 	z = Z;
 }
 
-double getMagnitude()
+double Vector::getMagnitude()
 {
 	return sqrt(x*x + y*y + z*z);
 }
@@ -24,14 +24,14 @@ double Vector::getZ(){
 	return z;
 }
 // set functions
-double Vector::setX(double n){
+void Vector::setX(double n){
 	x = n;
 }
-double Vector::setY(double n){
+void Vector::setY(double n){
 	y = n;
 }
-double Vector::setZ(double n){
-	z = n
+void Vector::setZ(double n){
+	z = n;
 }
 
 
@@ -48,7 +48,7 @@ void Vector::Add(Vector v, double scale) // modifies this vector by adding a sca
 	z += v.getZ() * scale;
 }
 
-void Scale(double scale) // multiplies x y and z of this vector by scale
+void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
 {
 	x *= scale;
 	y *= scale;
