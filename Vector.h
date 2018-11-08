@@ -26,6 +26,10 @@ public:
 	void Add(Vector v);// modifies this Vector
 	void Add(Vector v, double scale); // modifies this vector by adding a scaled version of vector v
 
+	double Dot( Vector v ); // Dot product with another vector
+	Vector Cross( Vector v ); // Cross product with another vector (this x v)
+	double Angle( Vector v ); // Angle with another vector
+
 	void Scale(double scale); // multiplies x y and z of this vector by scale
 
 

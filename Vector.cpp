@@ -48,6 +48,24 @@ void Vector::Add(Vector v, double scale) // modifies this vector by adding a sca
 	z += v.getZ() * scale;
 }
 
+// Dot product with v
+double Vector::Dot( Vector v ) {
+	return x * v.getX() + y * v.getY() + z * v.getZ();
+}
+
+// Cross product with v (this x v)
+Vector Vector::Cross( Vector v ) {
+	double vi = y * v.getZ() - z * v.getY();
+	double vj = z * v.getX() - x * v.getZ();
+	double vk = x * v.getY() - y * v.getX();
+	return Vector(vi, vj, vk);
+}
+
+// Angle between this and v (right hand from this to v)
+double Vector::Angle( Vector v ) {
+	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
+}
+
 void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
 {
 	x *= scale;
