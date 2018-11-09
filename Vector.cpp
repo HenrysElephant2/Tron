@@ -1,11 +1,19 @@
 #include "Vector.h"
 
+Vector::Vector(){}
 
 Vector::Vector(double X, double Y, double Z)
 {
 	x = X;
 	y = Y;
 	z = Z;
+}
+Vector::Vector(Vector v1, Vector v2)
+{
+	newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
+	x = newVec.getX();
+	y = newVec.getY();
+	z = newVec.getZ();
 }
 
 double Vector::getMagnitude()
@@ -48,6 +56,13 @@ void Vector::Add(Vector v, double scale) // modifies this vector by adding a sca
 	z += v.getZ() * scale;
 }
 
+void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
+{
+	x *= scale;
+	y *= scale;
+	z *= scale;
+}
+
 // Dot product with v
 double Vector::Dot( Vector v ) {
 	return x * v.getX() + y * v.getY() + z * v.getZ();
@@ -66,9 +81,16 @@ double Vector::Angle( Vector v ) {
 	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
 }
 
-void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
-{
-	x *= scale;
-	y *= scale;
-	z *= scale;
+
+
+
+
+
+
+Vector Add0( Vector v1, Vector v2 ) {
+	return Vector(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
+}
+
+Vector Scale0( Vector v, double scale ) {
+	return Vector(v.x*scale, v.y*scale, v.z*scale);
 }
