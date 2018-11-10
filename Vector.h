@@ -23,10 +23,12 @@ public:
 	void setZ(double n);
 
 
-	void Add(Vector v);// modifies this Vector
-	void Add(Vector v, double scale); // modifies this vector by adding a scaled version of vector v
+	void Add(Vector *v);// modifies this Vector
+	void Add(Vector *v, double scale); // modifies this vector by adding a scaled version of vector v
 
 	void Scale(double scale); // multiplies x y and z of this vector by scale
+
+	void Rotate(double angle, Vector * axis); // angle in radians. must be unit vector
 
 
 
