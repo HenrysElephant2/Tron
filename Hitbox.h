@@ -1,6 +1,9 @@
 #ifndef HITBOX_H
 #define HITBOX_H
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
 #include "Vector.h"
 #include "Matrix.h"
 
@@ -40,9 +43,10 @@ public:
 	void setLength( double toSet );
 	void setHeight( double toSet );
 
-	friend bool testCollision( Hitbox h1, Hitbox h2 );
-};
+	void renderSelf( bool colliding );
 
-int main();
+	friend bool testCollision( Hitbox h1, Hitbox h2 );
+	friend bool testCollisionHelper( Hitbox h1, Hitbox h2 );
+};
 
 #endif

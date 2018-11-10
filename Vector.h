@@ -3,6 +3,8 @@
 #define VECTOR_H
 
 #include <math.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 class Vector{
 private:
@@ -24,6 +26,7 @@ public:
 	void setY(double n);
 	void setZ(double n);
 
+	void gl(); // Get vector as glVertex3d
 
 	void Add(Vector v);// modifies this Vector
 	void Add(Vector v, double scale); // modifies this vector by adding a scaled version of vector v

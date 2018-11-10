@@ -10,7 +10,7 @@ Vector::Vector(double X, double Y, double Z)
 }
 Vector::Vector(Vector v1, Vector v2)
 {
-	newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
+	Vector newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
 	x = newVec.getX();
 	y = newVec.getY();
 	z = newVec.getZ();
@@ -40,6 +40,11 @@ void Vector::setY(double n){
 }
 void Vector::setZ(double n){
 	z = n;
+}
+
+
+void Vector::gl() {
+	glVertex3d(x,y,z);
 }
 
 

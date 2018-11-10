@@ -38,7 +38,40 @@ void Hitbox::setWidth( double toSet ) { width = toSet; }
 void Hitbox::setLength( double toSet ) { length = toSet; }
 void Hitbox::setHeight( double toSet ) { height = toSet; }
 
+void Hitbox::renderSelf( bool colliding ) {
+	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	glPushMatrix();
+	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if collliding, green if not
+	// Back face
+	glBegin(GL_LINE_LOOP);
+		points[BBL].gl();
+		points[BBR].gl();
+		points[TBR].gl();
+		points[TBL].gl();
+	glEnd();
+	// Front face
+	glBegin(GL_LINE_LOOP);
+		points[BFL].gl();
+		points[BFR].gl();
+		points[TFR].gl();
+		points[TFL].gl();
+	glEnd();
+	// Connecting lines
+	glBegin(GL_LINES);
+		points[BBL].gl(); points[BFL].gl();
+		points[BBR].gl(); points[BFR].gl();
+		points[TBR].gl(); points[TFR].gl();
+		points[TBL].gl(); points[TFL].gl();
+	glEnd();
+	glPopMatrix();
+	//glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+}
+
 bool testCollision( Hitbox h1, Hitbox h2 ) {
+	return testCollisionHelper(h1, h2) || testCollisionHelper(h2, h1);
+}
+
+bool testCollisionHelper( Hitbox h1, Hitbox h2 ) {
 	// l, m, and n form a new coordinate system to convert h2's coordinates into and test using AABB.
 	Vector l( h1.points[BBL], h1.points[BBR] );
 	Vector m( h1.points[BBL], h1.points[BFL] );
@@ -50,17 +83,80 @@ bool testCollision( Hitbox h1, Hitbox h2 ) {
 
 	Matrix change = basis.inverse();
 
+	Vector tPoints[8]; // Translated relative to bbl of h1
 	for( int i=0; i<8; i++ ) {
-		Vector newCoords = change.mult( Add0(h2.points[i], Scale0(h1.points[BBL], -1)) );
-		if( newCoords.getX() >= 0 && newCoords.getX() <= 1 &&
-			newCoords.getY() >= 0 && newCoords.getY() <= 1 &&
-			newCoords.getZ() >= 0 && newCoords.getZ() <= 1 ) {
+		tPoints[i] = change.mult( Add0( h2.points[i], Scale0( h1.points[BBL], -1 ) ) );
+	}
+
+	Vector bVec[12] = {
+		tPoints[BBL],
+		tPoints[BBR],
+		tPoints[TBR],
+		tPoints[TBL],
+		tPoints[BFL],
+		tPoints[BFR],
+		tPoints[TFR],
+		tPoints[TFL],
+		tPoints[BBL],
+		tPoints[BBR],
+		tPoints[TBR],
+		tPoints[TBL]
+	};
+
+	Vector mVec[12] = {
+		Add0( tPoints[BBR], Scale0( tPoints[BBL], -1 ) ),
+		Add0( tPoints[TBR], Scale0( tPoints[BBR], -1 ) ),
+		Add0( tPoints[TBL], Scale0( tPoints[TBR], -1 ) ),
+		Add0( tPoints[BBL], Scale0( tPoints[TBL], -1 ) ),
+		Add0( tPoints[BFR], Scale0( tPoints[BFL], -1 ) ),
+		Add0( tPoints[TFR], Scale0( tPoints[BFR], -1 ) ),
+		Add0( tPoints[TFL], Scale0( tPoints[TFR], -1 ) ),
+		Add0( tPoints[BFL], Scale0( tPoints[TFL], -1 ) ),
+		Add0( tPoints[BFL], Scale0( tPoints[BBL], -1 ) ),
+		Add0( tPoints[BFR], Scale0( tPoints[BBR], -1 ) ),
+		Add0( tPoints[TFR], Scale0( tPoints[TBR], -1 ) ),
+		Add0( tPoints[TFL], Scale0( tPoints[TBL], -1 ) )
+	};
+
+	for( int i=0; i<12; i++ ) {
+		int t;
+		Vector newVec;
+
+		// Test intersection with plane x=0
+		t = - bVec[i].getX() / mVec[i].getX();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
 			return true;
-		}
+
+		// Test intersection with plane x=1
+		t = (1 - bVec[i].getX()) / mVec[i].getX();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
+			return true;
+
+		// Test intersection with plane y=0
+		t = - bVec[i].getY() / mVec[i].getY();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
+			return true;
+
+		// Test intersection with plane y=1
+		t = (1 - bVec[i].getY()) / mVec[i].getY();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
+			return true;
+
+		// Test intersection with plane z=0
+		t = - bVec[i].getZ() / mVec[i].getZ();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 )
+			return true;
+
+		// Test intersection with plane z=1
+		t = (1 - bVec[i].getZ()) / mVec[i].getZ();
+		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 )
+			return true;
 	}
 	return false;
-}
-
-int main() {
-	return 0;
 }
