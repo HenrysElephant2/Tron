@@ -1,11 +1,20 @@
 #include "Vector.h"
-#include <cstdio>
+
+
+Vector::Vector(){}
 
 Vector::Vector(double X, double Y, double Z)
 {
 	x = X;
 	y = Y;
 	z = Z;
+}
+Vector::Vector(Vector v1, Vector v2)
+{
+	newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
+	x = newVec.getX();
+	y = newVec.getY();
+	z = newVec.getZ();
 }
 
 double Vector::getMagnitude()
@@ -55,6 +64,7 @@ void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
 	z *= scale;
 }
 
+
 void Vector::Rotate(double angle, Vector * axis)
 {
 	double axisX = axis->getX();
@@ -77,3 +87,35 @@ void Vector::Rotate(double angle, Vector * axis)
 	z = new_z;
 }
 
+
+// Dot product with v
+double Vector::Dot( Vector v ) {
+	return x * v.getX() + y * v.getY() + z * v.getZ();
+}
+
+// Cross product with v (this x v)
+Vector Vector::Cross( Vector v ) {
+	double vi = y * v.getZ() - z * v.getY();
+	double vj = z * v.getX() - x * v.getZ();
+	double vk = x * v.getY() - y * v.getX();
+	return Vector(vi, vj, vk);
+}
+
+// Angle between this and v (right hand from this to v)
+double Vector::Angle( Vector v ) {
+	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
+}
+
+
+
+
+
+
+
+Vector Add0( Vector v1, Vector v2 ) {
+	return Vector(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
+}
+
+Vector Scale0( Vector v, double scale ) {
+	return Vector(v.x*scale, v.y*scale, v.z*scale);
+}

@@ -4,12 +4,14 @@ Matrix::Matrix( double a00, double a01, double a02, double a10, double a11, doub
 	vals[0][0] = a00; vals[0][1] = a01; vals[0][2] = a02;
 	vals[1][0] = a10; vals[1][1] = a11; vals[1][2] = a12;
 	vals[2][0] = a20; vals[2][1] = a21; vals[2][2] = a22;
-
-	// vals = {{a00, a01, a02}, {a10, a11, a12}, {a20, a21, a22}}
 }
 
 double Matrix::get( int i, int j ) {
 	return vals[i][j];
+}
+
+void Matrix::set( int i, int j, int n ) {
+	vals[i][j] = n;
 }
 
 Matrix Matrix::inverse() {
@@ -31,14 +33,10 @@ Matrix Matrix::inverse() {
 	return Matrix( i00, i01, i02, i10, i11, i12, i20, i21, i22 );
 }
 
-int main() {
-	Matrix testM(1,2,3,0,1,4,5,6,0);
-	Matrix testI = testM.inverse();
-	for( int i=0; i<3; i++ ) {
-		for( int j=0; j<3; j++ ) {
-			printf("%3f ", testI.get(i,j));
-		}
-		printf("\n");
-	}
-	return 0;
+Vector Matrix::mult( Vector vec ) {
+	double v1 = vals[0][0] * vec.getX() + vals[0][1] * vec.getY() + vals[0][2] * vec.getZ();
+	double v2 = vals[1][0] * vec.getX() + vals[1][1] * vec.getY() + vals[1][2] * vec.getZ();
+	double v3 = vals[2][0] * vec.getX() + vals[2][1] * vec.getY() + vals[2][2] * vec.getZ();
+
+	return Vector(v1, v2, v3);
 }
