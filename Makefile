@@ -1,5 +1,5 @@
 # Main Executable
-EXE=main
+EXE=Main
 
 # Main target
 all: $(EXE)
@@ -23,15 +23,20 @@ endif
 CLEAN=rm -f $(EXE) *.o *.a
 endif
 
+# Dependencies
+Vector.o: Vector.cpp Vector.h
+Matrix.o: Matrix.cpp Matrix.h
+Hitbox.o: Hitbox.cpp Hitbox.h
+
 # Compile rules
 .c.o:
 	gcc -c $(CFLG) $<
 .cpp.o:
-	g++ -c $(CFLG) $<
+	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-main:main
-	gcc -O3 -o $@ $^   $(LIBS)
+Main:Main.o Vector.o Matrix.o Hitbox.o
+	g++ -O3 -o $@ $^   $(LIBS)
 
 #  Clean
 clean:

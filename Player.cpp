@@ -59,3 +59,8 @@ public:
 		return hitbox;
 	}
 };
+
+
+int main() {
+	return 0;
+}
