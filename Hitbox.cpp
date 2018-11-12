@@ -3,22 +3,14 @@
 Hitbox::Hitbox( Vector p, Vector f, Vector u, double w, double l, double h ) {
 	pos = p;
 	forward = Scale0( f, 1/f.getMagnitude() ); // Normalize
-	up = Scale0( u, 1/up.getMagnitude() ); // Normalize
+	up = Scale0( u, 1/u.getMagnitude() ); // Normalize
+	cross = forward.Cross(up); // Calculate cross product
+	cross.Scale( 1/cross.getMagnitude() ); // Normalize cross product
 	width = w;
 	length = l;
 	height = h;
 
-	Vector cross = forward.Cross(up); // Calculate cross product
-	cross.Scale( 1/cross.getMagnitude() ); // Normalize cross product
-
-	points[BBL] = Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, -width/2) );
-	points[BBR] = Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, +width/2) );
-	points[BFR] = Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, +width/2) );
-	points[BFL] = Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, -width/2) );
-	points[TBL] = Add0( Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, -width/2) ), Scale0(up, height) );
-	points[TBR] = Add0( Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, +width/2) ), Scale0(up, height) );
-	points[TFR] = Add0( Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, +width/2) ), Scale0(up, height) );
-	points[TFL] = Add0( Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, -width/2) ), Scale0(up, height) );
+	calculatePoints();
 }
 
 // Accessors
@@ -38,10 +30,33 @@ void Hitbox::setWidth( double toSet ) { width = toSet; }
 void Hitbox::setLength( double toSet ) { length = toSet; }
 void Hitbox::setHeight( double toSet ) { height = toSet; }
 
+void Hitbox::move( Vector dv ) {
+	pos.Add(dv);
+	calculatePoints();
+}
+
+void Hitbox::roll( double degrees ) {
+	up.Rotate(degrees, &forward);
+	cross.Rotate(degrees, &forward);
+	calculatePoints();
+}
+
+void Hitbox::pitch( double degrees ) {
+	up.Rotate(degrees, &cross);
+	forward.Rotate(degrees, &cross);
+	calculatePoints();
+}
+
+void Hitbox::yaw( double degrees ) {
+	forward.Rotate(degrees, &up);
+	cross.Rotate(degrees, &up);
+	calculatePoints();
+}
+
 void Hitbox::renderSelf( bool colliding ) {
-	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glPushMatrix();
 	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if collliding, green if not
+	// glColor3d(1,0,0);
 	// Back face
 	glBegin(GL_LINE_LOOP);
 		points[BBL].gl();
@@ -64,7 +79,6 @@ void Hitbox::renderSelf( bool colliding ) {
 		points[TBL].gl(); points[TFL].gl();
 	glEnd();
 	glPopMatrix();
-	//glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 }
 
 bool testCollision( Hitbox h1, Hitbox h2 ) {
@@ -119,44 +133,74 @@ bool testCollisionHelper( Hitbox h1, Hitbox h2 ) {
 	};
 
 	for( int i=0; i<12; i++ ) {
-		int t;
+		double t;
 		Vector newVec;
 
 		// Test intersection with plane x=0
 		t = - bVec[i].getX() / mVec[i].getX();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 ) {
+				return true;
+			}
+		}
 
 		// Test intersection with plane x=1
 		t = (1 - bVec[i].getX()) / mVec[i].getX();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getY() >= 0 && newVec.getY() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 ) {
+				return true;
+			}
+		}
 
 		// Test intersection with plane y=0
 		t = - bVec[i].getY() / mVec[i].getY();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 ) {
+				return true;
+			}
+		}
 
 		// Test intersection with plane y=1
 		t = (1 - bVec[i].getY()) / mVec[i].getY();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getZ() >= 0 && newVec.getZ() <= 1 ) {
+				return true;
+			}
+		}
 
 		// Test intersection with plane z=0
 		t = - bVec[i].getZ() / mVec[i].getZ();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 ) {
+				return true;
+			}
+		}
 
 		// Test intersection with plane z=1
 		t = (1 - bVec[i].getZ()) / mVec[i].getZ();
-		newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
-		if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 )
-			return true;
+		if( t >= 0 && t <= 1 ) {
+			newVec = Add0( bVec[i], Scale0( mVec[i], t ) );
+			if( newVec.getX() >= 0 && newVec.getX() <= 1 && newVec.getY() >= 0 && newVec.getY() <= 1 ) {
+				return true;
+			}
+		}
 	}
 	return false;
+}
+
+
+void Hitbox::calculatePoints() {
+	points[BBL] = Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, -width/2) );
+	points[BBR] = Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, +width/2) );
+	points[BFR] = Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, +width/2) );
+	points[BFL] = Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, -width/2) );
+	points[TBL] = Add0( Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, -width/2) ), Scale0(up, height) );
+	points[TBR] = Add0( Add0( Add0( pos, Scale0(forward, -length/2) ),  Scale0(cross, +width/2) ), Scale0(up, height) );
+	points[TFR] = Add0( Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, +width/2) ), Scale0(up, height) );
+	points[TFL] = Add0( Add0( Add0( pos, Scale0(forward, +length/2) ),  Scale0(cross, -width/2) ), Scale0(up, height) );
 }

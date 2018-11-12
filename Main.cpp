@@ -4,16 +4,38 @@
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_HEIGHT = 640;
 
 // Window settings
 int fov = 55;
 double dim = 100.0;
 double asp=1;
 
-double ph = 0;          //  Elevation of view angle
-double th = 0;          //  Azimuth of view angle
+double ph = 0;      //  Elevation of view angle
+double th = 0;      //  Azimuth of view angle
 
+
+// Booleans to control window movement
+bool thup = false;
+bool thdown = false;
+bool phup = false;
+bool phdown = false;
+
+// Bools to move hitbox
+bool hup = false;
+bool hdown = false;
+bool hleft = false;
+bool hright = false;
+bool hforward = false;
+bool hbackward = false;
+
+// Bools to rotate hitbox
+bool pu = false;
+bool pd = false;
+bool yl = false;
+bool yr = false;
+bool rr = false;
+bool rl = false;
 
 //Main loop flag
 bool quit = false;
@@ -24,6 +46,17 @@ SDL_Window* gWindow = NULL;
 //OpenGL context
 SDL_GLContext gContext;
 
+Vector p1(1,-1,0);
+Vector f1(0,0,-1);
+Vector u1(0,1,0);
+Hitbox h1(p1, f1, u1, 2, 2, 2);
+
+Vector p2(-3,-5,0);
+Vector f2(0,0,-1);
+Vector u2(0,1,0);
+Hitbox h2(p2, f2, u2, 2, 2, 2);
+
+bool colliding = testCollision( h1, h2 );
 
 // Modified Project function from ex9
 static void Project()
@@ -130,15 +163,86 @@ bool initGL() {
     return success;
 }
 
-void handleKeys( unsigned char key, int x, int y ) {
-    if( key == 'q' ) {
-        quit = true;
+void keyDown( SDL_Keycode key, int x, int y ) {
+    switch( key ) {
+        case SDLK_q: quit = true; break;
+        case SDLK_w: phup = true; break;
+        case SDLK_s: phdown = true; break;
+        case SDLK_a: thdown = true; break;
+        case SDLK_d: thup = true;break;
+        case SDLK_o: hup = true; break;
+        case SDLK_u: hdown = true; break;
+        case SDLK_j: hleft = true; break;
+        case SDLK_l: hright = true; break;
+        case SDLK_i: hforward = true; break;
+        case SDLK_k: hbackward = true; break;
+        case SDLK_t: pu = true; break;
+        case SDLK_g: pd = true; break;
+        case SDLK_f: yl = true; break;
+        case SDLK_h: yr = true; break;
+        case SDLK_y: rr = true; break;
+        case SDLK_r: rl = true; break;
+    }
+}
+
+void keyUp( SDL_Keycode key, int x, int y ) {
+    switch( key ) {
+        case SDLK_w: phup = false; break;
+        case SDLK_s: phdown = false; break;
+        case SDLK_a: thdown = false; break;
+        case SDLK_d: thup = false;break;
+        case SDLK_o: hup = false; break;
+        case SDLK_u: hdown = false; break;
+        case SDLK_j: hleft = false; break;
+        case SDLK_l: hright = false; break;
+        case SDLK_i: hforward = false; break;
+        case SDLK_k: hbackward = false; break;
+        case SDLK_t: pu = false; break;
+        case SDLK_g: pd = false; break;
+        case SDLK_f: yl = false; break;
+        case SDLK_h: yr = false; break;
+        case SDLK_y: rr = false; break;
+        case SDLK_r: rl = false; break;
     }
 }
 
 void update() {
-    th += 5;
-    render();
+    colliding = testCollision( h1, h2 );
+
+    if( thup )
+        th += 5;
+    if( thdown )
+        th -= 5;
+    if( phup )
+        ph += 5;
+    if( phdown )
+        ph -= 5;
+
+    if( pu && !pd )
+        h1.pitch(-rSpeed);
+    if( pd && !pu )
+        h1.pitch(rSpeed);
+    if( yl && !yr )
+        h1.yaw(rSpeed);
+    if( yr && !yl )
+        h1.yaw(-rSpeed);
+    if( rl && !rr )
+        h1.roll(-rSpeed);
+    if( rr && !rl )
+        h1.roll(rSpeed);
+
+    if( hforward )
+        h1.move( Vector(0,0,-mSpeed) );
+    if( hbackward )
+        h1.move( Vector(0,0,mSpeed) );
+    if( hleft )
+        h1.move( Vector(-mSpeed,0,0) );
+    if( hright )
+        h1.move( Vector(mSpeed,0,0) );
+    if( hup )
+        h1.move( Vector(0,mSpeed,0) );
+    if( hdown )
+        h1.move( Vector(0,-mSpeed,0) );
 }
 
 void render() {
@@ -147,22 +251,13 @@ void render() {
     glLoadIdentity();
 
     // Set eye position
-    double Ex = -.2*dim*Sin(th)*Cos(ph);
-    double Ey = +.2*dim        *Sin(ph);
-    double Ez = +.2*dim*Cos(th)*Cos(ph);
+    double Ex = -.3*dim*Sin(th)*Cos(ph);
+    double Ey = +.3*dim  *Sin(ph);
+    double Ez = +.3*dim*Cos(th)*Cos(ph);
     gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
     
-    //Render quad
-    glRotatef(0.4f,0.0f,1.0f,0.0f);    // Rotate The cube around the Y axis
-    glRotatef(0.2f,1.0f,1.0f,1.0f);
-    glColor3f(0.0f,1.0f,0.0f); 
-
-    glBegin( GL_QUADS );
-        glVertex3d( -0.5, -0.5, 0 );
-        glVertex3d( 0.5, -0.5, 0 );
-        glVertex3d( 0.5, 0.5, 0 );
-        glVertex3d( -0.5, 0.5, 0 );
-    glEnd();
+    h1.renderSelf(colliding);
+    h2.renderSelf(colliding);
 
     // glFlush();
     // glSwapBuffers();
@@ -198,10 +293,18 @@ int main( int argc, char* args[] ) {
                     quit = true;
                 }
                 //Handle keypress with current mouse position
-                else if( e.type == SDL_TEXTINPUT ) {
+                else if( e.type == SDL_KEYDOWN ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
-                    handleKeys( e.text.text[ 0 ], x, y );
+                    SDL_Keycode key = e.key.keysym.sym;
+                    keyDown( key, x, y );
+                }
+                //Handle keypress with current mouse position
+                else if( e.type == SDL_KEYUP ) {
+                    int x = 0, y = 0;
+                    SDL_GetMouseState( &x, &y );
+                    SDL_Keycode key = e.key.keysym.sym;
+                    keyUp( key, x, y );
                 }
                 else if( e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED ) {
                     reshape(e.window.data1, e.window.data2);

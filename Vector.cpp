@@ -1,6 +1,5 @@
 #include "Vector.h"
 
-
 Vector::Vector(){}
 
 Vector::Vector(double X, double Y, double Z)
@@ -49,13 +48,13 @@ void Vector::gl() {
 }
 
 
-void Vector::Add(Vector * v)// modifies this Vector
+void Vector::Add(Vector v)// modifies this Vector
 {
 	x += v.getX();
 	y += v.getY();
 	z += v.getZ();
 }
-void Vector::Add(Vector * v, double scale) // modifies this vector by adding a scaled version of vector v
+void Vector::Add(Vector v, double scale) // modifies this vector by adding a scaled version of vector v
 {
 	x += v.getX() * scale;
 	y += v.getY() * scale;
@@ -111,10 +110,9 @@ double Vector::Angle( Vector v ) {
 	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
 }
 
-
-
-
-
+std::string Vector::toString() {
+	return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
+}
 
 
 Vector Add0( Vector v1, Vector v2 ) {

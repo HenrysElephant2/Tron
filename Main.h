@@ -11,6 +11,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#include <string>
+#include <iostream>
 #include <stdio.h>
 
 #include "Hitbox.h"
@@ -20,10 +22,13 @@
 #define Cos(x) cos(3.1415926535/180*(x))
 #define Sin(x) sin(3.1415926535/180*(x))
 
+#define rSpeed .05
+#define mSpeed .1
+
 
 bool init(); //Starts up SDL, creates window, and initializes OpenGL
 bool initGL(); //Initializes matrices and clear color
-void handleKeys( unsigned char key, int x, int y ); //Input handler
+void keyDown( SDL_Keycode key, int x, int y ); //Input handler
 void update(); //Per frame update
 void render(); //Renders quad to the screen
 void close(); //Frees media and shuts down SDL
