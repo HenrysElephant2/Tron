@@ -55,7 +55,7 @@ void Hitbox::yaw( double degrees ) {
 
 void Hitbox::renderSelf( bool colliding ) {
 	glPushMatrix();
-	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if collliding, green if not
+	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if colliding, green if not
 	// glColor3d(1,0,0);
 	// Back face
 	glBegin(GL_LINE_LOOP);
