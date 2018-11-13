@@ -8,12 +8,11 @@ Vector::Vector(double X, double Y, double Z)
 	y = Y;
 	z = Z;
 }
-Vector::Vector(Vector v1, Vector v2)
+Vector::Vector(Vector *v1, Vector *v2)
 {
-	Vector newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
-	x = newVec.getX();
-	y = newVec.getY();
-	z = newVec.getZ();
+	x = v2->getX() - v1->getX();
+	y = v2->getY() - v1->getY();
+	z = v2->getZ() - v1->getZ();
 }
 
 double Vector::getMagnitude()
@@ -21,44 +20,38 @@ double Vector::getMagnitude()
 	return sqrt(x*x + y*y + z*z);
 }
 // accessors
-double Vector::getX(){
-	return x;
-}
-
-double Vector::getY(){
-	return y;
-}
-double Vector::getZ(){
-	return z;
-}
+double Vector::getX() { return x; }
+double Vector::getY() { return y; }
+double Vector::getZ() { return z; }
 // set functions
-void Vector::setX(double n){
-	x = n;
-}
-void Vector::setY(double n){
-	y = n;
-}
-void Vector::setZ(double n){
-	z = n;
-}
+void Vector::setX(double n) { x = n; }
+void Vector::setY(double n) { y = n; }
+void Vector::setZ(double n) { z = n; }
+void Vector::set(Vector *v) { x = v->getX(); y = v->getY(); z = v->getZ(); }
 
 
+// Return vector as a gl vertex
 void Vector::gl() {
 	glVertex3d(x,y,z);
 }
 
 
-void Vector::Add(Vector v)// modifies this Vector
+void Vector::Add(Vector *v)// modifies this Vector
 {
-	x += v.getX();
-	y += v.getY();
-	z += v.getZ();
+	x += v->getX();
+	y += v->getY();
+	z += v->getZ();
 }
-void Vector::Add(Vector v, double scale) // modifies this vector by adding a scaled version of vector v
+void Vector::Add(Vector *v, double scale) // modifies this vector by adding a scaled version of vector v
 {
-	x += v.getX() * scale;
-	y += v.getY() * scale;
-	z += v.getZ() * scale;
+	x += v->getX() * scale;
+	y += v->getY() * scale;
+	z += v->getZ() * scale;
+}
+void Vector::Add( double dx, double dy, double dz ) {
+	x += dx;
+	y += dy;
+	z += dz;
 }
 
 void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
@@ -66,6 +59,10 @@ void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
 	x *= scale;
 	y *= scale;
 	z *= scale;
+}
+
+void Vector::Normalize() {
+	this->Scale( 1/this->getMagnitude() );
 }
 
 
@@ -93,25 +90,21 @@ void Vector::Rotate(double angle, Vector * axis)
 
 
 // Dot product with v
-double Vector::Dot( Vector v ) {
-	return x * v.getX() + y * v.getY() + z * v.getZ();
+double Vector::Dot( Vector *v ) {
+	return x * v->getX() + y * v->getY() + z * v->getZ();
 }
 
 // Cross product with v (this x v)
-Vector Vector::Cross( Vector v ) {
-	double vi = y * v.getZ() - z * v.getY();
-	double vj = z * v.getX() - x * v.getZ();
-	double vk = x * v.getY() - y * v.getX();
-	return Vector(vi, vj, vk);
+Vector* Vector::Cross( Vector *v ) {
+	double vi = y * v->getZ() - z * v->getY();
+	double vj = z * v->getX() - x * v->getZ();
+	double vk = x * v->getY() - y * v->getX();
+	return new Vector(vi, vj, vk);
 }
 
 // Angle between this and v (right hand from this to v)
-double Vector::Angle( Vector v ) {
-	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
-}
-
-std::string Vector::toString() {
-	return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
+double Vector::Angle( Vector *v ) {
+	return acos( this->Dot(v) / (this->getMagnitude() * v->getMagnitude()) );
 }
 
 

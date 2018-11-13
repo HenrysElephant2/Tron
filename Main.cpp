@@ -46,15 +46,15 @@ SDL_Window* gWindow = NULL;
 //OpenGL context
 SDL_GLContext gContext;
 
-Vector p1(1,-1,0);
-Vector f1(0,0,-1);
-Vector u1(0,1,0);
-Hitbox h1(p1, f1, u1, 2, 2, 2);
+Vector *p1 = new Vector(1,-1,0);
+Vector *f1 = new Vector(0,0,-1);
+Vector *u1 = new Vector(0,1,0);
+Hitbox *h1 = new Hitbox(p1, f1, u1, 2, 2, 2);
 
-Vector p2(-3,-5,0);
-Vector f2(0,0,-1);
-Vector u2(0,1,0);
-Hitbox h2(p2, f2, u2, 2, 2, 2);
+Vector *p2 = new Vector(-3,-5,0);
+Vector *f2 = new Vector(0,0,-1);
+Vector *u2 = new Vector(0,1,0);
+Hitbox *h2 = new Hitbox(p2, f2, u2, 2, 2, 2);
 
 bool colliding = testCollision( h1, h2 );
 
@@ -103,7 +103,7 @@ bool init() {
             success = false;
         }
         else {
-            SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
+           SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
 
             //Create context
             gContext = SDL_GL_CreateContext( gWindow );
@@ -169,7 +169,7 @@ void keyDown( SDL_Keycode key, int x, int y ) {
         case SDLK_w: phup = true; break;
         case SDLK_s: phdown = true; break;
         case SDLK_a: thdown = true; break;
-        case SDLK_d: thup = true;break;
+        case SDLK_d: thup = true; break;
         case SDLK_o: hup = true; break;
         case SDLK_u: hdown = true; break;
         case SDLK_j: hleft = true; break;
@@ -190,7 +190,7 @@ void keyUp( SDL_Keycode key, int x, int y ) {
         case SDLK_w: phup = false; break;
         case SDLK_s: phdown = false; break;
         case SDLK_a: thdown = false; break;
-        case SDLK_d: thup = false;break;
+        case SDLK_d: thup = false; break;
         case SDLK_o: hup = false; break;
         case SDLK_u: hdown = false; break;
         case SDLK_j: hleft = false; break;
@@ -219,30 +219,34 @@ void update() {
         ph -= 5;
 
     if( pu && !pd )
-        h1.pitch(-rSpeed);
+        h1->pitch(-rSpeed);
     if( pd && !pu )
-        h1.pitch(rSpeed);
+        h1->pitch(rSpeed);
     if( yl && !yr )
-        h1.yaw(rSpeed);
+        h1->yaw(rSpeed);
     if( yr && !yl )
-        h1.yaw(-rSpeed);
+        h1->yaw(-rSpeed);
     if( rl && !rr )
-        h1.roll(-rSpeed);
+        h1->roll(-rSpeed);
     if( rr && !rl )
-        h1.roll(rSpeed);
+        h1->roll(rSpeed);
 
+
+    Vector *moveVec = new Vector(0,0,0);
     if( hforward )
-        h1.move( Vector(0,0,-mSpeed) );
+        moveVec->Add(0,0,-mSpeed);
     if( hbackward )
-        h1.move( Vector(0,0,mSpeed) );
+        moveVec->Add(0,0,mSpeed);
     if( hleft )
-        h1.move( Vector(-mSpeed,0,0) );
+        moveVec->Add(-mSpeed,0,0);
     if( hright )
-        h1.move( Vector(mSpeed,0,0) );
+        moveVec->Add(mSpeed,0,0);
     if( hup )
-        h1.move( Vector(0,mSpeed,0) );
+        moveVec->Add(0,mSpeed,0);
     if( hdown )
-        h1.move( Vector(0,-mSpeed,0) );
+        moveVec->Add(0,-mSpeed,0);
+    h1->move( moveVec );
+    delete moveVec;
 }
 
 void render() {
@@ -256,8 +260,8 @@ void render() {
     double Ez = +.3*dim*Cos(th)*Cos(ph);
     gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
     
-    h1.renderSelf(colliding);
-    h2.renderSelf(colliding);
+    h1->renderSelf(colliding);
+    h2->renderSelf(colliding);
 
     // glFlush();
     // glSwapBuffers();
@@ -324,6 +328,8 @@ int main( int argc, char* args[] ) {
         SDL_StopTextInput();
     }
 
+    delete h1;
+    delete h2;
     //Free resources and close SDL
     close();
 
