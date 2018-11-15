@@ -27,6 +27,10 @@ endif
 Vector.o: Vector.cpp Vector.h
 Matrix.o: Matrix.cpp Matrix.h
 Hitbox.o: Hitbox.cpp Hitbox.h
+TrailSegment.o: TrailSegment.cpp TrailSegment.h
+Trail.o: Trail.cpp Trail.h
+Player.o: Player.cpp Player.h
+HitboxTest.o: HitboxTest.cpp HitboxTest.h
 
 # Compile rules
 .c.o:
@@ -35,7 +39,7 @@ Hitbox.o: Hitbox.cpp Hitbox.h
 	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-Main:Main.o Vector.o Matrix.o Hitbox.o
+Main:Main.o Vector.o Matrix.o Hitbox.o TrailSegment.o Trail.o Player.o HitboxTest.o
 	g++ -O3 -o $@ $^   $(LIBS)
 
 #  Clean

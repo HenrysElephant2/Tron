@@ -1,18 +1,18 @@
 #include "Hitbox.h"
 
-Hitbox::Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h ) {
-	pos = p;
-	forward = f; 					forward->Normalize(); // Normalize
-	up = u; 						up->Normalize(); // Normalize
-	cross = forward->Cross(up); 	cross->Normalize(); // Normalize cross product
-	width = w;
-	length = l;
-	height = h;
+Hitbox::Hitbox(){}
 
+Hitbox::Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h ) {
+	pos = new Vector();
+	forward = new Vector();
+	up = new Vector();
+	cross = new Vector();
 	for( int i=0; i<8; i++ ) {
 		points[i] = new Vector();
 	}
-	calculatePoints();
+
+	updateVecs( p, f, u, false );
+	updateDimensions( w, l, h );
 }
 
 Hitbox::~Hitbox() {
@@ -23,6 +23,22 @@ Hitbox::~Hitbox() {
 	for( int i=0; i<8; i++ ) {
 		delete points[i];
 	}
+}
+
+void Hitbox::updateVecs( Vector *newPos, Vector *newForward, Vector *newUp, bool calc ) {
+	pos->set(newPos);
+	forward->set(newForward); forward->Normalize(); // Normalize
+	up->set(newUp); up->Normalize(); // Normalize
+	cross->set(forward->Cross(up)); cross->Normalize(); // Normalize cross product
+	if( calc )
+		calculatePoints();
+}
+void Hitbox::updateDimensions( double newW, double newL, double newH, bool calc ) {
+	width = newW;
+	length = newL;
+	height = newH;
+	if( calc )
+		calculatePoints();
 }
 
 // Accessors
@@ -65,6 +81,7 @@ void Hitbox::yaw( double degrees ) {
 	calculatePoints();
 }
 
+
 void Hitbox::renderSelf( bool colliding ) {
 	glPushMatrix();
 	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if colliding, green if not
@@ -93,10 +110,6 @@ void Hitbox::renderSelf( bool colliding ) {
 }
 
 bool testCollision( Hitbox *h1, Hitbox *h2 ) {
-	return testCollisionHelper(h1, h2) || testCollisionHelper(h2, h1);
-}
-
-bool testCollisionHelper( Hitbox *h1, Hitbox *h2 ) {
 	// l, m, and n form a new coordinate system to convert h2's coordinates into and test using AABB.
 	Vector l( h1->points[BBL], h1->points[BBR] );
 	Vector m( h1->points[BBL], h1->points[BFL] );

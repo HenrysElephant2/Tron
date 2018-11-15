@@ -18,20 +18,20 @@
 #include "Hitbox.h"
 #include "Vector.h"
 #include "Matrix.h"
+#include "GameState.h"
+#include "HitboxTest.h"
 
+#ifndef MATH_FUNCTIONS
+#define MATH_FUNCTIONS
 #define Cos(x) cos(3.1415926535/180*(x))
 #define Sin(x) sin(3.1415926535/180*(x))
-
-#define rSpeed .05
-#define mSpeed .1
+#endif
 
 
 bool init(); //Starts up SDL, creates window, and initializes OpenGL
 bool initGL(); //Initializes matrices and clear color
-void keyDown( SDL_Keycode key, int x, int y ); //Input handler
-void update(); //Per frame update
-void render(); //Renders quad to the screen
 void close(); //Frees media and shuts down SDL
+bool testQuit( SDL_Keycode key );
 
 static void Project();
 void reshape( int width, int height );

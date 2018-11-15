@@ -1,7 +1,5 @@
 #include "Main.h"
 
-
-
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 640;
@@ -10,32 +8,6 @@ const int SCREEN_HEIGHT = 640;
 int fov = 55;
 double dim = 100.0;
 double asp=1;
-
-double ph = 0;      //  Elevation of view angle
-double th = 0;      //  Azimuth of view angle
-
-
-// Booleans to control window movement
-bool thup = false;
-bool thdown = false;
-bool phup = false;
-bool phdown = false;
-
-// Bools to move hitbox
-bool hup = false;
-bool hdown = false;
-bool hleft = false;
-bool hright = false;
-bool hforward = false;
-bool hbackward = false;
-
-// Bools to rotate hitbox
-bool pu = false;
-bool pd = false;
-bool yl = false;
-bool yr = false;
-bool rr = false;
-bool rl = false;
 
 //Main loop flag
 bool quit = false;
@@ -46,17 +18,6 @@ SDL_Window* gWindow = NULL;
 //OpenGL context
 SDL_GLContext gContext;
 
-Vector *p1 = new Vector(1,-1,0);
-Vector *f1 = new Vector(0,0,-1);
-Vector *u1 = new Vector(0,1,0);
-Hitbox *h1 = new Hitbox(p1, f1, u1, 2, 2, 2);
-
-Vector *p2 = new Vector(-3,-5,0);
-Vector *f2 = new Vector(0,0,-1);
-Vector *u2 = new Vector(0,1,0);
-Hitbox *h2 = new Hitbox(p2, f2, u2, 2, 2, 2);
-
-bool colliding = testCollision( h1, h2 );
 
 // Modified Project function from ex9
 static void Project()
@@ -163,109 +124,6 @@ bool initGL() {
     return success;
 }
 
-void keyDown( SDL_Keycode key, int x, int y ) {
-    switch( key ) {
-        case SDLK_q: quit = true; break;
-        case SDLK_w: phup = true; break;
-        case SDLK_s: phdown = true; break;
-        case SDLK_a: thdown = true; break;
-        case SDLK_d: thup = true; break;
-        case SDLK_o: hup = true; break;
-        case SDLK_u: hdown = true; break;
-        case SDLK_j: hleft = true; break;
-        case SDLK_l: hright = true; break;
-        case SDLK_i: hforward = true; break;
-        case SDLK_k: hbackward = true; break;
-        case SDLK_t: pu = true; break;
-        case SDLK_g: pd = true; break;
-        case SDLK_f: yl = true; break;
-        case SDLK_h: yr = true; break;
-        case SDLK_y: rr = true; break;
-        case SDLK_r: rl = true; break;
-    }
-}
-
-void keyUp( SDL_Keycode key, int x, int y ) {
-    switch( key ) {
-        case SDLK_w: phup = false; break;
-        case SDLK_s: phdown = false; break;
-        case SDLK_a: thdown = false; break;
-        case SDLK_d: thup = false; break;
-        case SDLK_o: hup = false; break;
-        case SDLK_u: hdown = false; break;
-        case SDLK_j: hleft = false; break;
-        case SDLK_l: hright = false; break;
-        case SDLK_i: hforward = false; break;
-        case SDLK_k: hbackward = false; break;
-        case SDLK_t: pu = false; break;
-        case SDLK_g: pd = false; break;
-        case SDLK_f: yl = false; break;
-        case SDLK_h: yr = false; break;
-        case SDLK_y: rr = false; break;
-        case SDLK_r: rl = false; break;
-    }
-}
-
-void update() {
-    colliding = testCollision( h1, h2 );
-
-    if( thup )
-        th += 5;
-    if( thdown )
-        th -= 5;
-    if( phup )
-        ph += 5;
-    if( phdown )
-        ph -= 5;
-
-    if( pu && !pd )
-        h1->pitch(-rSpeed);
-    if( pd && !pu )
-        h1->pitch(rSpeed);
-    if( yl && !yr )
-        h1->yaw(rSpeed);
-    if( yr && !yl )
-        h1->yaw(-rSpeed);
-    if( rl && !rr )
-        h1->roll(-rSpeed);
-    if( rr && !rl )
-        h1->roll(rSpeed);
-
-
-    Vector *moveVec = new Vector(0,0,0);
-    if( hforward )
-        moveVec->Add(0,0,-mSpeed);
-    if( hbackward )
-        moveVec->Add(0,0,mSpeed);
-    if( hleft )
-        moveVec->Add(-mSpeed,0,0);
-    if( hright )
-        moveVec->Add(mSpeed,0,0);
-    if( hup )
-        moveVec->Add(0,mSpeed,0);
-    if( hdown )
-        moveVec->Add(0,-mSpeed,0);
-    h1->move( moveVec );
-    delete moveVec;
-}
-
-void render() {
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glLoadIdentity();
-
-    // Set eye position
-    double Ex = -.3*dim*Sin(th)*Cos(ph);
-    double Ey = +.3*dim  *Sin(ph);
-    double Ez = +.3*dim*Cos(th)*Cos(ph);
-    gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
-    
-    h1->renderSelf(colliding);
-    h2->renderSelf(colliding);
-
-    // glFlush();
-    // glSwapBuffers();
-}
 
 void close() {
     //Destroy window    
@@ -276,7 +134,14 @@ void close() {
     SDL_Quit();
 }
 
+bool testQuit( SDL_Keycode key ) {
+    return key == SDLK_q;
+}
+
 int main( int argc, char* args[] ) {
+    // Initialize the state to hitbox test
+    GameState *currentState = new HitboxTest();
+
     //Start up SDL and create window
     if( !init() ) {
         printf( "Failed to initialize!\n" );
@@ -301,14 +166,15 @@ int main( int argc, char* args[] ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
                     SDL_Keycode key = e.key.keysym.sym;
-                    keyDown( key, x, y );
+                    quit = testQuit( key );
+                    currentState->keyDown( key, x, y );
                 }
                 //Handle keypress with current mouse position
                 else if( e.type == SDL_KEYUP ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
                     SDL_Keycode key = e.key.keysym.sym;
-                    keyUp( key, x, y );
+                    currentState->keyUp( key, x, y );
                 }
                 else if( e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED ) {
                     reshape(e.window.data1, e.window.data2);
@@ -316,9 +182,9 @@ int main( int argc, char* args[] ) {
             }
 
             //Update 
-            update();
-            //Render quad
-            render();
+            currentState->update();
+            //Render
+            currentState->display();
             
             //Update screen
             SDL_GL_SwapWindow( gWindow );
@@ -328,8 +194,6 @@ int main( int argc, char* args[] ) {
         SDL_StopTextInput();
     }
 
-    delete h1;
-    delete h2;
     //Free resources and close SDL
     close();
 

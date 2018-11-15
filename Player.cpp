@@ -115,7 +115,3 @@ void Player::keyReleased(SDL_Event event)
 			break;
 		}
 }
-
-	
-int main(int argc, char * args[])
-{return 0;}

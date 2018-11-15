@@ -28,8 +28,12 @@ private:
 	void calculatePoints();
 
 public:
+	Hitbox();
 	Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h );
 	~Hitbox();
+
+	void updateVecs( Vector *newPos, Vector *newForward, Vector *newUp, bool calc = true );
+	void updateDimensions( double newW, double newL, double newH, bool calc = true );
 
 	Vector* getPos();
 	Vector* getForward();
@@ -54,7 +58,6 @@ public:
 	void renderSelf( bool colliding );
 
 	friend bool testCollision( Hitbox *h1, Hitbox *h2 );
-	friend bool testCollisionHelper( Hitbox *h1, Hitbox *h2 );
 };
 
 #endif
