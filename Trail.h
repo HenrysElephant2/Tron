@@ -1,7 +1,8 @@
 #ifndef TRAIL_H
 #define TRAIL_H
 
-#define MAX_TRAIL_SEGMENTS 100
+#define MAX_TRAIL_SEGMENTS 200 // 20 meters
+#define MAX_SEGMENT_LENGTH 1 // decimeter
 
 #include "Vector.h"
 #include "Hitbox.h"
@@ -11,6 +12,7 @@ class Trail {
 private:
 	TrailSegment *end, *start; // Trail linked list will be ordered from back to front, so end is actually the first segment
 	int length;
+	bool limit;
 
 public:
 	Trail();
@@ -18,11 +20,13 @@ public:
 
 	TrailSegment* getEnd();
 	TrailSegment* getStart();
-
+ 
 	void addSegment( Vector *newFB, Vector *newFT );
 	void removeSegment();
 
 	bool testTrailHit( Hitbox* other );
+
+	void display();
 };
 
 #endif

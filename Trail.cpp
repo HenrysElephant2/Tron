@@ -33,3 +33,7 @@ void Trail::removeSegment() {
 bool Trail::testTrailHit( Hitbox *other ) {
 	return end->testSegmentHit( other );
 }
+
+void Trail::display() {
+	end->display(); // Will loop from end to front displaying hitboxes
+}

@@ -50,3 +50,10 @@ void TrailSegment::calculateHitbox() {
 bool TrailSegment::testSegmentHit( Hitbox *other ) {
 	return testCollision(hitbox, other) || (next == NULL ? false : next->testSegmentHit(other) );
 }
+
+void TrailSegment::display() {
+	hitbox->renderSelf(false);
+	if( next != NULL ) {
+		next->display();
+	}
+}

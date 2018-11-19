@@ -91,44 +91,46 @@ void HitboxTest::special(int key, int x, int y) {} /*NEEDED in GLUT, maybe diffe
 void HitboxTest::mouse(/*TODO*/) {}
 
 void HitboxTest::update() {
+    double dt = getElapsedTime() * 50;
+
     colliding = testCollision( h1, h2 );
 
     if( thup )
-        th += 5;
+        th += 5*dt;
     if( thdown )
-        th -= 5;
+        th -= 5*dt;
     if( phup )
-        ph += 5;
+        ph += 5*dt;
     if( phdown )
-        ph -= 5;
+        ph -= 5*dt;
 
     if( pu && !pd )
-        h1->pitch(-rSpeed);
+        h1->pitch(-rSpeed*dt);
     if( pd && !pu )
-        h1->pitch(rSpeed);
+        h1->pitch(rSpeed*dt);
     if( yl && !yr )
-        h1->yaw(rSpeed);
+        h1->yaw(rSpeed*dt);
     if( yr && !yl )
-        h1->yaw(-rSpeed);
+        h1->yaw(-rSpeed*dt);
     if( rl && !rr )
-        h1->roll(-rSpeed);
+        h1->roll(-rSpeed*dt);
     if( rr && !rl )
-        h1->roll(rSpeed);
+        h1->roll(rSpeed*dt);
 
 
     Vector *moveVec = new Vector(0,0,0);
     if( hforward )
-        moveVec->Add(0,0,-mSpeed);
+        moveVec->Add(0,0,-mSpeed*dt);
     if( hbackward )
-        moveVec->Add(0,0,mSpeed);
+        moveVec->Add(0,0,mSpeed*dt);
     if( hleft )
-        moveVec->Add(-mSpeed,0,0);
+        moveVec->Add(-mSpeed*dt,0,0);
     if( hright )
-        moveVec->Add(mSpeed,0,0);
+        moveVec->Add(mSpeed*dt,0,0);
     if( hup )
-        moveVec->Add(0,mSpeed,0);
+        moveVec->Add(0,mSpeed*dt,0);
     if( hdown )
-        moveVec->Add(0,-mSpeed,0);
+        moveVec->Add(0,-mSpeed*dt,0);
     h1->move( moveVec );
     delete moveVec;
 }

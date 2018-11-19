@@ -1,10 +1,7 @@
 #include "Player.h"
 
-#define MOVE_RATE 100 // divides the movement by move_rate value, essentially move_rate 
-						// is how many ticks for the model to move forward 1 unit
-#define TILT_RATE .01 // how quickly the model tilts while a turn key is pressed. radians per tick
-#define MAX_TILT .52 // max radians that the model can tilt while turning
-#define TURN_RATE .01 // rate of which the bike turns per tick. radians per tick
+// default constructor
+Player::Player(){}
 
 // constructor for the player
 Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z){
@@ -19,6 +16,19 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 	trail_on = false;
 	angle = 0;
 	turn = 0;
+
+	hitbox = new Hitbox( loc, direction, up_vector, PLAYER_WIDTH, PLAYER_LENGTH, PLAYER_HEIGHT );
+
+	alive = true;
+}
+
+// destructor for the player
+Player::~Player() {
+	delete loc;
+	delete direction;
+	delete up_vector;
+	delete tilt_vector;
+	delete hitbox;
 }
 
 // turns on the trail of the bike. Once turned on, cannot be turned off
@@ -28,7 +38,7 @@ void Player::beginTrail()
 }
 
 // move the player in the current direction it is pointed based on its velocity
-void Player::movePlayer()
+void Player::movePlayer( int dt )
 {
 	//TODO
 	// move model forward
@@ -70,10 +80,11 @@ void Player::movePlayer()
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display()
 {
-	// TODO
+	hitbox->renderSelf(false);
+	trail->display();
 }
 
-Trail Player::getTrail()
+Trail* Player::getTrail()
 {
 	return trail;
 }

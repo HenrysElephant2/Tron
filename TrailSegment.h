@@ -32,6 +32,8 @@ public:
 	void calculateHitbox();
 
 	bool testSegmentHit( Hitbox *other );
+
+	void display();
 };
 
 #endif

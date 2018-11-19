@@ -64,7 +64,7 @@ bool init() {
             success = false;
         }
         else {
-           SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
+            SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
 
             //Create context
             gContext = SDL_GL_CreateContext( gWindow );
