@@ -21,6 +21,14 @@
 		turn = 0;
 	}
 
+	Player::Player()
+	{
+		delete direction;
+		delete loc;
+		delete up_vector;
+		delete tilt_vector;
+	}
+
 	// turns on the trail of the bike. Once turned on, cannot be turned off
 	void Player::beginTrail()
 	{
@@ -59,7 +67,7 @@
 			angle = 0;
 		}
 		if(angle != 0)
-			tilt_vector->Rotate(angle - old_angle, up_vector);
+			tilt_vector->Rotate(angle - old_angle, /*up_vector*/direction);
 		else if (old_angle != angle){
 			tilt_vector->setX(0);
 			tilt_vector->setY(1);

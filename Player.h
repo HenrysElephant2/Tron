@@ -26,6 +26,7 @@ public:
 
 	// constructor for the player
 	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z);
+	~Player();
 
 	// turns on the trail of the bike. Once turned on, cannot be turned off
 	void beginTrail();

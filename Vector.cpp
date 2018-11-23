@@ -11,10 +11,9 @@ Vector::Vector(double X, double Y, double Z)
 }
 Vector::Vector(Vector v1, Vector v2)
 {
-	Vector newVec = Add0( v2, Scale0(v1, -1) ); // v2 - v1
-	x = newVec.getX();
-	y = newVec.getY();
-	z = newVec.getZ();
+	x = v2.getX() - v1.getX();
+	y = v2.getY() - v1.getY();
+	z = v2.getZ() - v1.getZ();
 }
 
 double Vector::getMagnitude()
@@ -51,15 +50,15 @@ void Vector::gl() {
 
 void Vector::Add(Vector * v)// modifies this Vector
 {
-	x += v.getX();
-	y += v.getY();
-	z += v.getZ();
+	x += v->getX();
+	y += v->getY();
+	z += v->getZ();
 }
 void Vector::Add(Vector * v, double scale) // modifies this vector by adding a scaled version of vector v
 {
-	x += v.getX() * scale;
-	y += v.getY() * scale;
-	z += v.getZ() * scale;
+	x += v->getX() * scale;
+	y += v->getY() * scale;
+	z += v->getZ() * scale;
 }
 
 void Vector::Scale(double scale) // multiplies x y and z of this vector by scale
@@ -94,21 +93,21 @@ void Vector::Rotate(double angle, Vector * axis)
 
 
 // Dot product with v
-double Vector::Dot( Vector v ) {
-	return x * v.getX() + y * v.getY() + z * v.getZ();
+double Vector::Dot( Vector * v ) {
+	return x * v->getX() + y * v->getY() + z * v->getZ();
 }
 
 // Cross product with v (this x v)
-Vector Vector::Cross( Vector v ) {
-	double vi = y * v.getZ() - z * v.getY();
-	double vj = z * v.getX() - x * v.getZ();
-	double vk = x * v.getY() - y * v.getX();
+Vector Vector::Cross( Vector * v ) {
+	double vi = y * v->getZ() - z * v->getY();
+	double vj = z * v->getX() - x * v->getZ();
+	double vk = x * v->getY() - y * v->getX();
 	return Vector(vi, vj, vk);
 }
 
 // Angle between this and v (right hand from this to v)
-double Vector::Angle( Vector v ) {
-	return acos( this->Dot(v) / (this->getMagnitude() * v.getMagnitude()) );
+double Vector::Angle( Vector * v ) {
+	return acos( this->Dot(v) / (this->getMagnitude() * v->getMagnitude()) );
 }
 
 

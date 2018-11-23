@@ -35,9 +35,9 @@ public:
 	void Rotate(double angle, Vector * axis); // angle in radians. must be unit vector
 
 
-	double Dot( Vector v ); // Dot product with another vector
-	Vector Cross( Vector v ); // Cross product with another vector (this x v)
-	double Angle( Vector v ); // Angle with another vector
+	double Dot( Vector * v ); // Dot product with another vector
+	Vector Cross( Vector * v ); // Cross product with another vector (this x v)
+	double Angle( Vector * v ); // Angle with another vector
 
 
 	// Versions that don't affect original vector, but return a new one
