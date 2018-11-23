@@ -3,10 +3,18 @@
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
 
+#include <iostream>
 #include "GameState.h"
 #include "Player.h"
 #include "Map.h"
+#include "Tile.h"
 #include "Vector.h"
+
+#ifndef MATH_FUNCTIONS
+#define MATH_FUNCTIONS
+#define Cos(x) cos(3.1415926535/180*(x))
+#define Sin(x) sin(3.1415926535/180*(x))
+#endif
 
 #define STATE_WAITING 0
 #define STATE_PLAYING 1
@@ -15,10 +23,16 @@
 #define STATE_TIE 4
 
 class Gameplay: public GameState {
+private:
+	double ph;      //  Elevation of view angle
+	double th;      //  Azimuth of view angle
+	bool thup, thdown, phup, phdown; // Booleans to control window movement
+
 	Player *player1, *player2;
 	Map *map;
 	int state;
 
+public:
 	Gameplay();
 	~Gameplay();
 
@@ -30,6 +44,8 @@ class Gameplay: public GameState {
 	void mouse(/*TODO*/);
 	void display();
 	void update();
+
+	void reset();
 };
 
 #endif

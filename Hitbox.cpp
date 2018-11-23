@@ -1,6 +1,14 @@
 #include "Hitbox.h"
 
-Hitbox::Hitbox(){}
+Hitbox::Hitbox() {
+	pos = new Vector();
+	forward = new Vector();
+	up = new Vector();
+	cross = new Vector();
+	for( int i=0; i<8; i++ ) {
+		points[i] = new Vector();
+	}
+}
 
 Hitbox::Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h ) {
 	pos = new Vector();
@@ -10,7 +18,7 @@ Hitbox::Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h ) 
 	for( int i=0; i<8; i++ ) {
 		points[i] = new Vector();
 	}
-
+	
 	updateVecs( p, f, u, false );
 	updateDimensions( w, l, h );
 }

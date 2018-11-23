@@ -95,14 +95,8 @@ void HitboxTest::update() {
 
     colliding = testCollision( h1, h2 );
 
-    if( thup )
-        th += 5*dt;
-    if( thdown )
-        th -= 5*dt;
-    if( phup )
-        ph += 5*dt;
-    if( phdown )
-        ph -= 5*dt;
+    th += (thup-thdown)*5*dt;
+    ph += (phup-phdown)*5*dt;
 
     if( pu && !pd )
         h1->pitch(-rSpeed*dt);
@@ -118,19 +112,8 @@ void HitboxTest::update() {
         h1->roll(rSpeed*dt);
 
 
-    Vector *moveVec = new Vector(0,0,0);
-    if( hforward )
-        moveVec->Add(0,0,-mSpeed*dt);
-    if( hbackward )
-        moveVec->Add(0,0,mSpeed*dt);
-    if( hleft )
-        moveVec->Add(-mSpeed*dt,0,0);
-    if( hright )
-        moveVec->Add(mSpeed*dt,0,0);
-    if( hup )
-        moveVec->Add(0,mSpeed*dt,0);
-    if( hdown )
-        moveVec->Add(0,-mSpeed*dt,0);
+    Vector *moveVec = new Vector((hright-hleft),(hup-hdown),(hbackward-hforward));
+    moveVec->Scale(mSpeed*dt);
     h1->move( moveVec );
     delete moveVec;
 }
@@ -142,7 +125,7 @@ void HitboxTest::display() {
 
     // Set eye position
     double Ex = -.3*100*Sin(th)*Cos(ph);
-    double Ey = +.3*100  *Sin(ph);
+    double Ey = +.3*100*Sin(ph);
     double Ez = +.3*100*Cos(th)*Cos(ph);
     gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
     

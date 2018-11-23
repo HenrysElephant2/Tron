@@ -6,6 +6,7 @@
 
 #include "Vector.h"
 #include "Matrix.h"
+#include <iostream>
 
 // Position Indicators : Top/Bottom - Front/Back - Left/Right
 #define BBL 0

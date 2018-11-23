@@ -3,12 +3,14 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#include <iostream>
 
 #include "Hitbox.h"
 
 #define FLAT_TILE 0
+#define WALL_TILE 1
 
-#define TILE_SIZE 50 // decimeters
+#define TILE_SIZE 100 // decimeters
 
 class Tile {
 private:
@@ -21,7 +23,7 @@ public:
 	Tile( int tileType, int mx, int my, int mz );
 	~Tile();
 
-	//bool isColliding( Player p );
+	bool testTileHit( Hitbox *other );
 
 	void display();
 };

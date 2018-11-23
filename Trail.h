@@ -1,12 +1,13 @@
 #ifndef TRAIL_H
 #define TRAIL_H
 
-#define MAX_TRAIL_SEGMENTS 200 // 20 meters
-#define MAX_SEGMENT_LENGTH 1 // decimeter
+#define MAX_TRAIL_SEGMENTS 50 // 20 meters
+#define MAX_SEGMENT_LENGTH 5 // decimeter
 
 #include "Vector.h"
 #include "Hitbox.h"
 #include "TrailSegment.h"
+#include <iostream>
 
 class Trail {
 private:
@@ -16,11 +17,14 @@ private:
 
 public:
 	Trail();
+	Trail( Vector *startBottom, Vector *startTop, bool l );
 	~Trail();
 
 	TrailSegment* getEnd();
 	TrailSegment* getStart();
- 
+ 	
+	void update( Vector *newBottom, Vector *newTop );
+
 	void addSegment( Vector *newFB, Vector *newFT );
 	void removeSegment();
 

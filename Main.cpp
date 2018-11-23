@@ -1,13 +1,13 @@
 #include "Main.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 640;
+static int SCREEN_WIDTH = 1400;
+static int SCREEN_HEIGHT = 1000;
 
 // Window settings
 int fov = 55;
 double dim = 100.0;
-double asp=1;
+double asp=(double)SCREEN_WIDTH/SCREEN_HEIGHT;
 
 //Main loop flag
 bool quit = false;
@@ -27,7 +27,7 @@ static void Project()
     //  Undo previous transformations
     glLoadIdentity();
     //  Perspective transformation
-    gluPerspective(fov,asp,dim/6,6*dim);
+    gluPerspective(fov,asp,10,5000);
     //  Switch to manipulating the model matrix
     glMatrixMode(GL_MODELVIEW);
 }
@@ -140,7 +140,7 @@ bool testQuit( SDL_Keycode key ) {
 
 int main( int argc, char* args[] ) {
     // Initialize the state to hitbox test
-    GameState *currentState = new HitboxTest();
+    GameState *currentState = new Gameplay();
 
     //Start up SDL and create window
     if( !init() ) {
@@ -185,6 +185,9 @@ int main( int argc, char* args[] ) {
             currentState->update();
             //Render
             currentState->display();
+
+            if( glGetError() != GL_NO_ERROR )
+                std::cout << "Error occured" << std::endl;
             
             //Update screen
             SDL_GL_SwapWindow( gWindow );
@@ -199,3 +202,5 @@ int main( int argc, char* args[] ) {
 
     return 0;
 }
+
+

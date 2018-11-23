@@ -3,6 +3,7 @@
 
 #include "Vector.h"
 #include "Hitbox.h"
+#include <iostream>
 
 #define TRAIL_WIDTH .5
 #define TRAIL_HEIGHT 8
@@ -26,6 +27,11 @@ public:
 	TrailSegment* getNext();
 
 	void setNext( TrailSegment *newNext );
+
+	Vector getTopVector();
+	Vector getBottomVector();
+	void scaleToLengthF( double length ); // Scale to length by changing front
+	void scaleToLengthB( double length ); // Scale to length by changing back
 
 	void updateFront( Vector *bPos, Vector *tPos );
 	void updateBack( Vector *bPos, Vector *tPos );

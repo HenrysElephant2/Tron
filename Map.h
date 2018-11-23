@@ -2,11 +2,12 @@
 #define MAP_H
 
 #include "Tile.h"
+#include "Hitbox.h"
 
 class Map {
 private:
-	int x_size, y_size, z_size, num_tiles; // Dimensions of map in terms of number of tiles in every direction
-	Tile** tiles; // Array of tiles in x,y,z order
+	int x_size, y_size, z_size, num_tiles, num_walls; // Dimensions of map in terms of number of tiles in every direction
+	Tile** tiles; // Array of tiles and walls in some order (see getTile function)
 
 public:
 	Map();
@@ -17,6 +18,9 @@ public:
 	int getYSize();
 	int getZSize();
 	Tile* getTile( int i, int j, int k );
+	Tile* getWall( int i );
+
+	bool testWallHits( Hitbox *other );
 
 	void display();
 };
