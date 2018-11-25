@@ -111,13 +111,13 @@ Vector * Player::getLocation()
 
 Vector* Player::getTrailBottom() {
 	Vector *retVec = new Vector();
-	*retVec = Add0( *loc, Scale0( *direction, -PLAYER_LENGTH/2 ) );
+	*retVec = Add0( *loc, Scale0( *direction, -13 ) );
 	return retVec;
 }
 
 Vector* Player::getTrailTop() {
 	Vector *retVec = new Vector();
-	*retVec = Add0( Add0( *loc, Scale0( *direction, -PLAYER_LENGTH/2 ) ), Scale0( *tilt_vector, PLAYER_HEIGHT ) );
+	*retVec = Add0( Add0( *loc, Scale0( *direction, -13 ) ), Scale0( *tilt_vector, TRAIL_HEIGHT ) );
 	return retVec;
 }
 
