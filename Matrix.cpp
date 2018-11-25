@@ -10,7 +10,7 @@ double Matrix::get( int i, int j ) {
 	return vals[i][j];
 }
 
-void Matrix::set( int i, int j, int n ) {
+void Matrix::set( int i, int j, double n ) {
 	vals[i][j] = n;
 }
 

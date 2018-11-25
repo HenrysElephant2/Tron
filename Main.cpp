@@ -1,19 +1,13 @@
 #include "Main.h"
 
-
-
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+static int SCREEN_WIDTH = 1400;
+static int SCREEN_HEIGHT = 1000;
 
 // Window settings
 int fov = 55;
 double dim = 100.0;
-double asp=1;
-
-double ph = 0;          //  Elevation of view angle
-double th = 0;          //  Azimuth of view angle
-
+double asp=(double)SCREEN_WIDTH/SCREEN_HEIGHT;
 
 //Main loop flag
 bool quit = false;
@@ -33,7 +27,7 @@ static void Project()
     //  Undo previous transformations
     glLoadIdentity();
     //  Perspective transformation
-    gluPerspective(fov,asp,dim/6,6*dim);
+    gluPerspective(fov,asp,10,5000);
     //  Switch to manipulating the model matrix
     glMatrixMode(GL_MODELVIEW);
 }
@@ -130,43 +124,6 @@ bool initGL() {
     return success;
 }
 
-void handleKeys( unsigned char key, int x, int y ) {
-    if( key == 'q' ) {
-        quit = true;
-    }
-}
-
-void update() {
-    th += 5;
-    render();
-}
-
-void render() {
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glLoadIdentity();
-
-    // Set eye position
-    double Ex = -.2*dim*Sin(th)*Cos(ph);
-    double Ey = +.2*dim        *Sin(ph);
-    double Ez = +.2*dim*Cos(th)*Cos(ph);
-    gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
-    
-    //Render quad
-    glRotatef(0.4f,0.0f,1.0f,0.0f);    // Rotate The cube around the Y axis
-    glRotatef(0.2f,1.0f,1.0f,1.0f);
-    glColor3f(0.0f,1.0f,0.0f); 
-
-    glBegin( GL_QUADS );
-        glVertex3d( -0.5, -0.5, 0 );
-        glVertex3d( 0.5, -0.5, 0 );
-        glVertex3d( 0.5, 0.5, 0 );
-        glVertex3d( -0.5, 0.5, 0 );
-    glEnd();
-
-    // glFlush();
-    // glSwapBuffers();
-}
 
 void close() {
     //Destroy window    
@@ -177,12 +134,21 @@ void close() {
     SDL_Quit();
 }
 
+bool testQuit( SDL_Keycode key ) {
+    return key == SDLK_q;
+}
+
 int main( int argc, char* args[] ) {
+    
+
     //Start up SDL and create window
     if( !init() ) {
         printf( "Failed to initialize!\n" );
     }
     else {
+
+        // Initialize the state to hitbox test
+        GameState *currentState = new Gameplay();
         //Event handler
         SDL_Event e;
         
@@ -198,10 +164,19 @@ int main( int argc, char* args[] ) {
                     quit = true;
                 }
                 //Handle keypress with current mouse position
-                else if( e.type == SDL_TEXTINPUT ) {
+                else if( e.type == SDL_KEYDOWN ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
-                    handleKeys( e.text.text[ 0 ], x, y );
+                    SDL_Keycode key = e.key.keysym.sym;
+                    quit = testQuit( key );
+                    currentState->keyDown( key, x, y );
+                }
+                //Handle keypress with current mouse position
+                else if( e.type == SDL_KEYUP ) {
+                    int x = 0, y = 0;
+                    SDL_GetMouseState( &x, &y );
+                    SDL_Keycode key = e.key.keysym.sym;
+                    currentState->keyUp( key, x, y );
                 }
                 else if( e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED ) {
                     reshape(e.window.data1, e.window.data2);
@@ -209,9 +184,12 @@ int main( int argc, char* args[] ) {
             }
 
             //Update 
-            update();
-            //Render quad
-            render();
+            currentState->update();
+            //Render
+            currentState->display();
+
+            if( glGetError() != GL_NO_ERROR )
+                std::cout << "Error occured" << std::endl;
             
             //Update screen
             SDL_GL_SwapWindow( gWindow );
@@ -226,3 +204,5 @@ int main( int argc, char* args[] ) {
 
     return 0;
 }
+
+

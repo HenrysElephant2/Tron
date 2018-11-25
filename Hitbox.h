@@ -6,6 +6,7 @@
 
 #include "Vector.h"
 #include "Matrix.h"
+#include <iostream>
 
 // Position Indicators : Top/Bottom - Front/Back - Left/Right
 #define BBL 0
@@ -20,33 +21,44 @@
 
 class Hitbox {
 private:
-	Vector pos, forward, up;
+	Vector *pos, *forward, *up, *cross;
 	double width, length, height; // width: side/side, length: forward/back
 
-	Vector points[8]; // To calculate in constructor
+	Vector *points[8]; // To calculate in constructor
+
+	void calculatePoints();
 
 public:
-	Hitbox( Vector p, Vector f, Vector u, double w, double l, double h );
+	Hitbox();
+	Hitbox( Vector *p, Vector *f, Vector *u, double w, double l, double h );
+	~Hitbox();
 
-	Vector getPos();
-	Vector getForward();
-	Vector getUp();
+	void updateVecs( Vector *newPos, Vector *newForward, Vector *newUp, bool calc = true );
+	void updateDimensions( double newW, double newL, double newH, bool calc = true );
+
+	Vector* getPos();
+	Vector* getForward();
+	Vector* getUp();
 	double getWidth();
 	double getLength();
 	double getHeight();
-	Vector getPoint(int i);
+	Vector* getPoint(int i);
 
-	void setPos( Vector toSet );
-	void setForward( Vector toSet );
-	void setUp( Vector toSet );
+	void setPos( Vector *toSet );
+	void setForward( Vector *toSet );
+	void setUp( Vector *toSet );
 	void setWidth( double toSet );
 	void setLength( double toSet );
 	void setHeight( double toSet );
 
+	void move( Vector *dv );
+	void roll( double degrees );
+	void pitch( double degrees );
+	void yaw( double degrees );
+
 	void renderSelf( bool colliding );
 
-	friend bool testCollision( Hitbox h1, Hitbox h2 );
-	friend bool testCollisionHelper( Hitbox h1, Hitbox h2 );
+	friend bool testCollision( Hitbox *h1, Hitbox *h2 );
 };
 
 #endif

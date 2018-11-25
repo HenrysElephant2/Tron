@@ -1,129 +1,126 @@
 #include "Player.h"
 
-#define MOVE_RATE 100 // divides the movement by move_rate value, essentially move_rate 
-						// is how many ticks for the model to move forward 1 unit
-#define TILT_RATE .01 // how quickly the model tilts while a turn key is pressed. radians per tick
-#define MAX_TILT .52 // max radians that the model can tilt while turning
-#define TURN_RATE .01 // rate of which the bike turns per tick. radians per tick
 
-	// constructor for the player
-	Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z){
-		loc = new Vector(loc_x, loc_y, loc_z);
-		// turn direction vector into unit vector
+// default constructor
+Player::Player(){}
 
-		double m = sqrt(dir_x*dir_x + dir_y*dir_y + dir_z*dir_z);
-		direction = new Vector(dir_x/m, dir_y/m, dir_z/m);
+// constructor for the player
+Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z){
+	loc = new Vector(loc_x, loc_y, loc_z);
+	// turn direction vector into unit vector
 
-		up_vector = new Vector(0,1,0);
-		tilt_vector = new Vector(0,1,0);
-		trail_on = false;
-		angle = 0;
-		turn = 0;
-	}
+	direction = new Vector(dir_x, dir_y, dir_z);
+	direction->Normalize();
 
-	Player::Player()
+	up_vector = new Vector(0,1,0);
+	tilt_vector = new Vector(0,1,0);
+	trail_on = false;
+	trail = NULL;
+	angle = 0;
+	turn = 0;
+
+	hitbox = new Hitbox( loc, direction, up_vector, PLAYER_WIDTH, PLAYER_LENGTH, PLAYER_HEIGHT );
+
+	alive = true;
+	left = false;
+	right = false;
+
+	velocity = 100;
+}
+
+// destructor for the player
+Player::~Player() {
+	delete loc;
+	delete direction;
+	delete up_vector;
+	delete tilt_vector;
+	delete hitbox;
+	delete trail;
+}
+
+// turns on the trail of the bike. Once turned on, cannot be turned off
+void Player::beginTrail( bool limit )
+{
+	trail_on = true;
+	trail = new Trail( getTrailBottom(), getTrailTop(), limit );
+}
+
+// move the player in the current direction it is pointed based on its velocity
+void Player::movePlayer( double dt )
+{
+	//turn forward vector
+	turn = right - left;
+
+	// change tilt of model
+	double old_angle = angle;
+	angle += turn*TILT_RATE*dt; // tilt if key is pressed
+	// make sure angle of tilt doesn't go over or under max
+	if(angle < -MAX_TILT) 
+		angle = -MAX_TILT;
+	if(angle > MAX_TILT)
+		angle = MAX_TILT;
+	// tilt back to angle 0 if no key is pressed
+	if(turn == 0 && angle != 0)
 	{
-		delete direction;
-		delete loc;
-		delete up_vector;
-		delete tilt_vector;
-	}
-
-	// turns on the trail of the bike. Once turned on, cannot be turned off
-	void Player::beginTrail()
-	{
-		trail_on = true;
-	}
-
-	// move the player in the current direction it is pointed based on its velocity
-	void Player::movePlayer()
-	{
-		//TODO
-		// move model forward
-		loc->Add(direction,1/MOVE_RATE);
-
-		//turn forward vector
-		if(turn != 0)
-			direction->Rotate(turn*TURN_RATE, up_vector);
-
-
-		// change tilt of model
-		double old_angle = angle;
-		angle += turn*TILT_RATE; // tilt if key is pressed
-		// make sure angle of tilt doesn't go over or under max
-		if(angle < -MAX_TILT) 
-			angle = -MAX_TILT;
-		if(angle > MAX_TILT)
-			angle = MAX_TILT;
-		// tilt back to angle 0 if no key is pressed
-		if(turn == 0 && angle != 0)
-		{
-			if(angle < 0)
-				angle += TILT_RATE;
-			else angle -= TILT_RATE;
-		}
-		if(angle < .05 && angle > -.05)
-		{
+		double toChange = TILT_RATE*dt;
+		if( abs(angle) < toChange )
 			angle = 0;
-		}
-		if(angle != 0)
-			tilt_vector->Rotate(angle - old_angle, /*up_vector*/direction);
-		else if (old_angle != angle){
-			tilt_vector->setX(0);
-			tilt_vector->setY(1);
-			tilt_vector->setZ(0);
-		}
+
+		else if(angle < 0)
+			angle += toChange;
+		else angle -= toChange;
+	}
+	if(angle != 0)
+		tilt_vector->Rotate(angle - old_angle, direction);
+	else if (old_angle != angle){
+		tilt_vector->setX(0);
+		tilt_vector->setY(1);
+		tilt_vector->setZ(0);
+	}
+	if(angle != 0) {
+		direction->Rotate(-angle*TURN_RATE*dt, up_vector);
+		tilt_vector->Rotate(-angle*TURN_RATE*dt, up_vector);
 	}
 
-	// do all the opengl to render the model for the player model. will call the trail render through this
-	void Player::display()
-	{
-		// TODO
-	}
+	loc->Add( direction, velocity*dt );
+	hitbox->updateVecs( loc, direction, tilt_vector );
+	trail->update( getTrailBottom(), getTrailTop() );
+}
 
-	Trail Player::getTrail()
-	{
-		return trail;
-	}
+// do all the opengl to render the model for the player model. will call the trail render through this
+void Player::display()
+{
+	hitbox->renderSelf(false);
+	if( trail != NULL ) trail->display();
+}
 
-	Vector * Player::getLocation()
-	{
-		return loc;
-	}
+Trail* Player::getTrail()
+{
+	return trail;
+}
 
-	Hitbox * Player::getHitbox()
-	{
-		return hitbox;
-	}
+Vector * Player::getLocation()
+{
+	return loc;
+}
 
-	void Player::keyPressed(SDL_Event event)
-	{
-		switch(event.key.keysym.sym){
-			case SDLK_d:
-				turn += 1;
-				break;
-			case SDLK_a:
-				turn -= 1;
-				break;
-			default:
-				break;
-			}
-	}
+Vector* Player::getTrailBottom() {
+	Vector *retVec = new Vector();
+	*retVec = Add0( *loc, Scale0( *direction, -PLAYER_LENGTH/2 ) );
+	return retVec;
+}
 
-	void Player::keyReleased(SDL_Event event)
-	{
-		switch(event.key.keysym.sym){
-			case SDLK_d:
-				turn -= 1;
-				break;
-			case SDLK_a:
-				turn += 1;
-				break;
-			default:
-				break;
-			}
-	}
+Vector* Player::getTrailTop() {
+	Vector *retVec = new Vector();
+	*retVec = Add0( Add0( *loc, Scale0( *direction, -PLAYER_LENGTH/2 ) ), Scale0( *tilt_vector, PLAYER_HEIGHT ) );
+	return retVec;
+}
 
-	
-int main(int argc, char * args[])
-{return 0;}
+Hitbox * Player::getHitbox()
+{
+	return hitbox;
+}
+
+void Player::setAlive( bool newVal ) { alive = newVal; }
+void Player::setLeft( bool newVal ) { left = newVal; }
+void Player::setRight( bool newVal ) { right = newVal; }
