@@ -22,6 +22,7 @@ private:
 	float * normals;
 	int * faces;
 	unsigned int texture;
+	Model * child; // a way to set up models as a linked list. Use if there are multiple models that contribute to the same object
 
 public:
 
@@ -29,7 +30,14 @@ public:
 	Model(char * filename, char * texturename);
 	~Model();
 
+	void append(Model * m); // add a model to the linked list
+	void append(char * name, char * texname);
+	void append(char * name);
+
+	Model * getNext();
+
 	void display(Vector * v, Vector * direction, Vector * up, double s);
+	void displayBasic();
 };
 
 #endif

@@ -3,7 +3,10 @@
 Gameplay::Gameplay() {
 	char model_name[] = "bike.obj";
 	char tex_name[] = "bike_texture.bmp";
+	char body_name[] = "body.obj";
+	char body_tex[] = "body_texture.bmp";
 	bike = new Model(model_name,tex_name);
+	bike->append(body_name,body_tex);
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
 	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
 	map = new Map( 5, 1, 5 );
