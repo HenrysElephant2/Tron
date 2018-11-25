@@ -10,7 +10,7 @@ Model::Model(char * filename)
 	num_faces = 0;
 	num_uv = 0;
 	num_normal = 0;
-	texture = NULL;
+	texture = -1;
 
 	LoadModel(filename, &vertices, &num_vertices, &uv, &num_uv, &normals, &num_normal, &faces, &num_faces);
 	
@@ -78,7 +78,7 @@ void Model::display(Vector * v, Vector * direction, Vector * up, double s)
 	//  Save current transforms
 	glPushMatrix();
 	//  Offset, scale and rotate
-	if(texture != NULL)
+	if(texture != -1)
 		glBindTexture(GL_TEXTURE_2D,texture);
 
 	glTranslated(v->getX(),v->getY(),v->getZ());

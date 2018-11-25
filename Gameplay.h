@@ -33,6 +33,7 @@ private:
 	Player *player1, *player2;
 	Map *map;
 	int state;
+	Model * bike;
 
 public:
 	Gameplay();

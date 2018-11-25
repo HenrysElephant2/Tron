@@ -1,8 +1,11 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay() {
-	player1 = new Player( 0, 0, 0, 0, 0, 1 );
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1 );
+	char model_name[] = "bike.obj";
+	char tex_name[] = "bike_texture.bmp";
+	bike = new Model(model_name,tex_name);
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
+	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
 	map = new Map( 5, 1, 5 );
 
 	state = STATE_WAITING;
@@ -109,8 +112,8 @@ void Gameplay::update() {
 void Gameplay::reset() {
 	delete player1;
 	delete player2;
-	player1 = new Player( 0, 0, 0, 0, 0, 1 );
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1 );
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
+	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
 
 	state = STATE_WAITING;
 }

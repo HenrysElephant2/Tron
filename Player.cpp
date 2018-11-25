@@ -5,7 +5,7 @@
 Player::Player(){}
 
 // constructor for the player
-Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z){
+Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m){
 	loc = new Vector(loc_x, loc_y, loc_z);
 	// turn direction vector into unit vector
 
@@ -20,6 +20,8 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 	turn = 0;
 
 	hitbox = new Hitbox( loc, direction, up_vector, PLAYER_WIDTH, PLAYER_LENGTH, PLAYER_HEIGHT );
+
+	model = m;
 
 	alive = true;
 	left = false;
@@ -92,6 +94,9 @@ void Player::display()
 {
 	hitbox->renderSelf(false);
 	if( trail != NULL ) trail->display();
+
+	if(model != NULL)
+		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
 }
 
 Trail* Player::getTrail()

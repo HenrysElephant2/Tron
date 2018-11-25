@@ -7,10 +7,12 @@
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <iostream>
+#include "Model.h"
 
 #define PLAYER_LENGTH 25 // 2.5 meters
 #define PLAYER_WIDTH 7 // .7 meter
 #define PLAYER_HEIGHT 10 // 1 meter
+#define PLAYER_SCALE 2
 
 #define MOVE_RATE 100 // divides the movement by move_rate value, essentially move_rate 
 						// is how many ticks for the model to move forward 1 unit
@@ -30,6 +32,7 @@ private:
 	bool trail_on;
 	Trail *trail;
 	Hitbox * hitbox;
+	Model * model;
 
 	bool left, right, alive;
 
@@ -38,7 +41,7 @@ public:
 	Player();
 
 	// constructor for the player
-	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z);
+	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m);
 	
 
 	// destructor for the player
