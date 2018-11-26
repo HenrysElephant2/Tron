@@ -13,8 +13,8 @@ Gameplay::Gameplay() {
 
 	state = STATE_WAITING;
 
-	ph = 0;	  //  Elevation of view angle
-	th = 0;	  //  Azimuth of view angle
+	ph = 30;	  //  Elevation of view angle
+	th = 45;	  //  Azimuth of view angle
 
 	// Booleans to control window movement
 	thup = false;

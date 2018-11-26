@@ -9,16 +9,17 @@
 #include <iostream>
 #include "Model.h"
 
-#define PLAYER_LENGTH 25 // 2.5 meters
-#define PLAYER_WIDTH 7 // .7 meter
-#define PLAYER_HEIGHT 10 // 1 meter
+#define PLAYER_LENGTH 30 // 3 meters
+#define PLAYER_WIDTH 9 // .9 meter
+#define PLAYER_HEIGHT 14 // 1.4 meter
 #define PLAYER_SCALE 2
+
 
 #define MOVE_RATE 100 // divides the movement by move_rate value, essentially move_rate 
 						// is how many ticks for the model to move forward 1 unit
 #define TILT_RATE 2 // how quickly the model tilts while a turn key is pressed. radians per second
 #define MAX_TILT .52 // max radians that the model can tilt while turning
-#define TURN_RATE 3 // rate of which the bike turns per tick. radians per tick
+#define TURN_RATE 3 // rate of which the bike turns. radians per second
 
 class Player {
 private:

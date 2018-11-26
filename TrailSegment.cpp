@@ -37,7 +37,7 @@ Vector TrailSegment::getBottomVector() {
 	return Add0( *fb, Scale0( *bb, -1 ) );
 }
 
-void TrailSegment::scaleToLengthF( double length ) {
+void TrailSegment::scaleToLengthF( double length, Vector tilt ) {
 	Vector* newFB = new Vector();
 	Vector dVec = getBottomVector();
 	dVec.Scale( length / dVec.getMagnitude() );
@@ -45,10 +45,7 @@ void TrailSegment::scaleToLengthF( double length ) {
 	newFB->Add( &dVec );
 
 	Vector* newFT = new Vector();
-	dVec = getTopVector();
-	dVec.Scale( length / dVec.getMagnitude() );
-	newFT->set( bt );
-	newFT->Add( &dVec );
+	*newFT = Add0( *newFB, tilt );
 
 	updateFront( newFB, newFT );
 }

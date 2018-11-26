@@ -3,10 +3,12 @@
 
 #include "Vector.h"
 #include "Hitbox.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <iostream>
 
 #define TRAIL_WIDTH .5
-#define TRAIL_HEIGHT 8
+#define TRAIL_HEIGHT 11
 
 class TrailSegment {
 private:
@@ -30,7 +32,7 @@ public:
 
 	Vector getTopVector();
 	Vector getBottomVector();
-	void scaleToLengthF( double length ); // Scale to length by changing front
+	void scaleToLengthF( double length, Vector tilt ); // Scale to length by changing front
 	void scaleToLengthB( double length ); // Scale to length by changing back
 
 	void updateFront( Vector *bPos, Vector *tPos );

@@ -2,8 +2,8 @@
 #define TRAIL_H
 
 
-#define MAX_TRAIL_SEGMENTS 50 // 20 meters
-#define MAX_SEGMENT_LENGTH 5 // decimeter
+#define MAX_TRAIL_SEGMENTS 250 // 20 meters
+#define MAX_SEGMENT_LENGTH 1 // decimeter
 
 #include "Vector.h"
 #include "Hitbox.h"
