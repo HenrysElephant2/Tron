@@ -8,7 +8,7 @@
 #include <iostream>
 
 #define TRAIL_WIDTH .5
-#define TRAIL_HEIGHT 11
+#define TRAIL_HEIGHT 10
 
 class TrailSegment {
 private:

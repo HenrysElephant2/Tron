@@ -11,7 +11,7 @@
 
 #define PLAYER_LENGTH 30 // 3 meters
 #define PLAYER_WIDTH 9 // .9 meter
-#define PLAYER_HEIGHT 14 // 1.4 meter
+#define PLAYER_HEIGHT 12 // 1.4 meter
 #define PLAYER_SCALE 2
 
 
