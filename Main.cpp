@@ -6,7 +6,6 @@ static int SCREEN_HEIGHT = 1000;
 
 // Window settings
 int fov = 55;
-double dim = 100.0;
 double asp=(double)SCREEN_WIDTH/SCREEN_HEIGHT;
 
 //Main loop flag
@@ -17,30 +16,6 @@ SDL_Window* gWindow = NULL;
 
 //OpenGL context
 SDL_GLContext gContext;
-
-
-// Modified Project function from ex9
-static void Project()
-{
-    //  Tell OpenGL we want to manipulate the projection matrix
-    glMatrixMode(GL_PROJECTION);
-    //  Undo previous transformations
-    glLoadIdentity();
-    //  Perspective transformation
-    gluPerspective(fov,asp,10,5000);
-    //  Switch to manipulating the model matrix
-    glMatrixMode(GL_MODELVIEW);
-}
-
-// reshape function from ex9
-void reshape(int width,int height) {
-    //  Ratio of the width to the height of the window
-    asp = (height>0) ? (double)width/height : 1;
-    //  Set the viewport to the entire window
-    glViewport(0,0, width,height);
-    //  Set projection
-    Project();
-}
 
 
 bool init() {
@@ -94,7 +69,7 @@ bool initGL() {
     bool success = true;
     GLenum error = GL_NO_ERROR;
 
-    Project();
+    // Project();
     
     //Check for error
     error = glGetError();
@@ -139,8 +114,6 @@ bool testQuit( SDL_Keycode key ) {
 }
 
 int main( int argc, char* args[] ) {
-    
-
     //Start up SDL and create window
     if( !init() ) {
         printf( "Failed to initialize!\n" );
@@ -149,21 +122,16 @@ int main( int argc, char* args[] ) {
 
         // Initialize the state to hitbox test
         GameState *currentState = new Gameplay();
-        //Event handler
+        currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
+
         SDL_Event e;
-        
-        //Enable text input
         SDL_StartTextInput();
 
-        //While application is running
         while( !quit ) {
-            //Handle events on queue
             while( SDL_PollEvent( &e ) != 0 ) {
-                //User requests quit
                 if( e.type == SDL_QUIT ) {
                     quit = true;
                 }
-                //Handle keypress with current mouse position
                 else if( e.type == SDL_KEYDOWN ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
@@ -171,7 +139,6 @@ int main( int argc, char* args[] ) {
                     quit = testQuit( key );
                     currentState->keyDown( key, x, y );
                 }
-                //Handle keypress with current mouse position
                 else if( e.type == SDL_KEYUP ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
@@ -179,13 +146,13 @@ int main( int argc, char* args[] ) {
                     currentState->keyUp( key, x, y );
                 }
                 else if( e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED ) {
-                    reshape(e.window.data1, e.window.data2);
+                    SCREEN_WIDTH = e.window.data1;
+                    SCREEN_HEIGHT = e.window.data2;
+                    currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
             }
 
-            //Update 
             currentState->update();
-            //Render
             currentState->display();
 
             if( glGetError() != GL_NO_ERROR )

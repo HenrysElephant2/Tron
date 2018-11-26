@@ -34,8 +34,8 @@ bool initGL(); //Initializes matrices and clear color
 void close(); //Frees media and shuts down SDL
 bool testQuit( SDL_Keycode key );
 
-static void Project();
-void reshape( int width, int height );
+// static void Project();
+// void reshape( int width, int height );
 
 int main( int argc, char* args[] );
 

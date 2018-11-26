@@ -111,13 +111,13 @@ Vector * Player::getLocation()
 
 Vector* Player::getTrailBottom() {
 	Vector *retVec = new Vector();
-	*retVec = Add0( *loc, Scale0( *direction, -13 ) );
+	*retVec = Add0( *loc, Scale0( *direction, -16 ) );
 	return retVec;
 }
 
 Vector* Player::getTrailTop() {
 	Vector *retVec = new Vector();
-	*retVec = Add0( Add0( *loc, Scale0( *direction, -13 ) ), Scale0( *tilt_vector, TRAIL_HEIGHT ) );
+	*retVec = Add0( Add0( *loc, Scale0( *direction, -16 ) ), Scale0( *tilt_vector, TRAIL_HEIGHT ) );
 	return retVec;
 }
 
@@ -129,3 +129,12 @@ Hitbox * Player::getHitbox()
 void Player::setAlive( bool newVal ) { alive = newVal; }
 void Player::setLeft( bool newVal ) { left = newVal; }
 void Player::setRight( bool newVal ) { right = newVal; }
+
+Vector Player::getViewLocation() {
+	return Add0( Add0( *loc, Scale0( *direction, -VIEW_DISTANCE ) ), Scale0( *up_vector, VIEW_HEIGHT ) );
+}
+
+Vector Player::getViewTarget() {
+	return Add0( *loc, Scale0( *up_vector, TARGET_HEIGHT ) );
+}
+

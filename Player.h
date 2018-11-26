@@ -21,6 +21,11 @@
 #define MAX_TILT .52 // max radians that the model can tilt while turning
 #define TURN_RATE 3 // rate of which the bike turns. radians per second
 
+
+#define VIEW_DISTANCE 40
+#define VIEW_HEIGHT 20
+#define TARGET_HEIGHT 10
+
 class Player {
 private:
 	Vector * loc; // location of the player
@@ -72,7 +77,8 @@ public:
 	void setLeft( bool newVal );
 	void setRight( bool newVal );
 
-	// Get camera position
+	// Get camera positions
 	Vector getViewLocation();
+	Vector getViewTarget();
 };
 #endif

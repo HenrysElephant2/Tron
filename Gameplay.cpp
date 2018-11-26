@@ -21,6 +21,8 @@ Gameplay::Gameplay() {
 	thdown = false;
 	phup = false;
 	phdown = false;
+
+	split = true; // Split screen
 }
 
 Gameplay::~Gameplay() {
@@ -55,6 +57,11 @@ void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
 			if( state == STATE_P1_WIN || state == STATE_P2_WIN || state == STATE_TIE ) {
 				reset();
 			}
+		break;
+
+		case SDLK_m:
+			split = !split;
+			reshape(wWidth, wHeight);
 		break;
 	}
 }
@@ -126,10 +133,37 @@ void Gameplay::display() {
 	glEnable(GL_DEPTH_TEST);
 	glLoadIdentity();
 
-	double Ex = -500*Sin(th)*Cos(ph) + 2*TILE_SIZE;
-	double Ey = +500*Sin(ph);
-	double Ez = +500*Cos(th)*Cos(ph) + 2*TILE_SIZE;
-	gluLookAt(Ex,Ey,Ez , 2*TILE_SIZE,0,2*TILE_SIZE , 0,Cos(ph),0);
+	if( split ) {
+		Vector topView = player1->getViewLocation();
+		Vector topTarget = player1->getViewTarget();
+		Vector bottomView = player2->getViewLocation();
+		Vector bottomTarget = player2->getViewTarget();
+
+		// Top window
+		glViewport(0, wHeight/2, wWidth, wHeight/2);
+		gluLookAt(topView.getX(), topView.getY(), topView.getZ(),
+			      topTarget.getX(), topTarget.getY(), topTarget.getZ(),
+			      0,1,0);
+		displayAll();
+
+		// Bottom window
+		glViewport(0, 0, wWidth, wHeight/2);
+		glLoadIdentity();
+		gluLookAt(bottomView.getX(), bottomView.getY(), bottomView.getZ(),
+			      bottomTarget.getX(), bottomTarget.getY(), bottomTarget.getZ(),
+				  0,1,0);
+		displayAll();
+	}
+	else {
+		double Ex = -500*Sin(th)*Cos(ph) + 2*TILE_SIZE;
+		double Ey = +500*Sin(ph);
+		double Ez = +500*Cos(th)*Cos(ph) + 2*TILE_SIZE;
+		gluLookAt(Ex,Ey,Ez , 2*TILE_SIZE,0,2*TILE_SIZE , 0,Cos(ph),0);
+		displayAll();
+	}
+}
+
+void Gameplay::displayAll() {
 	
 	map->display();
 	player1->display();

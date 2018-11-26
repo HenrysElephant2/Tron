@@ -14,6 +14,10 @@
 class GameState {
 private:
 	Uint64 previousTime;
+protected:
+	int wWidth, wHeight, fov;
+	double asp;
+	bool split;
 public:
 	GameState();
 
@@ -26,6 +30,10 @@ public:
 	virtual void update() = 0;
 
 	double getElapsedTime();
+
+	void Project( bool split );
+	void reshape( int height, int width );
+	void reshapeSplit( int height, int width );
 };
 
 #endif
