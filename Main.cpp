@@ -2,7 +2,7 @@
 
 //Screen dimension constants
 static int SCREEN_WIDTH = 1400;
-static int SCREEN_HEIGHT = 1000;
+static int SCREEN_HEIGHT = 900;
 
 // Window settings
 int fov = 55;

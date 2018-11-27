@@ -4,7 +4,7 @@ GameState::GameState() {
 	wWidth = 0;
 	wHeight = 0;
 	previousTime = 0;
-	fov = 55;
+	fov = 45;
 	asp = 1.4;
 	split = false;
 }
@@ -26,7 +26,7 @@ void GameState::Project( bool split )
     //  Undo previous transformations
     glLoadIdentity();
     //  Perspective transformation
-    split ? gluPerspective(fov*2,asp*2,10,5000) : gluPerspective(fov,asp,10,5000);
+    split ? gluPerspective(fov*2,asp*2,1,2000) : gluPerspective(fov,asp,10,5000);
     // gluPerspective(fov,asp,10,5000);
     //  Switch to manipulating the model matrix
     glMatrixMode(GL_MODELVIEW);

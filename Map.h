@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "Hitbox.h"
+#include "LoadModel.h"
 
 class Map {
 private:
@@ -11,7 +12,7 @@ private:
 
 public:
 	Map();
-	Map( int xs, int ys, int zs );
+	Map( int xs, int ys, int zs, unsigned int floorTex, unsigned int wallTex );
 	~Map();
 
 	int getXSize();

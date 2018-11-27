@@ -2,9 +2,10 @@
 
 Tile::Tile(){}
 
-Tile::Tile( int tileType, int mx, int my, int mz ) {
+Tile::Tile( int tileType, int mx, int my, int mz, unsigned int t ) {
 	map_x = mx; map_y = my; map_z = mz;
 	type = tileType;
+	texture = t;
 
 	if( type == FLAT_TILE ) {
 		Vector *pos = new Vector( map_x * TILE_SIZE, (map_y - .1) * TILE_SIZE, map_z * TILE_SIZE );
@@ -32,29 +33,32 @@ bool Tile::testTileHit( Hitbox *other ) {
 }
 
 void Tile::display() {
-// 	if( type == FLAT_TILE ) {
-// 		glColor3d(1,0,0);
-// 		glBegin( GL_POLYGON );
-// 			hitbox->getPoint(TBL)->gl();
-// 			hitbox->getPoint(TBR)->gl();
-// 			hitbox->getPoint(TFR)->gl();
-// 			hitbox->getPoint(TFL)->gl();
-// 		glEnd();
-// 	}
-// 	else if( type == WALL_TILE ) {
-// 		glColor3d(1,1,0);
-// 		glBegin(GL_QUAD_STRIP);
-// 			hitbox->getPoint(TBL)->gl();
-// 			hitbox->getPoint(BBL)->gl();
-// 			hitbox->getPoint(TBR)->gl();
-// 			hitbox->getPoint(BBR)->gl();
-// 			hitbox->getPoint(TFR)->gl();
-// 			hitbox->getPoint(BFR)->gl();
-// 			hitbox->getPoint(TFL)->gl();
-// 			hitbox->getPoint(BFL)->gl();
-// 			hitbox->getPoint(TBL)->gl();
-// 			hitbox->getPoint(BBL)->gl();
-// 		glEnd();
-// 	}
-	hitbox->renderSelf(true);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,texture);
+	if( type == FLAT_TILE ) {
+		glColor3d(.5,.8,1);
+		glBegin( GL_POLYGON );
+			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(1,1); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(TFL)->gl();
+		glEnd();
+	}
+	else if( type == WALL_TILE ) {
+		glColor3d(.5,.8,1);
+		glBegin(GL_QUAD_STRIP);
+			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(1,1); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(0,0); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(1,0); hitbox->getPoint(TFL)->gl();
+			glTexCoord2f(1,1); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+		glEnd();
+	}
+	glDisable(GL_TEXTURE_2D);
+	// hitbox->renderSelf(true);
 }

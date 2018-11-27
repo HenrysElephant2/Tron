@@ -22,7 +22,7 @@
 #define TURN_RATE 3 // rate of which the bike turns. radians per second
 
 
-#define VIEW_DISTANCE 40
+#define VIEW_DISTANCE 30
 #define VIEW_HEIGHT 20
 #define TARGET_HEIGHT 10
 

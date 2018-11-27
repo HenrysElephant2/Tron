@@ -9,7 +9,10 @@ Gameplay::Gameplay() {
 	bike->append(body_name,body_tex);
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
 	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
-	map = new Map( 5, 1, 5 );
+
+	unsigned int floorTex = LoadTexBMP("tile.bmp");
+	unsigned int wallTex = LoadTexBMP("wall.bmp");
+	map = new Map( 5, 1, 5, floorTex, wallTex );
 
 	state = STATE_WAITING;
 

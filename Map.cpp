@@ -2,7 +2,7 @@
 
 Map::Map(){}
 
-Map::Map( int xs, int ys, int zs ) {
+Map::Map( int xs, int ys, int zs, unsigned int floorTex, unsigned int wallTex ) {
 	x_size = xs;
 	y_size = ys;
 	z_size = zs;
@@ -14,17 +14,17 @@ Map::Map( int xs, int ys, int zs ) {
 	for( int i=0; i<x_size; i++ ) {
 		for( int j=0; j<y_size; j++ ) {
 			for( int k=0; k<z_size; k++ ) {
-    			tiles[i*x_size*y_size + j*y_size + k] = new Tile( FLAT_TILE, i, j, k );
+    			tiles[i*x_size*y_size + j*y_size + k] = new Tile( FLAT_TILE, i, j, k, floorTex );
     		}
 		}
 	}
 
 	// Wall tiles
 	for( int i=num_tiles; i<num_tiles+num_walls; i+=4 ) {
-		tiles[i] = new Tile( WALL_TILE, (i-num_tiles)/4, 0, -1 );
-		tiles[i+1] = new Tile( WALL_TILE, (i-num_tiles)/4, 0, zs );
-		tiles[i+2] = new Tile( WALL_TILE, -1, 0, (i-num_tiles)/4 );
-		tiles[i+3] = new Tile( WALL_TILE, xs, 0, (i-num_tiles)/4 );
+		tiles[i] = new Tile( WALL_TILE, (i-num_tiles)/4, 0, -1, wallTex );
+		tiles[i+1] = new Tile( WALL_TILE, (i-num_tiles)/4, 0, zs, wallTex );
+		tiles[i+2] = new Tile( WALL_TILE, -1, 0, (i-num_tiles)/4, wallTex );
+		tiles[i+3] = new Tile( WALL_TILE, xs, 0, (i-num_tiles)/4, wallTex );
 	}
 }
 

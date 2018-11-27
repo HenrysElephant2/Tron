@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Hitbox.h"
+#include "LoadModel.h"
 
 #define FLAT_TILE 0
 #define WALL_TILE 1
@@ -16,11 +17,12 @@ class Tile {
 private:
 	int map_x, map_y, map_z; // Tile location
 	int type;
+	unsigned int texture;
 	Hitbox *hitbox;
 
 public:
 	Tile();
-	Tile( int tileType, int mx, int my, int mz );
+	Tile( int tileType, int mx, int my, int mz, unsigned int t );
 	~Tile();
 
 	bool testTileHit( Hitbox *other );

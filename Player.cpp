@@ -7,8 +7,8 @@ Player::Player(){}
 // constructor for the player
 Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m){
 	loc = new Vector(loc_x, loc_y, loc_z);
-	// turn direction vector into unit vector
 
+	// turn direction vector into unit vector
 	direction = new Vector(dir_x, dir_y, dir_z);
 	direction->Normalize();
 
@@ -92,9 +92,10 @@ void Player::movePlayer( double dt )
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display()
 {
-	hitbox->renderSelf(false);
+	// hitbox->renderSelf(false);
 	if( trail != NULL ) trail->display();
 
+	glColor3d(1,0,0);
 	if(model != NULL)
 		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
 }
