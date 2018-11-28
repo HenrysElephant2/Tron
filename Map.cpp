@@ -48,8 +48,14 @@ bool Map::testWallHits( Hitbox *other ) {
 	return false;
 }
 
-void Map::display() {
-	for( int i=0; i<num_tiles+num_walls; i++ ) {
+void Map::displayTiles() {
+	for( int i=0; i<num_tiles; i++ ) {
+		tiles[i]->display();
+	}
+}
+
+void Map::displayWalls() {
+	for( int i=num_tiles; i<num_tiles+num_walls; i++ ) {
 		tiles[i]->display();
 	}
 }

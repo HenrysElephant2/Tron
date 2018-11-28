@@ -3,6 +3,8 @@
 
 #include "Vector.h"
 #include "Hitbox.h"
+#include "LoadModel.h"
+#include "TransparentRenderer.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <iostream>
@@ -10,15 +12,18 @@
 #define TRAIL_WIDTH .5
 #define TRAIL_HEIGHT 10
 
-class TrailSegment {
+class TrailSegment: public Transparent {
 private:
 	Vector *bb, *bt, *fb, *ft; //Back-bottom, back-top, front-bottom, front-top
 	Hitbox *hitbox;
 	TrailSegment *next;
+	Vector color;
+	unsigned int texture;
 
 public:
+
 	TrailSegment();
-	TrailSegment( Vector *_bb, Vector *_bt, Vector *_fb, Vector *_ft );
+	TrailSegment( Vector *_bb, Vector *_bt, Vector *_fb, Vector *_ft, unsigned int t, Vector c = Vector(1,1,1) );
 	~TrailSegment();
 
 	// Accessors
@@ -27,6 +32,8 @@ public:
 	Vector* getFB();
 	Vector* getFT();
 	TrailSegment* getNext();
+	Hitbox* getHitbox();
+	Vector getColor();
 
 	void setNext( TrailSegment *newNext );
 
@@ -41,6 +48,7 @@ public:
 
 	bool testSegmentHit( Hitbox *other );
 
+	void stage( TransparentRenderer *tr, Vector *cameraPos );
 	void display();
 };
 

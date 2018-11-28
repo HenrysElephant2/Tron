@@ -32,6 +32,7 @@ bool init() {
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
+
         //Create window
         gWindow = SDL_CreateWindow( "Tron", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
         if( gWindow == NULL ) {
@@ -43,6 +44,23 @@ bool init() {
 
             //Create context
             gContext = SDL_GL_CreateContext( gWindow );
+
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+             
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+             
+            SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
+             
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+
             if( gContext == NULL ) {
                 printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
                 success = false;
@@ -51,6 +69,7 @@ bool init() {
                 //Use Vsync
                 if( SDL_GL_SetSwapInterval( 1 ) < 0 ) {
                     printf( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError() );
+
                 }
 
                 //Initialize OpenGL
@@ -68,8 +87,6 @@ bool init() {
 bool initGL() {
     bool success = true;
     GLenum error = GL_NO_ERROR;
-
-    // Project();
     
     //Check for error
     error = glGetError();
@@ -89,6 +106,9 @@ bool initGL() {
     
     //Initialize clear color
     glClearColor( 0, 0, 0, 1 );
+
+    glEnable(GL_MULTISAMPLE);
+    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
     
     //Check for error
     error = glGetError();

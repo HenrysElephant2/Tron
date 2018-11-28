@@ -5,7 +5,7 @@
 Player::Player(){}
 
 // constructor for the player
-Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m){
+Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Vector c ){
 	loc = new Vector(loc_x, loc_y, loc_z);
 
 	// turn direction vector into unit vector
@@ -22,6 +22,7 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 	hitbox = new Hitbox( loc, direction, up_vector, PLAYER_WIDTH, PLAYER_LENGTH, PLAYER_HEIGHT );
 
 	model = m;
+	color = c;
 
 	alive = true;
 	left = false;
@@ -43,8 +44,9 @@ Player::~Player() {
 // turns on the trail of the bike. Once turned on, cannot be turned off
 void Player::beginTrail( bool limit )
 {
+	unsigned int trailTexture = LoadTexBMP("trail.bmp");
 	trail_on = true;
-	trail = new Trail( getTrailBottom(), getTrailTop(), limit );
+	trail = new Trail( getTrailBottom(), getTrailTop(), limit, trailTexture, color );
 }
 
 // move the player in the current direction it is pointed based on its velocity
@@ -90,14 +92,18 @@ void Player::movePlayer( double dt )
 }
 
 // do all the opengl to render the model for the player model. will call the trail render through this
-void Player::display()
+void Player::display( TransparentRenderer *tr )
 {
 	// hitbox->renderSelf(false);
-	if( trail != NULL ) trail->display();
-
-	glColor3d(1,0,0);
+	glColor3d(color.getX(), color.getY(), color.getZ());
 	if(model != NULL)
 		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
+
+	if( trail != NULL ){
+		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
+		Vector cameraPos = getViewLocation();
+		trail->stage( emmiter, tilt_vector, tr, &cameraPos );
+	}
 }
 
 Trail* Player::getTrail()

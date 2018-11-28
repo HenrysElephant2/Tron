@@ -7,8 +7,12 @@ Gameplay::Gameplay() {
 	char body_tex[] = "body_texture.bmp";
 	bike = new Model(model_name,tex_name);
 	bike->append(body_name,body_tex);
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
+
+	p1color = Vector(1,.3,0);
+	p2color = Vector(.5,.8,1);
+
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
+	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike, p2color );
 
 	unsigned int floorTex = LoadTexBMP("tile.bmp");
 	unsigned int wallTex = LoadTexBMP("wall.bmp");
@@ -125,8 +129,8 @@ void Gameplay::update() {
 void Gameplay::reset() {
 	delete player1;
 	delete player2;
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike);
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike);
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
+	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike, p2color );
 
 	state = STATE_WAITING;
 }
@@ -164,11 +168,30 @@ void Gameplay::display() {
 		gluLookAt(Ex,Ey,Ez , 2*TILE_SIZE,0,2*TILE_SIZE , 0,Cos(ph),0);
 		displayAll();
 	}
+
 }
 
 void Gameplay::displayAll() {
-	
-	map->display();
-	player1->display();
-	player2->display();
+	map->displayWalls();
+
+	TransparentRenderer *tr = new TransparentRenderer();
+	glPushMatrix();
+	glTranslated(0,-.12,0);
+	glScaled(1,-1,1);
+	player1->display(tr);
+	player2->display(tr);
+	tr->display();
+	glPopMatrix();
+	delete tr;
+
+	map->displayTiles();
+
+	tr = new TransparentRenderer();
+	player1->display(tr);
+	player2->display(tr);
+	tr->display();
+	delete tr;
 }
+
+
+

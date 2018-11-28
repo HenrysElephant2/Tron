@@ -10,6 +10,7 @@
 #include "Tile.h"
 #include "Vector.h"
 #include "Model.h"
+#include "TransparentRenderer.h"
 
 
 #ifndef MATH_FUNCTIONS
@@ -31,6 +32,7 @@ private:
 	bool thup, thdown, phup, phdown; // Booleans to control window movement
 
 	Player *player1, *player2;
+	Vector p1color, p2color;
 	Map *map;
 	int state;
 	Model * bike;

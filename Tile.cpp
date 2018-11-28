@@ -35,17 +35,26 @@ bool Tile::testTileHit( Hitbox *other ) {
 void Tile::display() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,texture);
+	glPushMatrix();
+	glTranslated(0,-.12,0);
 	if( type == FLAT_TILE ) {
-		glColor3d(.5,.8,1);
+		glDepthMask(0);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+
+		glColor4d(.8,.9,1,.8);
 		glBegin( GL_POLYGON );
 			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
 			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
 			glTexCoord2f(1,1); hitbox->getPoint(TFR)->gl();
 			glTexCoord2f(0,1); hitbox->getPoint(TFL)->gl();
 		glEnd();
+
+		glDisable(GL_BLEND);
+		glDepthMask(1);
 	}
 	else if( type == WALL_TILE ) {
-		glColor3d(.5,.8,1);
+		glColor3d(.8,.9,1);
 		glBegin(GL_QUAD_STRIP);
 			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
 			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
@@ -58,7 +67,24 @@ void Tile::display() {
 			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
 			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
 		glEnd();
+
+		glPushMatrix();
+		glTranslated(0,-TILE_SIZE,0);
+		glColor3d(.8,.9,1);
+		glBegin(GL_QUAD_STRIP);
+			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(1,1); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(0,0); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(1,0); hitbox->getPoint(TFL)->gl();
+			glTexCoord2f(1,1); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+		glEnd();
+		glPopMatrix();
 	}
+	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
-	// hitbox->renderSelf(true);
 }

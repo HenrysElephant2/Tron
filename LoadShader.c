@@ -1,3 +1,5 @@
+#include "LoadShader.h"
+
 int CreateShader(GLenum type,char* file)
 {
    //  Create the shader
@@ -77,4 +79,27 @@ void PrintProgramLog(int obj)
    }
    glGetProgramiv(obj,GL_LINK_STATUS,&len);
    if (!len) Fatal("Error linking program\n");
+}
+
+/*
+ *  Create Shader Program
+ */
+int CreateShaderProg(char* VertFile,char* FragFile)
+{
+   //  Create program
+   int prog = glCreateProgram();
+   //  Create and compile vertex shader
+   int vert = CreateShader(GL_VERTEX_SHADER  ,VertFile);
+   //  Create and compile fragment shader
+   int frag = CreateShader(GL_FRAGMENT_SHADER,FragFile);
+   //  Attach vertex shader
+   glAttachShader(prog,vert);
+   //  Attach fragment shader
+   glAttachShader(prog,frag);
+   //  Link program
+   glLinkProgram(prog);
+   //  Check for errors
+   PrintProgramLog(prog);
+   //  Return name
+   return prog;
 }

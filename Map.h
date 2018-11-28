@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "Hitbox.h"
 #include "LoadModel.h"
+#include "TransparentRenderer.h"
 
 class Map {
 private:
@@ -23,7 +24,8 @@ public:
 
 	bool testWallHits( Hitbox *other );
 
-	void display();
+	void displayTiles();
+	void displayWalls();
 };
 
 #endif
