@@ -1,3 +1,6 @@
+#include "LoadShader.h"
+
+
 int CreateShader(GLenum type,char* file)
 {
    //  Create the shader
