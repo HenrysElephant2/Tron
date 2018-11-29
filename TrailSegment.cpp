@@ -2,12 +2,14 @@
 
 TrailSegment::TrailSegment(){}
 
-TrailSegment::TrailSegment( Vector *_bb, Vector *_bt, Vector *_fb, Vector *_ft ) {
+TrailSegment::TrailSegment( Vector *_bb, Vector *_bt, Vector *_fb, Vector *_ft, unsigned int t, Vector c ) {
 
 	bb = _bb;
 	bt = _bt;
 	fb = _fb;
 	ft = _ft;
+	texture = t;
+	color = c;
 	next = NULL;
 	hitbox = new Hitbox();
 	calculateHitbox();
@@ -26,6 +28,8 @@ Vector* TrailSegment::getBT() { return bt; }
 Vector* TrailSegment::getFB() { return fb; }
 Vector* TrailSegment::getFT() { return ft; }
 TrailSegment* TrailSegment::getNext() { return next; }
+Hitbox* TrailSegment::getHitbox() { return hitbox; }
+Vector TrailSegment::getColor() { return color; }
 void TrailSegment::setNext( TrailSegment *newNext ) { next = newNext; }
 
 
@@ -94,9 +98,39 @@ bool TrailSegment::testSegmentHit( Hitbox *other ) {
 	return testCollision(hitbox, other) || (next == NULL ? false : next->testSegmentHit(other) );
 }
 
-void TrailSegment::display() {
-	hitbox->renderSelf(false);
+void TrailSegment::stage( TransparentRenderer *tr, Vector *cameraPos ) {
+	double dist1 = Add0( *cameraPos, Scale0( *bb, -1 ) ).getMagnitude();
+	double dist2 = Add0( *cameraPos, Scale0( *fb, -1 ) ).getMagnitude();
+	double dist = dist1<dist2 ? dist1 : dist2;
+	tr->add( this, dist );
 	if( next != NULL ) {
-		next->display();
+		next->stage( tr, cameraPos );
+	}
+}
+
+void TrailSegment::display() {
+	// hitbox->renderSelf(false);
+	if( next != NULL ) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,texture);
+
+		Hitbox *nhb = next->getHitbox();
+
+		glBegin(GL_QUAD_STRIP);
+			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
+			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
+			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFL)->gl();
+			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFL)->gl();
+			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFR)->gl();
+			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFR)->gl();
+			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFR)->gl();
+			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFR)->gl();
+			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
+			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+
+		// next->display();
 	}
 }

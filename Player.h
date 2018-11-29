@@ -8,10 +8,11 @@
 #include <math.h>
 #include <iostream>
 #include "Model.h"
+#include "TransparentRenderer.h"
 
 #define PLAYER_LENGTH 30 // 3 meters
 #define PLAYER_WIDTH 9 // .9 meter
-#define PLAYER_HEIGHT 12 // 1.4 meter
+#define PLAYER_HEIGHT 12 // 1.2 meter
 #define PLAYER_SCALE 2
 
 
@@ -39,6 +40,7 @@ private:
 	Trail *trail;
 	Hitbox * hitbox;
 	Model * model;
+	Vector color;
 
 	bool left, right, alive;
 
@@ -47,7 +49,7 @@ public:
 	Player();
 
 	// constructor for the player
-	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m);
+	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Vector c = Vector(1,1,1));
 	
 
 	// destructor for the player
@@ -60,7 +62,7 @@ public:
 	void movePlayer( double dt );
 
 	// do all the opengl to render the model for the player model. will call the trail render through this
-	void display();
+	void display( TransparentRenderer *tr );
 
 	Trail* getTrail();
 

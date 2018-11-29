@@ -27,6 +27,7 @@ endif
 Vector.o: Vector.cpp Vector.h
 Matrix.o: Matrix.cpp Matrix.h
 Hitbox.o: Hitbox.cpp Hitbox.h
+TransparentRenderer.o: TransparentRenderer.cpp TransparentRenderer.h
 TrailSegment.o: TrailSegment.cpp TrailSegment.h
 Trail.o: Trail.cpp Trail.h
 Player.o: Player.cpp Player.h
@@ -39,7 +40,6 @@ Model.o: Model.cpp Model.h
 LoadModel.o: LoadModel.c LoadModel.h
 loadtexbmp.o: loadtexbmp.c LoadModel.h
 LoadShader.o: LoadShader.c LoadShader.h
-#Explosion.o: Explosion.cpp Explosion.h
 
 
 # Compile rules
@@ -49,7 +49,8 @@ LoadShader.o: LoadShader.c LoadShader.h
 	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-Main:Main.o Vector.o Matrix.o Hitbox.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o #Explosion.o
+Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o
+
 	g++ -O3 -o $@ $^   $(LIBS)
 
 #  Clean

@@ -2,12 +2,13 @@
 #define TRAIL_H
 
 
-#define MAX_TRAIL_SEGMENTS 250 // 20 meters
-#define MAX_SEGMENT_LENGTH 1 // decimeter
+#define MAX_TRAIL_SEGMENTS 125 // 20 meters
+#define MAX_SEGMENT_LENGTH 2 // decimeter
 
 #include "Vector.h"
 #include "Hitbox.h"
 #include "TrailSegment.h"
+#include "TransparentRenderer.h"
 #include <iostream>
 
 class Trail {
@@ -15,10 +16,12 @@ private:
 	TrailSegment *end, *start; // Trail linked list will be ordered from back to front, so end is actually the first segment
 	int length;
 	bool limit;
+	unsigned int texture;
+	Vector color;
 
 public:
 	Trail();
-	Trail( Vector *startBottom, Vector *startTop, bool l );
+	Trail( Vector *startBottom, Vector *startTop, bool l, unsigned int t, Vector c = Vector(1,1,1) );
 	~Trail();
 
 	TrailSegment* getEnd();
@@ -31,7 +34,7 @@ public:
 
 	bool testTrailHit( Hitbox* other );
 
-	void display();
+	void stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos );
 };
 
 #endif

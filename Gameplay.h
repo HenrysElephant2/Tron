@@ -4,12 +4,14 @@
 #define GAMEPLAY_H
 
 #include <iostream>
+#include "LoadShader.h"
 #include "GameState.h"
 #include "Player.h"
 #include "Map.h"
 #include "Tile.h"
 #include "Vector.h"
 #include "Model.h"
+#include "TransparentRenderer.h"
 
 
 #ifndef MATH_FUNCTIONS
@@ -31,9 +33,11 @@ private:
 	bool thup, thdown, phup, phdown; // Booleans to control window movement
 
 	Player *player1, *player2;
+	Vector p1color, p2color;
 	Map *map;
 	int state;
 	Model * bike;
+	GLuint bikeProgram;
 
 public:
 	Gameplay();

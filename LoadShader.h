@@ -30,6 +30,7 @@ int CreateShader(GLenum type,char* file);
 char* ReadText(char *file);
 void PrintShaderLog(int obj,char* file);
 void PrintProgramLog(int obj);
+int CreateShaderProg(char* VertFile,char* FragFile);
 
 #ifdef __cplusplus
 }

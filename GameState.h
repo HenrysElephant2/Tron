@@ -11,6 +11,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+#include "TransparentRenderer.h"
+
 class GameState {
 private:
 	Uint64 previousTime;
