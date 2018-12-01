@@ -53,7 +53,7 @@ public:
 	void update();
 
 	void reset();
-	void displayAll();
+	void displayAll( Vector *cameraPos );
 };
 
 #endif

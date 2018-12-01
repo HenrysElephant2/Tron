@@ -20,7 +20,7 @@ Tile::Tile( int tileType, int mx, int my, int mz, unsigned int t ) {
 		hitbox = new Hitbox( pos, fVec, uVec, TILE_SIZE, TILE_SIZE, TILE_SIZE );
 	}
 	else {
-		throw "ya fucked up\n";
+		throw "oof\n";
 	}
 }
 
@@ -42,7 +42,7 @@ void Tile::display() {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 
-		glColor4d(.8,.9,1,.8);
+		glColor4d(.8,.9,1,FLOOR_TILE_ALPHA);
 		glBegin( GL_POLYGON );
 			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
 			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();

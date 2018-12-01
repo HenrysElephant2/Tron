@@ -12,6 +12,7 @@
 #define WALL_TILE 1
 
 #define TILE_SIZE 100 // decimeters
+#define FLOOR_TILE_ALPHA .7
 
 class Tile {
 private:

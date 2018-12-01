@@ -12,6 +12,11 @@
 #define TRAIL_WIDTH .5
 #define TRAIL_HEIGHT 10
 
+#define FACE_L 0
+#define FACE_T 1
+#define FACE_R 2
+#define FACE_B 3
+
 class TrailSegment: public Transparent {
 private:
 	Vector *bb, *bt, *fb, *ft; //Back-bottom, back-top, front-bottom, front-top
@@ -49,7 +54,8 @@ public:
 	bool testSegmentHit( Hitbox *other );
 
 	void stage( TransparentRenderer *tr, Vector *cameraPos );
-	void display();
+	void display( Vector *cameraPos );
+	void displayFace( int face );
 };
 
 #endif

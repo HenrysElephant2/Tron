@@ -11,8 +11,8 @@
 #include "TransparentRenderer.h"
 
 #define PLAYER_LENGTH 30 // 3 meters
-#define PLAYER_WIDTH 9 // .9 meter
-#define PLAYER_HEIGHT 12 // 1.2 meter
+#define PLAYER_WIDTH 6 // .9 meter
+#define PLAYER_HEIGHT 8 // .8 meter
 #define PLAYER_SCALE 2
 
 
@@ -62,7 +62,7 @@ public:
 	void movePlayer( double dt );
 
 	// do all the opengl to render the model for the player model. will call the trail render through this
-	void display( TransparentRenderer *tr );
+	void display( TransparentRenderer *tr, Vector *cameraPos );
 
 	Trail* getTrail();
 

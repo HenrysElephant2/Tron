@@ -68,6 +68,9 @@ void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
 				player1->beginTrail(true);
 				player2->beginTrail(true);
 			}
+			else if( state == STATE_PLAYING ) {
+				state = STATE_WAITING;
+			}
 		break;
 
 		case SDLK_r:
@@ -161,7 +164,7 @@ void Gameplay::display() {
 		gluLookAt(topView.getX(), topView.getY(), topView.getZ(),
 			      topTarget.getX(), topTarget.getY(), topTarget.getZ(),
 			      0,1,0);
-		displayAll();
+		displayAll( &topView );
 
 		// Bottom window
 		glViewport(0, 0, wWidth, wHeight/2);
@@ -169,39 +172,46 @@ void Gameplay::display() {
 		gluLookAt(bottomView.getX(), bottomView.getY(), bottomView.getZ(),
 			      bottomTarget.getX(), bottomTarget.getY(), bottomTarget.getZ(),
 				  0,1,0);
-		displayAll();
+		displayAll( &bottomView );
 	}
 	else {
 		double Ex = -500*Sin(th)*Cos(ph) + 2*TILE_SIZE;
 		double Ey = +500*Sin(ph);
 		double Ez = +500*Cos(th)*Cos(ph) + 2*TILE_SIZE;
+		Vector viewLoc(Ex, Ey, Ez);
 		gluLookAt(Ex,Ey,Ez , 2*TILE_SIZE,0,2*TILE_SIZE , 0,Cos(ph),0);
-		displayAll();
+		displayAll( &viewLoc );
 	}
 
 }
 
-void Gameplay::displayAll() {
+void Gameplay::displayAll( Vector *cameraPos ) {
 	map->displayWalls();
 
+	// Reflections/Underside of map
+	Vector reflectCamera = Add0( *cameraPos, Vector(0,-2*cameraPos->getY(), 0) );
 	TransparentRenderer *tr = new TransparentRenderer();
 	glPushMatrix();
 	glTranslated(0,-.12,0);
 	glScaled(1,-1,1);
-	player1->display(tr);
-	player2->display(tr);
-	tr->display();
+	glUseProgram(bikeProgram);
+	player1->display(tr, &reflectCamera);
+	player2->display(tr, &reflectCamera);
+	glUseProgram(0);
+	tr->display( &reflectCamera );
 	glPopMatrix();
 	delete tr;
 
+	// Floor tiles
 	map->displayTiles();
 
+	// Top of map
 	tr = new TransparentRenderer();
 	glUseProgram(bikeProgram);
-	player1->display(tr);
-	player2->display(tr);
+	player1->display(tr, cameraPos);
+	player2->display(tr, cameraPos);
 	glUseProgram(0);
-	tr->display();
+	tr->display( cameraPos );
 	delete tr;
 }
 

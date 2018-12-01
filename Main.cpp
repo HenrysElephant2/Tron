@@ -40,7 +40,7 @@ bool init() {
             success = false;
         }
         else {
-            SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
+            // SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
 
             //Create context
             gContext = SDL_GL_CreateContext( gWindow );
@@ -91,6 +91,7 @@ bool initGL() {
     //Check for error
     error = glGetError();
     if( error != GL_NO_ERROR ) {
+        std::cout << 1 << std::endl;
         success = false;
     }
 
@@ -101,18 +102,17 @@ bool initGL() {
     //Check for error
     error = glGetError();
     if( error != GL_NO_ERROR ) {
+        std::cout << 2 << std::endl;
         success = false;
     }
     
     //Initialize clear color
     glClearColor( 0, 0, 0, 1 );
-
-    glEnable(GL_MULTISAMPLE);
-    glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
     
     //Check for error
     error = glGetError();
     if( error != GL_NO_ERROR ) {
+        std::cout << 31 << std::endl;
         success = false;
     }
     
@@ -139,6 +139,8 @@ int main( int argc, char* args[] ) {
         printf( "Failed to initialize!\n" );
     }
     else {
+        glEnable(GL_MULTISAMPLE);
+        glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
 
         // Initialize the state to hitbox test
         GameState *currentState = new Gameplay();

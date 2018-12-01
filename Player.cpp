@@ -67,12 +67,12 @@ void Player::movePlayer( double dt )
 	if(turn == 0 && angle != 0)
 	{
 		double toChange = TILT_RATE*dt;
-		if( abs(angle) < toChange )
+		if( fabs(angle) < toChange )
 			angle = 0;
-
 		else if(angle < 0)
 			angle += toChange;
 		else angle -= toChange;
+
 	}
 	if(angle != 0)
 		tilt_vector->Rotate(angle - old_angle, direction);
@@ -92,7 +92,7 @@ void Player::movePlayer( double dt )
 }
 
 // do all the opengl to render the model for the player model. will call the trail render through this
-void Player::display( TransparentRenderer *tr )
+void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
 	// hitbox->renderSelf(false);
 	glColor3d(color.getX(), color.getY(), color.getZ());
@@ -101,8 +101,7 @@ void Player::display( TransparentRenderer *tr )
 
 	if( trail != NULL ){
 		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
-		Vector cameraPos = getViewLocation();
-		trail->stage( emmiter, tilt_vector, tr, &cameraPos );
+		trail->stage( emmiter, tilt_vector, tr, cameraPos );
 	}
 }
 

@@ -12,10 +12,12 @@ Trail::Trail( Vector *startBottom, Vector *startTop, bool l, unsigned int t, Vec
 }
 
 Trail::~Trail() {
-	if( end != NULL )
-		delete end;
-	if( start != NULL && start != end  )
-		delete start;
+	TrailSegment *cur = end;
+	while( cur != NULL ) {
+		TrailSegment* temp = cur->getNext();
+		delete cur;
+		cur = temp;
+	}
 }
 
 TrailSegment* Trail::getEnd() { return end; }
@@ -62,6 +64,8 @@ void Trail::addSegment( Vector *newFB, Vector *newFT ) {
 	Vector *newBB = new Vector(); newBB->set(start->getFB());
 	Vector *newBT = new Vector(); newBT->set(start->getFT());
 	TrailSegment *newSegment = new TrailSegment( newBB, newBT, newFB, newFT, texture, color );
+	if( start->getNext() != NULL )
+		delete start->getNext();
 	start->setNext( newSegment );
 	start = newSegment;
 	length++;
@@ -80,35 +84,18 @@ bool Trail::testTrailHit( Hitbox *other ) {
 }
 
 void Trail::stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos ) {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,texture);
-	if( end != NULL ) {
+	Vector* newBB = new Vector();
+	newBB->set( start->getFB() );
+	Vector* newBT = new Vector();
+	newBT->set( start->getFT() );
+	Vector *newFB = new Vector();
+	*newFB = trailEnd;
+	Vector *newFT = new Vector();
+	*newFT = Add0( trailEnd, Scale0( *tilt, TRAIL_HEIGHT ) );
+
+	TrailSegment *trailStart = new TrailSegment( newBB, newBT, newFB, newFT, texture, color );
+	start->setNext( trailStart );
+
+	if( end != NULL )
 		end->stage( tr, cameraPos ); // Will loop from end to front displaying hitboxes
-	}
-
-	Vector renderF = Add0( trailEnd, Scale0( *(start->getFB()), -1 ) );
-	Vector renderPos = Add0( *(start->getFB()), Scale0( renderF, .5 ) );
-	Hitbox renderBox( &renderPos, &renderF, tilt, TRAIL_WIDTH, renderF.getMagnitude(), TRAIL_HEIGHT );
-
-	Vector curColor = start->getColor();
-	glColor4f( curColor.getX(), curColor.getY(), curColor.getZ(), .5 );
-
-	glDepthMask(0);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
-	glBegin(GL_QUAD_STRIP);
-		glTexCoord2i(1,0); start->getHitbox()->getPoint(BFL)->gl();
-		glTexCoord2i(0,0); renderBox.getPoint(BFL)->gl();
-		glTexCoord2i(1,1); start->getHitbox()->getPoint(TFL)->gl();
-		glTexCoord2i(0,1); renderBox.getPoint(TFL)->gl();
-		glTexCoord2i(1,1); start->getHitbox()->getPoint(TFR)->gl();
-		glTexCoord2i(0,1); renderBox.getPoint(TFR)->gl();
-		glTexCoord2i(1,0); start->getHitbox()->getPoint(BFR)->gl();
-		glTexCoord2i(0,0); renderBox.getPoint(BFR)->gl();
-		glTexCoord2i(1,0); start->getHitbox()->getPoint(BFL)->gl();
-		glTexCoord2i(0,0); renderBox.getPoint(BFL)->gl();
-	glEnd();
-	glDepthMask(1);
-	glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_2D);
 }

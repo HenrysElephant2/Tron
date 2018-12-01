@@ -1,19 +1,19 @@
 #ifndef T_RENDERER_H
 #define T_RENDERER_H
 
-#include <SDL2/sdl.h>
-#include <SDL2/sdl_opengl.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <iostream>
 
 #include "Vector.h"
 
-class TransparentRenderer;
+class TransparentRenderer; 
 
 class Transparent {
 public:
 	virtual ~Transparent() = 0;
 	virtual void stage( TransparentRenderer *tr, Vector *cameraPos ) = 0;
-	virtual void display() = 0;
+	virtual void display( Vector *cameraPos ) = 0;
 };
 
 class TLL {
@@ -36,7 +36,7 @@ public:
 	~TransparentRenderer();
 
 	void add( Transparent *toAdd, double dist );
-	void display();
+	void display( Vector *cameraPos );
 
 	void Merge( Transparent *obs[], double dists[], int low, int high, int mid );
 	void MergeSort( Transparent *obs[], double dists[], int low, int high );

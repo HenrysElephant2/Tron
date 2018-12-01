@@ -36,7 +36,7 @@ void TransparentRenderer::add( Transparent *toAdd, double dist ) {
 	num++;
 }
 
-void TransparentRenderer::display() {
+void TransparentRenderer::display( Vector *cameraPos ) {
 	Transparent *obs[num];
 	double dists[num];
 
@@ -49,14 +49,12 @@ void TransparentRenderer::display() {
 
 	MergeSort(obs, dists, 0, num-1);
 
-
 	glDepthMask(0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 
-	for( int i=0; i<num; i++ ) {
-		obs[i]->display();
-	}
+	for( int i=0; i<num; i++ )
+		obs[i]->display( cameraPos );
 
 	glDisable(GL_BLEND);
 	glDepthMask(1);
@@ -71,7 +69,7 @@ void TransparentRenderer::Merge( Transparent *obs[], double dists[], int low, in
 	int k = 0;
  
 	while( i <= mid && j <= high ) {
-		if( dists[i] < dists[j] ) {
+		if( dists[i] > dists[j] ) {
 			tempD[k] = dists[i];
 			tempObs[k] = obs[i];
 			i++;
