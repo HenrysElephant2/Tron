@@ -26,6 +26,7 @@ void main()
               + gl_FrontLightProduct[0].ambient
               + Id*gl_FrontLightProduct[0].diffuse
               + Is*gl_FrontLightProduct[0].specular;
+   color = gl_Color;
 
    //  Apply texture
    //gl_FragColor = 
