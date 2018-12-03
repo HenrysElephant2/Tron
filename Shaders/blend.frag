@@ -13,8 +13,8 @@ void main()
     const float gamma = 2.2;
     vec3 hdrColor = texture2D(scene, gl_TexCoord[0].xy).rgb;      
     vec3 bloomColor = texture2D(bloomBlur, gl_TexCoord[0].xy).rgb;
-    //if(bloom)
-        hdrColor += bloomColor * 2.0; // additive blending
+    if(bloom)
+        hdrColor += bloomColor * 1.0; // additive blending
     // tone mapping
     //vec3 result = vec3(1.0) - exp(-hdrColor * exposure);
     // also gamma correct while we're at it       

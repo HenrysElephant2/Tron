@@ -4,7 +4,8 @@ varying vec3 View;
 varying vec3 Light;
 varying vec3 Normal;
 uniform sampler2D tex;
-
+//uniform float threshold;
+const float threshold = .8;
 void main()
 {
    //  N is the object normal
@@ -27,11 +28,13 @@ void main()
               + Id*gl_FrontLightProduct[0].diffuse
               + Is*gl_FrontLightProduct[0].specular;
    color = gl_Color;
+   
 
    //  Apply texture
    //gl_FragColor = 
    vec4 outputColor = color * texture2D(tex,gl_TexCoord[0].xy);
-   if(outputColor.r > .5 || outputColor.g > .5 || outputColor.b > .5)
+   outputColor = texture2D(tex,gl_TexCoord[0].xy);
+   if(outputColor.r > threshold || outputColor.g > threshold || outputColor.b > threshold)
        gl_FragColor = outputColor;
    else gl_FragColor = vec4(0.,0.,0.,0.);
 }

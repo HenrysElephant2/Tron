@@ -72,6 +72,7 @@ private:
 	// blend program variables - exposure currently turned off in shader
 	float exposure = .1f;
 	bool bloomOn = true;
+	//float bloomThreshold = .8;
 
 	static const int SCREEN_WIDTH = 1400;
 	static const int SCREEN_HEIGHT = 900;

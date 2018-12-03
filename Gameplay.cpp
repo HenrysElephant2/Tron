@@ -229,6 +229,8 @@ void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
 
 		case SDLK_1: bloomOn = true; break;
 		case SDLK_2: bloomOn = false; break;
+		//case SDLK_9: bloomThreshold -= .05; break;
+		//case SDLK_0: bloomThreshold += .05; break;
 	}
 }
 
@@ -324,22 +326,22 @@ void Gameplay::display() {
 
 
 		// render to blurTexture - render only the bright spots of the scene
-		postProcessingStep2();
+		//postProcessingStep2();
 		// Top window
-		glViewport(0, wHeight/2, wWidth, wHeight/2);
-		glLoadIdentity();
-		gluLookAt(topView.getX(), topView.getY(), topView.getZ(),
-			      topTarget.getX(), topTarget.getY(), topTarget.getZ(),
-			      0,1,0);
-		displayAll( &topView, true);
+		// glViewport(0, wHeight/2, wWidth, wHeight/2);
+		// glLoadIdentity();
+		// gluLookAt(topView.getX(), topView.getY(), topView.getZ(),
+		// 	      topTarget.getX(), topTarget.getY(), topTarget.getZ(),
+		// 	      0,1,0);
+		// displayAll( &topView, true);
 
-		// Bottom window
-		glViewport(0, 0, wWidth, wHeight/2);
-		glLoadIdentity();
-		gluLookAt(bottomView.getX(), bottomView.getY(), bottomView.getZ(),
-			      bottomTarget.getX(), bottomTarget.getY(), bottomTarget.getZ(),
-				  0,1,0);
-		displayAll( &bottomView, true);
+		// // Bottom window
+		// glViewport(0, 0, wWidth, wHeight/2);
+		// glLoadIdentity();
+		// gluLookAt(bottomView.getX(), bottomView.getY(), bottomView.getZ(),
+		// 	      bottomTarget.getX(), bottomTarget.getY(), bottomTarget.getZ(),
+		// 		  0,1,0);
+		// displayAll( &bottomView, true);
 
 		postProcessing();
 
@@ -453,6 +455,18 @@ void Gameplay::postProcessingStep2()
 void Gameplay::postProcessing()
 {
 	glViewport(0, 0, wWidth, wHeight);
+	//glUniform1f(glGetUniformLocation(brightProgram, "threshold"),bloomThreshold);
+	//printf("\rBloom Threshold: %f", bloomThreshold);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
+	glUseProgram(brightProgram);
+	render2DScreen();
+
+
+
 	glDisable( GL_DEPTH_TEST );
 	bool horizontal = true, first_iteration = true;
 	int amount = NUMBER_GAUSSIAN_PASSES;
