@@ -28,7 +28,7 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 	left = false;
 	right = false;
 
-	velocity = 100;
+	velocity = MOVE_RATE;
 }
 
 // destructor for the player

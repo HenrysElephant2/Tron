@@ -26,6 +26,9 @@
 #define STATE_P2_WIN 3
 #define STATE_TIE 4
 
+#define MAP_WIDTH 8
+#define MAP_LENGTH 8
+
 #define NUMBER_GAUSSIAN_PASSES 8
 
 class Gameplay: public GameState {

@@ -12,11 +12,11 @@ Gameplay::Gameplay() {
 	p2color = Vector(.5,.8,1);
 
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike, p2color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
 
 	unsigned int floorTex = LoadTexBMP("tile.bmp");
 	unsigned int wallTex = LoadTexBMP("wall.bmp");
-	map = new Map( 5, 1, 5, floorTex, wallTex );
+	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
 
 	state = STATE_WAITING;
 
@@ -273,11 +273,11 @@ void Gameplay::update() {
 			player1->setAlive(false);
 			player2->setAlive(false);
 		}
-		if( player1->getTrail()->testTrailHit( player2->getHitbox() ) || map->testWallHits( player2->getHitbox() ) ) {
+		if( player1->getTrail()->testTrailHit( player2->getHitbox() ) || player2->getTrail()->testTrailHit( player2->getHitbox() ) || map->testWallHits( player2->getHitbox() ) ) {
 			state = STATE_P1_WIN;
 			player2->setAlive(false);
 		}
-		if( player2->getTrail()->testTrailHit( player1->getHitbox() ) || map->testWallHits( player1->getHitbox() ) ) {
+		if( player2->getTrail()->testTrailHit( player1->getHitbox() ) || player1->getTrail()->testTrailHit( player1->getHitbox() ) || map->testWallHits( player1->getHitbox() ) ) {
 			if( state == STATE_P1_WIN )
 				state = STATE_TIE;
 			else
@@ -291,7 +291,7 @@ void Gameplay::reset() {
 	delete player1;
 	delete player2;
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( 4*TILE_SIZE, 0, 4*TILE_SIZE, 0, 0, -1, bike, p2color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
 
 	state = STATE_WAITING;
 }

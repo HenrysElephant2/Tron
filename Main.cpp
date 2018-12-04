@@ -40,26 +40,10 @@ bool init() {
             success = false;
         }
         else {
-            // SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
+            SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
 
-            //Create context
+            // Create context
             gContext = SDL_GL_CreateContext( gWindow );
-
-            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-             
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-            SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-             
-            SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_ACCUM_ALPHA_SIZE, 8);
-             
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
 
             if( gContext == NULL ) {
                 printf( "OpenGL context could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -134,14 +118,11 @@ bool testQuit( SDL_Keycode key ) {
 }
 
 int main( int argc, char* args[] ) {
-    //Start up SDL and create window
+    // Start up SDL and create window
     if( !init() ) {
         printf( "Failed to initialize!\n" );
     }
     else {
-        glEnable(GL_MULTISAMPLE);
-        glHint(GL_MULTISAMPLE_FILTER_HINT_NV, GL_NICEST);
-
         // Initialize the state to hitbox test
         GameState *currentState = new Gameplay();
         currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);

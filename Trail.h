@@ -2,7 +2,7 @@
 #define TRAIL_H
 
 
-#define MAX_TRAIL_SEGMENTS 125 // 20 meters
+#define MAX_TRAIL_SEGMENTS 375 // 20 meters
 #define MAX_SEGMENT_LENGTH 2 // decimeter
 
 #include "Vector.h"

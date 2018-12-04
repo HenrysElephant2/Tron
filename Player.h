@@ -16,11 +16,11 @@
 #define PLAYER_SCALE 2
 
 
-#define MOVE_RATE 100 // divides the movement by move_rate value, essentially move_rate 
+#define MOVE_RATE 250 // divides the movement by move_rate value, essentially move_rate 
 						// is how many ticks for the model to move forward 1 unit
-#define TILT_RATE 2 // how quickly the model tilts while a turn key is pressed. radians per second
-#define MAX_TILT .52 // max radians that the model can tilt while turning
-#define TURN_RATE 3 // rate of which the bike turns. radians per second
+#define TILT_RATE 3 // how quickly the model tilts while a turn key is pressed. radians per second
+#define MAX_TILT .7 // max radians that the model can tilt while turning
+#define TURN_RATE 4 // rate of which the bike turns. radians per second
 
 
 #define VIEW_DISTANCE 30
