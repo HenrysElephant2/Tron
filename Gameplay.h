@@ -43,43 +43,6 @@ private:
 	int state;
 	Model * bike;
 
-	// shader programs
-	GLuint bikeProgram;
-	GLuint blurProgram;
-	GLuint blendProgram;
-	GLuint brightProgram;
-	GLuint bikeBrightProgram;
-
-	// frame buffers and textures for scene
-	GLuint frameBuffer; // frame buffer that scene is rendered to
-	GLuint renderNormalTexture; // texture for frameBuffer to render to
-
-	// frame buffer and texture for bright parts of scene
-	GLuint blurBuffer; // frame buffer that bright spots in scene are rendered to
-	GLuint blurTexture; // texture for blurBuffer to render to
-
-	// frame buffer and textures for guassian blur
-	GLuint pingpongFrameBuffer[2];
-	GLuint pingpongTextures[2];
-
-	// color attachments
-	GLenum colorAttachments[1] = {GL_COLOR_ATTACHMENT0};
-
-	// locations of variables in shader programs
-	GLuint horizontalLocation;
-	GLuint bloomBoolLoc;
-	GLuint exposureLoc;
-	GLuint widthLoc;
-	GLuint heightLoc;
-
-	// blend program variables - exposure currently turned off in shader
-	float exposure = .1f;
-	bool bloomOn = true;
-	//float bloomThreshold = .8;
-
-	static const int SCREEN_WIDTH = 1400;
-	static const int SCREEN_HEIGHT = 900;
-
 
 public:
 	Gameplay();
