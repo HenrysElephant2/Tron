@@ -1,8 +1,231 @@
-class Menu: public Gamemode {
-	public:
-	//need to add the keyboard inputs for SDL required by Gamemode class
+#include "Menu.h"
 
-	void display() {
-		
+Menu::Menu() {
+	state = MAIN_MENU;
+	mouseState = NONE_DOWN;
+
+	ph = 20;
+	th = 45;
+
+	p1color = 6;
+	p2color = 2;
+
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, colors[p1color] );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, colors[p2color] );
+
+	player1->setLoc( Vector( (MAP_LENGTH-1)/2.0*TILE_SIZE+25, 0, (MAP_LENGTH-1)/2.0*TILE_SIZE ) );
+	player1->setDir( Vector(-1,0,-1) );
+	player2->setLoc( Vector( (MAP_LENGTH-1)/2.0*TILE_SIZE-25, 0, (MAP_LENGTH-1)/2.0*TILE_SIZE ) );
+	player2->setDir( Vector(1,0,-1) );
+
+	unsigned int floorTex = LoadTexBMP("tile.bmp");
+	unsigned int wallTex = LoadTexBMP("wall.bmp");
+	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
+
+
+	unsigned int otherTextures = LoadTransBMP("others.bmp");
+	tronLogo = Button(.48,.7,.7,.175,otherTextures,0,1,.75,1,menuButtonColor);
+
+	unsigned int buttonTexture = LoadTransBMP("buttons.bmp");
+	unsigned int buttonTexture2 = LoadTransBMP("buttons2.bmp");
+	playButton = Button(.5,.5,.5,.125,buttonTexture,0,1,.75,1,menuButtonColor);
+	colorsButton = Button(.5,.35,.5,.125,buttonTexture,0,1,.5,.75,menuButtonColor);
+
+	backButton = Button(.5,.9,.4,.1,buttonTexture,0,1,.25,.5,menuButtonColor);
+
+	for( int i=0; i<NCOLORS; i++ ) {
+		p1cButtons[i] = Button(.4,.8-(i*.08),.18,.06,buttonTexture2,0,1,0,.25,colors[i]);
+		p2cButtons[i] = Button(.6,.8-(i*.08),.18,.06,buttonTexture2,0,1,0,.25,colors[i]);
 	}
+	p1cButtons[p1color].setText(.25); p1cButtons[p1color].setTexb(.5);
+	p2cButtons[p2color].setText(.25); p2cButtons[p2color].setTexb(.5);
+}
+
+Menu::~Menu() {
+	delete player1;
+	delete player2;
+	delete map;
+}
+
+void Menu::keyDown(SDL_Keycode key, int x, int y) {
+
+}
+
+void Menu::keyUp(SDL_Keycode key, int x, int y) {
+
+}
+
+void Menu::mouseDown(int x, int y) {
+	if( state == MAIN_MENU ) {
+		if( playButton.testClicked(x,y,wWidth,wHeight) )
+			mouseState = PLAY_DOWN;
+		else if( colorsButton.testClicked(x,y,wWidth,wHeight) ) 
+			mouseState = COLORS_DOWN;
+	}
+	else if( state == COLOR_SELECT ) {
+		if( backButton.testClicked(x,y,wWidth,wHeight) )
+			mouseState = BACK_DOWN;
+		else {
+			for( int i=0; i<NCOLORS; i++ ) {
+				if( p1cButtons[i].testClicked(x,y,wWidth,wHeight) )
+					mouseState = BUTTON(1,i);
+				if( p2cButtons[i].testClicked(x,y,wWidth,wHeight) )
+					mouseState = BUTTON(2,i);
+			}
+		}
+	}
+}
+
+void Menu::mouseUp(int x, int y) {
+	if( state == MAIN_MENU ) {
+		if( mouseState == PLAY_DOWN && playButton.testClicked(x,y,wWidth,wHeight) ) {
+			GameState *newState = new Gameplay(colors[p1color], colors[p2color]);
+			setNextState( newState );
+		}
+		else if( mouseState == COLORS_DOWN && colorsButton.testClicked(x,y,wWidth,wHeight) ) {
+			state = COLOR_SELECT;
+		}
+	}
+	else if( state == COLOR_SELECT ) {
+		if( mouseState == BACK_DOWN && backButton.testClicked(x,y,wWidth,wHeight) )
+			state = MAIN_MENU;
+		else {
+			for( int i=0; i<NCOLORS; i++ ) {
+				if( mouseState == BUTTON(1,i) && p1cButtons[i].testClicked(x,y,wWidth,wHeight) )
+					p1color = i;
+				if( mouseState == BUTTON(2,i) && p2cButtons[i].testClicked(x,y,wWidth,wHeight) )
+					p2color = i;
+			}
+			player1->setColor(colors[p1color]);
+			player2->setColor(colors[p2color]);
+		}
+		
+		for( int i=0; i<NCOLORS; i++ ) {
+			p1cButtons[i].setTexb(i==p1color?.5:.25); p1cButtons[i].setText(i==p1color?.25:0);
+			p2cButtons[i].setTexb(i==p2color?.5:.25); p2cButtons[i].setText(i==p2color?.25:0);
+		}
+	}
+	mouseState = NONE_DOWN;
+}
+
+void Menu::special(int key, int x, int y) {}
+
+void Menu::display() {
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glLoadIdentity();
+
+	Vector viewLoc;
+	Vector targetLoc;
+	// if( state == MAIN_MENU ) {
+	// 	double Ex = -500*Sin(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	// 	double Ey = +500*Sin(ph);
+	// 	double Ez = +500*Cos(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
+
+	// 	double Tx = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	// 	double Ty = 0;
+	// 	double Tz = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+
+	// 	viewLoc = Vector(Ex, Ey, Ez);
+	// 	targetLoc = Vector(Tx, Ty, Tz);
+	// 	gluLookAt(Ex,Ey,Ez , Tx,Ty, Tz, 0,1,0);
+	// }
+	// else if( state == COLOR_SELECT ) {
+		double Ex = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+		double Ey = 3;
+		double Ez = -60 + (MAP_LENGTH-1)/2.0*TILE_SIZE;
+
+		double Tx = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+		double Ty = 10;
+		double Tz = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+
+		viewLoc = Vector(Ex, Ey, Ez);
+		targetLoc = Vector(Tx, Ty, Tz);
+		gluLookAt(Ex,Ey,Ez , Tx,Ty, Tz, 0,1,0);
+	// }
+
+	postProcessingSetup();
+	displayAll( &viewLoc, &targetLoc, false );
+	postProcessingStep2();
+	displayAll( &viewLoc, &targetLoc, true );
+	postProcessing();
+}
+
+void Menu::update() {
+	double dt = getElapsedTime();
+	th = th + 20.0*dt;
+	if( th > 360 )
+		th -= 360;
+}
+
+
+void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
+
+	glUseProgram(renderBloom ? brightProgram:0);
+	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_MODULATE);
+
+	map->displayWalls();
+
+	// Reflections/Underside of map
+	Vector reflectCamera = Add0( *cameraPos, Vector(0,-2*cameraPos->getY(), 0) );
+	TransparentRenderer *tr = new TransparentRenderer();
+	glPushMatrix();
+	glTranslated(0,-.12,0);
+	glScaled(1,-1,1);
+	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	player1->display(tr, &reflectCamera);
+	player2->display(tr, &reflectCamera);
+	glUseProgram(renderBloom ? brightProgram:0);
+	tr->display( &reflectCamera );
+	glPopMatrix();
+	delete tr;
+
+	// Floor tiles
+	map->displayTiles();
+
+	// Top of map
+	tr = new TransparentRenderer();
+	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	player1->display(tr, cameraPos);
+	player2->display(tr, cameraPos);
+	glUseProgram(renderBloom ? brightProgram:0);
+	tr->display( cameraPos );
+	delete tr;
+
+
+
+	// switch to 2D displaying
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glOrtho(0, asp, 0, 1, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+   	glLoadIdentity();
+
+	glTranslated((asp-1)/2,0,0);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	if( state == MAIN_MENU ) {
+		tronLogo.display();
+	   	playButton.display();
+	   	colorsButton.display();
+	}
+	else if( state == COLOR_SELECT ) {
+		backButton.display();
+		for( int i=0; i<NCOLORS; i++ ) {
+			p1cButtons[i].display();
+			p2cButtons[i].display();
+		}
+	}
+
+	glDisable(GL_BLEND);
+	
+	//go back to 3d
+	glMatrixMode(GL_PROJECTION);
+   	glPopMatrix();   
+   	glMatrixMode(GL_MODELVIEW);
+   	glPopMatrix();
 }

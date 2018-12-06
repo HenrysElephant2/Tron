@@ -1,13 +1,6 @@
 #include "Gameplay.h"
 
 Gameplay::Gameplay() {
-	char model_name[] = "bike.obj";
-	char tex_name[] = "bike_texture.bmp";
-	char body_name[] = "body.obj";
-	char body_tex[] = "body_texture.bmp";
-	bike = new Model(model_name,tex_name);
-	bike->append(body_name,body_tex);
-
 	p1color = Vector(1,.3,0);
 	p2color = Vector(.5,.8,1);
 
@@ -30,7 +23,31 @@ Gameplay::Gameplay() {
 	phdown = false;
 
 	split = true; // Split screen
+}
 
+Gameplay::Gameplay( Vector p1c, Vector p2c ) {
+	p1color = p1c;
+	p2color = p2c;
+
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
+
+	unsigned int floorTex = LoadTexBMP("tile.bmp");
+	unsigned int wallTex = LoadTexBMP("wall.bmp");
+	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
+
+	state = STATE_WAITING;
+
+	ph = 30;	  //  Elevation of view angle
+	th = 45;	  //  Azimuth of view angle
+
+	// Booleans to control window movement
+	thup = false;
+	thdown = false;
+	phup = false;
+	phdown = false;
+
+	split = true; // Split screen
 }
 
 Gameplay::~Gameplay() {
@@ -98,13 +115,9 @@ void Gameplay::keyUp( SDL_Keycode key, int x, int y ) {
 	}
 }
 
-void Gameplay::special(int key, int x, int y) { /*NEEDED in GLUT, maybe different in other system */
-
-}
-
-void Gameplay::mouse(/*TODO*/) {
-	
-}
+void Gameplay::special(int key, int x, int y) {}
+void Gameplay::mouseDown(int x, int y) {}
+void Gameplay::mouseUp(int x, int y) {}
 
 void Gameplay::update() {
 	double tDiff = getElapsedTime();
@@ -118,19 +131,19 @@ void Gameplay::update() {
 
 		if( testCollision( player1->getHitbox(), player2->getHitbox() ) ) {
 			state = STATE_TIE;
-			player1->setAlive(false);
-			player2->setAlive(false);
+			player1->commitNotAlive();
+			player2->commitNotAlive();
 		}
 		if( player1->getTrail()->testTrailHit( player2->getHitbox() ) || player2->getTrail()->testTrailHit( player2->getHitbox() ) || map->testWallHits( player2->getHitbox() ) ) {
 			state = STATE_P1_WIN;
-			player2->setAlive(false);
+			player2->commitNotAlive();
 		}
 		if( player2->getTrail()->testTrailHit( player1->getHitbox() ) || player1->getTrail()->testTrailHit( player1->getHitbox() ) || map->testWallHits( player1->getHitbox() ) ) {
 			if( state == STATE_P1_WIN )
 				state = STATE_TIE;
 			else
 				state = STATE_P2_WIN;
-			player1->setAlive(false);
+			player1->commitNotAlive();
 		}
 	}
 }
@@ -242,130 +255,4 @@ void Gameplay::displayAll( Vector *cameraPos, bool renderBloom) {
 	glUseProgram(renderBloom ? brightProgram:0);
 	tr->display( cameraPos );
 	delete tr;
-}
-
-
-
-void Gameplay::render2DScreen()
-{
-	// switch to 2D displaying
-	int vPort[4];
-	glGetIntegerv(GL_VIEWPORT, vPort);
-
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glOrtho(0, vPort[2], 0, vPort[3], -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-   	glLoadIdentity();
-
-   //display texture
-	glBegin(GL_TRIANGLES);
-	glTexCoord2f(0,0);
-	glVertex2d(0,0);
-	glTexCoord2f(1,0);
-	glVertex2d(wWidth,0);
-	glTexCoord2f(1,1);
-	glVertex2d(wWidth,wHeight);
-
-	glTexCoord2f(1,1);
-	glVertex2d(wWidth,wHeight);
-	glTexCoord2f(0,1);
-	glVertex2d(0,wHeight);
-	glTexCoord2f(0,0);
-	glVertex2d(0,0);
-	glEnd();
-	
-	//go back to 3d
-	glMatrixMode(GL_PROJECTION);
-   	glPopMatrix();   
-   	glMatrixMode(GL_MODELVIEW);
-   	glPopMatrix();
-}
-
-
-void Gameplay::postProcessingSetup()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-}
-
-void Gameplay::postProcessingStep2()
-{
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-}
-
-void Gameplay::postProcessing()
-{
-	glViewport(0, 0, wWidth, wHeight);
-	//glUniform1f(glGetUniformLocation(brightProgram, "threshold"),bloomThreshold);
-	//printf("\rBloom Threshold: %f", bloomThreshold);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
-	glUseProgram(brightProgram);
-	render2DScreen();
-
-
-
-	glDisable( GL_DEPTH_TEST );
-	bool horizontal = true, first_iteration = true;
-	int amount = NUMBER_GAUSSIAN_PASSES;
-	glUseProgram(blurProgram);
-	glEnable(GL_TEXTURE_2D);
-	//printf("blurring\n");
-	for (unsigned int i = 0; i < amount; i++)
-	{
-
-	    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[horizontal]); 
-	    glViewport(0, 0, wWidth, wHeight);
-	    glActiveTexture(GL_TEXTURE0);
-	    glUniform1ui(horizontalLocation, horizontal);
-	    //glUniform1i(SCREEN_WIDTH, widthLoc);
-	    //glUniform1i(SCREEN_HEIGHT, heightLoc);
-	    glBindTexture(GL_TEXTURE_2D, first_iteration ? blurTexture : pingpongTextures[!horizontal]); 
-	    
-	    render2DScreen();
-	    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	    
-	    horizontal = !horizontal;
-	    if (first_iteration)
-	        first_iteration = false;
-	}
- 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_TEXTURE_2D);
-	glUseProgram(0);
-	//printf("displaying\n");
-
-
-
-
-	glUseProgram(blendProgram);
-	glUniform1ui(bloomBoolLoc, bloomOn);
-	//printf("Bloom: %s\n", bloomOn ? "True":"False");
-	glUniform1f(exposureLoc, exposure);
-
-	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_REPLACE);//:GL_MODULATE);
-	glEnable(GL_TEXTURE_2D);
-	glUniform1i(glGetUniformLocation(blendProgram, "scene"),0);
-	glUniform1i(glGetUniformLocation(blendProgram, "bloomBlur"),1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, pingpongTextures[0]);
-
-	render2DScreen();
-
-	glDisable(GL_TEXTURE_2D);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glEnable( GL_DEPTH_TEST );
-	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_MODULATE);
-	glActiveTexture(GL_TEXTURE0);
 }

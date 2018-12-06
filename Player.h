@@ -61,6 +61,9 @@ public:
 	// move the player in the current direction it is pointed based on its velocity
 	void movePlayer( double dt );
 
+	// kill the player
+	void commitNotAlive();
+
 	// do all the opengl to render the model for the player model. will call the trail render through this
 	void display( TransparentRenderer *tr, Vector *cameraPos );
 
@@ -75,9 +78,12 @@ public:
 	void keyPressed(SDL_Event event);
 	void keyReleased(SDL_Event event);
 
-	void setAlive( bool newVal );
 	void setLeft( bool newVal );
 	void setRight( bool newVal );
+
+	void setLoc( Vector newLoc );
+	void setDir( Vector newDir );
+	void setColor( Vector newColor );
 
 	// Get camera positions
 	Vector getViewLocation();

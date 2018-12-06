@@ -36,6 +36,7 @@ void normalizeDelimiter(char * line);
 void ErrCheck(const char* where);
 void Fatal(const char* format , ...);
 unsigned int LoadTexBMP(const char* file);
+unsigned int LoadTransBMP(const char* file);
 
 
 #ifdef __cplusplus

@@ -36,6 +36,8 @@ Map.o: Map.cpp Map.h
 GameState.o: GameState.cpp GameState.h
 HitboxTest.o: HitboxTest.cpp HitboxTest.h
 Gameplay.o: Gameplay.cpp Gameplay.h
+Button.o: Button.cpp Button.h
+Menu.o: Menu.cpp Menu.h
 Model.o: Model.cpp Model.h
 LoadModel.o: LoadModel.c LoadModel.h
 loadtexbmp.o: loadtexbmp.c LoadModel.h
@@ -49,7 +51,7 @@ LoadShader.o: LoadShader.c LoadShader.h
 	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o
+Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Button.o Menu.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o
 
 	g++ -O3 -o $@ $^   $(LIBS)
 

@@ -88,7 +88,8 @@ void HitboxTest::keyUp( SDL_Keycode key, int x, int y ) {
 }
 
 void HitboxTest::special(int key, int x, int y) {} /*NEEDED in GLUT, maybe different in other system */
-void HitboxTest::mouse(/*TODO*/) {}
+void HitboxTest::mouseDown(int x, int y) {}
+void HitboxTest::mouseUp(int x, int y) {}
 
 void HitboxTest::update() {
     double dt = getElapsedTime() * 50;

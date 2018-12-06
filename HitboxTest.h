@@ -31,9 +31,11 @@ public:
 
 	void keyDown(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
 	void keyUp(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
+
+	void mouseDown(int x, int y);
+	void mouseUp(int x, int y);
 	
 	void special(int key, int x, int y); /*NEEDED in GLUT, maybe different in other system */
-	void mouse(/*TODO*/);
 
 	void display();
 	void update();

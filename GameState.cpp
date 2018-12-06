@@ -1,14 +1,22 @@
 #include "Gameplay.h"
 
 GameState::GameState() {
-	wWidth = 0;
-	wHeight = 0;
+	wWidth = SCREEN_WIDTH;
+	wHeight = SCREEN_HEIGHT;
 	previousTime = 0;
 	fov = 45;
 	asp = 1.4;
 	split = false;
 
-	
+	nextState = NULL;
+
+	char model_name[] = "bike.obj";
+	char tex_name[] = "bike_texture.bmp";
+	char body_name[] = "body.obj";
+	char body_tex[] = "body_texture.bmp";
+	bike = new Model(model_name,tex_name);
+	bike->append(body_name,body_tex);
+
 	// set up programs
 
 	bikeProgram = glCreateProgram();
@@ -209,3 +217,134 @@ void GameState::reshapeSplit(int width,int height) {
     //  Set projection
     Project(true);
 }
+
+
+
+
+
+void GameState::render2DScreen()
+{
+	// switch to 2D displaying
+	int vPort[4];
+	glGetIntegerv(GL_VIEWPORT, vPort);
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glOrtho(0, vPort[2], 0, vPort[3], -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+   	glLoadIdentity();
+
+   //display texture
+	glBegin(GL_TRIANGLES);
+	glTexCoord2f(0,0);
+	glVertex2d(0,0);
+	glTexCoord2f(1,0);
+	glVertex2d(wWidth,0);
+	glTexCoord2f(1,1);
+	glVertex2d(wWidth,wHeight);
+
+
+	glTexCoord2f(1,1);
+	glVertex2d(wWidth,wHeight);
+	glTexCoord2f(0,1);
+	glVertex2d(0,wHeight);
+	glTexCoord2f(0,0);
+	glVertex2d(0,0);
+	glEnd();
+
+	
+	//go back to 3d
+	glMatrixMode(GL_PROJECTION);
+   	glPopMatrix();   
+   	glMatrixMode(GL_MODELVIEW);
+   	glPopMatrix();
+}
+
+
+void GameState::postProcessingSetup()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+}
+
+void GameState::postProcessingStep2()
+{
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+}
+
+void GameState::postProcessing()
+{
+	glViewport(0, 0, wWidth, wHeight);
+	//glUniform1f(glGetUniformLocation(brightProgram, "threshold"),bloomThreshold);
+	//printf("\rBloom Threshold: %f", bloomThreshold);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
+	glUseProgram(brightProgram);
+	render2DScreen();
+
+
+	glDisable( GL_DEPTH_TEST );
+	bool horizontal = true, first_iteration = true;
+	int amount = NUMBER_GAUSSIAN_PASSES;
+	glUseProgram(blurProgram);
+	glEnable(GL_TEXTURE_2D);
+	//printf("blurring\n");
+	for (unsigned int i = 0; i < amount; i++)
+	{
+
+	    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[horizontal]); 
+	    glViewport(0, 0, wWidth, wHeight);
+	    glActiveTexture(GL_TEXTURE0);
+	    glUniform1ui(horizontalLocation, horizontal);
+	    //glUniform1i(SCREEN_WIDTH, widthLoc);
+	    //glUniform1i(SCREEN_HEIGHT, heightLoc);
+	    glBindTexture(GL_TEXTURE_2D, first_iteration ? blurTexture : pingpongTextures[!horizontal]); 
+	    
+	    render2DScreen();
+	    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	    
+	    horizontal = !horizontal;
+	    if (first_iteration)
+	        first_iteration = false;
+	}
+ 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_TEXTURE_2D);
+	glUseProgram(0);
+	//printf("displaying\n");
+
+
+	glUseProgram(blendProgram);
+	glUniform1ui(bloomBoolLoc, bloomOn);
+	//printf("Bloom: %s\n", bloomOn ? "True":"False");
+	glUniform1f(exposureLoc, exposure);
+
+	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_REPLACE);//:GL_MODULATE);
+	glEnable(GL_TEXTURE_2D);
+	glUniform1i(glGetUniformLocation(blendProgram, "scene"),0);
+	glUniform1i(glGetUniformLocation(blendProgram, "bloomBlur"),1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, pingpongTextures[0]);
+
+	render2DScreen();
+
+
+	glDisable(GL_TEXTURE_2D);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable( GL_DEPTH_TEST );
+	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_MODULATE);
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void GameState::setNextState( GameState *newState ) { nextState = newState; }
+GameState* GameState::getNextState() { return nextState; }

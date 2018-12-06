@@ -21,6 +21,7 @@
 #include "GameState.h"
 #include "HitboxTest.h"
 #include "Gameplay.h"
+#include "Menu.h"
 
 #ifndef MATH_FUNCTIONS
 #define MATH_FUNCTIONS

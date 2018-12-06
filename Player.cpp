@@ -91,6 +91,10 @@ void Player::movePlayer( double dt )
 	trail->update( getTrailBottom(), getTrailTop() );
 }
 
+void Player::commitNotAlive() {
+	alive = false;
+}
+
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
@@ -99,7 +103,7 @@ void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 	if(model != NULL)
 		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
 
-	if( trail != NULL ){
+	if( trail != NULL ) {
 		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
 		trail->stage( emmiter, tilt_vector, tr, cameraPos );
 	}
@@ -132,9 +136,12 @@ Hitbox * Player::getHitbox()
 	return hitbox;
 }
 
-void Player::setAlive( bool newVal ) { alive = newVal; }
 void Player::setLeft( bool newVal ) { left = newVal; }
 void Player::setRight( bool newVal ) { right = newVal; }
+
+void Player::setLoc( Vector newLoc ) { loc->set(&newLoc); }
+void Player::setDir( Vector newDir ) { direction->set(&newDir); }
+void Player::setColor( Vector newColor ) { color = newColor; }
 
 Vector Player::getViewLocation() {
 	return Add0( Add0( *loc, Scale0( *direction, -VIEW_DISTANCE ) ), Scale0( *up_vector, VIEW_HEIGHT ) );

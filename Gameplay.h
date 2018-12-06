@@ -29,7 +29,7 @@
 #define MAP_WIDTH 8
 #define MAP_LENGTH 8
 
-#define NUMBER_GAUSSIAN_PASSES 8
+#define NUMBER_GAUSSIAN_PASSES 16
 
 class Gameplay: public GameState {
 private:
@@ -41,29 +41,56 @@ private:
 	Vector p1color, p2color;
 	Map *map;
 	int state;
-	Model * bike;
 
 
 public:
 	Gameplay();
+	Gameplay( Vector p1c, Vector p2c );
 	~Gameplay();
 
 	// Inherited methods
 	void keyDown(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
 	void keyUp(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
 
+	void mouseDown(int x, int y);
+	void mouseUp(int x, int y);
+
 	void special(int key, int x, int y); /*NEEDED in GLUT, maybe different in other system */
-	void mouse(/*TODO*/);
 	void display();
 	void update();
 
 	void reset();
-	void displayAll( Vector *cameraPos, bool renderBloom);
-
-	void render2DScreen();
-	void postProcessingSetup();
-	void postProcessingStep2();
-	void postProcessing();
+	void displayAll( Vector *cameraPos, bool renderBloom );
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

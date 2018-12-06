@@ -124,7 +124,7 @@ int main( int argc, char* args[] ) {
     }
     else {
         // Initialize the state to hitbox test
-        GameState *currentState = new Gameplay();
+        GameState *currentState = new Menu();
         currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         SDL_Event e;
@@ -153,13 +153,29 @@ int main( int argc, char* args[] ) {
                     SCREEN_HEIGHT = e.window.data2;
                     currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
+                else if( e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT ) {
+                    int x = 0, y = 0;
+                    SDL_GetMouseState( &x, &y );
+                    currentState->mouseDown( x, y );
+                }
+                else if( e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT ) {
+                    int x = 0, y = 0;
+                    SDL_GetMouseState( &x, &y );
+                    currentState->mouseUp( x, y );
+                }
             }
-
             currentState->update();
             currentState->display();
 
+            GameState *nextState = currentState->getNextState();
+            if( nextState != NULL ) {
+                // delete currentState;
+                currentState = nextState;
+                currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
+            }
+
             if( glGetError() != GL_NO_ERROR )
-                std::cout << "Error occured" << std::endl;
+                std::cout << "Hurghhhh" << std::endl;
             
             //Update screen
             SDL_GL_SwapWindow( gWindow );

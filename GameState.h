@@ -11,15 +11,22 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+#include "LoadShader.h"
 #include "TransparentRenderer.h"
+#include "Model.h"
+
 
 class GameState {
 private:
 	Uint64 previousTime;
+	GameState *nextState;
+
 protected:
 	int wWidth, wHeight, fov;
 	double asp;
 	bool split;
+
+	Model * bike;
 
 	static const int SCREEN_WIDTH = 1400;
 	static const int SCREEN_HEIGHT = 900;
@@ -64,8 +71,10 @@ public:
 	virtual void keyDown(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT
 	virtual void keyUp(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT
 
+	virtual void mouseDown(int x, int y) = 0;
+	virtual void mouseUp(int x, int y) = 0;
+
 	virtual void special(int key, int x, int y) = 0; /*NEEDED in GLUT, maybe different in other system */
-	virtual void mouse(/*TODO*/) = 0;
 	virtual void display() = 0;
 	virtual void update() = 0;
 
@@ -74,6 +83,14 @@ public:
 	void Project( bool split );
 	void reshape( int height, int width );
 	void reshapeSplit( int height, int width );
+
+	void render2DScreen();
+	void postProcessingSetup();
+	void postProcessingStep2();
+	void postProcessing();
+
+	void setNextState( GameState *newState );
+	GameState* getNextState();
 };
 
 #endif
