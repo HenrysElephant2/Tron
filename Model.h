@@ -7,6 +7,7 @@
 #include <cstdio>
 #include "Vector.h"
 #include "LoadModel.h"
+#include <math.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
@@ -24,6 +25,8 @@ private:
 	unsigned int texture;
 	Model * child; // a way to set up models as a linked list. Use if there are multiple models that contribute to the same object
 
+	void setRainbowColor(float x, float time);
+
 public:
 
 	Model(char * filename);
@@ -38,6 +41,10 @@ public:
 
 	void display(Vector * v, Vector * direction, Vector * up, double s);
 	void displayBasic();
+
+	void displayRainbow(Vector * v, Vector * direction, Vector * up, double s);
+	void displayBasicRainbow();
+	
 };
 
 #endif

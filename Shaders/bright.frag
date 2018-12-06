@@ -5,7 +5,7 @@ varying vec3 Light;
 varying vec3 Normal;
 uniform sampler2D tex;
 //uniform float threshold;
-const float threshold = .8;
+const float threshold = .6;
 void main()
 {
    //  N is the object normal
