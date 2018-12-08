@@ -17,6 +17,7 @@ class Explosion {
 private:
 	bool activeCalcTexture; // which texture to use for calculations
 	bool init; // whether or not the particles have been initialized
+	bool rainbow;
 
 	GLuint calcProgram;
 	GLuint displayProgram;
@@ -42,6 +43,7 @@ public:
 	void render2DScreen();
 	void display();
 	void reset();
+	void setRainbow(bool r);
 
 
 };
