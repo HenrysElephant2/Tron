@@ -5,7 +5,7 @@
 Player::Player(){}
 
 // constructor for the player
-Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Vector c ){
+Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Explosion * explosion, Vector c){
 	loc = new Vector(loc_x, loc_y, loc_z);
 
 	// turn direction vector into unit vector
@@ -29,6 +29,7 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 	right = false;
 
 	velocity = MOVE_RATE;
+	exp = explosion;
 }
 
 // destructor for the player
@@ -100,12 +101,55 @@ void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
 	// hitbox->renderSelf(false);
 	glColor3d(color.getX(), color.getY(), color.getZ());
-	if(model != NULL)
+	if(model != NULL && alive)
 		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
 
 	if( trail != NULL ) {
 		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
 		trail->stage( emmiter, tilt_vector, tr, cameraPos );
+	}
+
+	if(!alive && exp != NULL)
+	{
+		double dx = direction->getX();
+		double dy = direction->getY();
+		double dz = direction->getZ();
+
+		double ux = 0;
+		double uy = 1;
+		double uz = 0;
+
+		//  Unit vector in direction of flght
+		double D0 = sqrt(dx*dx+dy*dy+dz*dz);
+		double X0 = dx/D0;
+		double Y0 = dy/D0;
+		double Z0 = dz/D0;
+		//  Unit vector in "up" direction
+		double D1 = sqrt(ux*ux+uy*uy+uz*uz);
+		double X1 = ux/D1;
+		double Y1 = uy/D1;
+		double Z1 = uz/D1;
+		//  Cross product gives the third vector
+		double X2 = Y0*Z1-Y1*Z0;
+		double Y2 = Z0*X1-Z1*X0;
+		double Z2 = X0*Y1-X1*Y0;
+		//  Rotation matrix
+		double mat[16];
+		mat[0] = X0;   mat[4] = X1;   mat[ 8] = X2;   mat[12] = 0;
+		mat[1] = Y0;   mat[5] = Y1;   mat[ 9] = Y2;   mat[13] = 0;
+		mat[2] = Z0;   mat[6] = Z1;   mat[10] = Z2;   mat[14] = 0;
+		mat[3] =  0;   mat[7] =  0;   mat[11] =  0;   mat[15] = 1;
+
+		//  Save current transforms
+		glPushMatrix();
+		//  Offset, scale and rotate
+		glTranslated(loc->getX(),loc->getY(),loc->getZ());
+		glMultMatrixd(mat);
+		//glScaled(s,s,s);
+
+		exp->display();
+
+		glPopMatrix();
 	}
 }
 
@@ -149,5 +193,9 @@ Vector Player::getViewLocation() {
 
 Vector Player::getViewTarget() {
 	return Add0( *loc, Scale0( *up_vector, TARGET_HEIGHT ) );
+}
+
+bool Player::isAlive(){
+	return alive;
 }
 

@@ -10,8 +10,8 @@ Menu::Menu() {
 	p1color = 6;
 	p2color = 2;
 
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, colors[p1color] );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, colors[p2color] );
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, NULL, colors[p1color] );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, NULL, colors[p2color] );
 
 	player1->setLoc( Vector( (MAP_LENGTH-1)/2.0*TILE_SIZE+25, 0, (MAP_LENGTH-1)/2.0*TILE_SIZE ) );
 	player1->setDir( Vector(-1,0,-1) );

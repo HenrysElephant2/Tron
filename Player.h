@@ -8,6 +8,7 @@
 #include <math.h>
 #include <iostream>
 #include "Model.h"
+#include "Explosion.h"
 #include "TransparentRenderer.h"
 
 #define PLAYER_LENGTH 30 // 3 meters
@@ -41,6 +42,7 @@ private:
 	Hitbox * hitbox;
 	Model * model;
 	Vector color;
+	Explosion * exp;
 
 	bool left, right, alive;
 
@@ -49,7 +51,7 @@ public:
 	Player();
 
 	// constructor for the player
-	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Vector c = Vector(1,1,1));
+	Player(double loc_x, double loc_y, double loc_z, double dir_x, double dir_y, double dir_z, Model * m, Explosion * explosion, Vector c = Vector(1,1,1));
 	
 
 	// destructor for the player
@@ -88,5 +90,8 @@ public:
 	// Get camera positions
 	Vector getViewLocation();
 	Vector getViewTarget();
+
+	// get alive boolean of player
+	bool isAlive();
 };
 #endif

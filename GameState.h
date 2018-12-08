@@ -14,6 +14,7 @@
 #include "LoadShader.h"
 #include "TransparentRenderer.h"
 #include "Model.h"
+#include "Explosion.h"
 
 
 class GameState {
@@ -64,6 +65,8 @@ protected:
 	float exposure = .1f;
 	bool bloomOn = true;
 	//float bloomThreshold = .8;
+
+	Explosion * exp;
 
 public:
 	GameState();
