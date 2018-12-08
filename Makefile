@@ -42,6 +42,7 @@ Model.o: Model.cpp Model.h
 LoadModel.o: LoadModel.c LoadModel.h
 loadtexbmp.o: loadtexbmp.c LoadModel.h
 LoadShader.o: LoadShader.c LoadShader.h
+Explosion.o: Explosion.cpp Explosion.h
 
 
 # Compile rules
@@ -51,7 +52,7 @@ LoadShader.o: LoadShader.c LoadShader.h
 	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Button.o Menu.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o
+Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Button.o Menu.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o Explosion.o
 
 	g++ -O3 -o $@ $^   $(LIBS)
 
