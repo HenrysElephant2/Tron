@@ -15,14 +15,16 @@
 #include "TransparentRenderer.h"
 #include "Model.h"
 
+#define NONE_DOWN 0
 
 class GameState {
 private:
 	Uint64 previousTime;
 	GameState *nextState;
+	bool quit;
 
 protected:
-	int wWidth, wHeight, fov;
+	int wWidth, wHeight, fov, mouseState;
 	double asp;
 	bool split;
 
@@ -30,6 +32,11 @@ protected:
 
 	static const int SCREEN_WIDTH = 1400;
 	static const int SCREEN_HEIGHT = 900;
+
+	Vector menuButtonColor = Vector(.5,.8,1);
+
+
+	unsigned int labelTextures, labelTextures2, buttonTexture, buttonTexture2;
 
 	// shader programs
 	GLuint bikeProgram;
@@ -89,8 +96,14 @@ public:
 	void postProcessingStep2();
 	void postProcessing();
 
+	void switchToOverlay();
+	void switchTo3D();
+
 	void setNextState( GameState *newState );
 	GameState* getNextState();
+
+	void setQuit( bool newVal );
+	bool getQuit();
 };
 
 #endif

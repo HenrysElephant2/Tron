@@ -9,6 +9,8 @@
 #include "LoadModel.h"
 #include <math.h>
 
+#include <iostream>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
@@ -25,6 +27,15 @@ private:
 	unsigned int texture;
 	Model * child; // a way to set up models as a linked list. Use if there are multiple models that contribute to the same object
 
+	double rainbowColors[7][3] = {
+		{1,0,0},
+		{1,.5,0},
+		{1,1,0},
+		{0,1,0},
+		{0,1,1},
+		{0,0,1},
+		{1,0,1}
+	};
 	void setRainbowColor(float x, float time);
 
 public:

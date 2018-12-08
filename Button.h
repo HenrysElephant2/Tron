@@ -7,6 +7,8 @@
 #include "Vector.h"
 #include "Hitbox.h"
 
+#define RCOLORS 6
+
 class Button {
 private:
 	double cx, cy, width, height;
@@ -15,6 +17,15 @@ private:
 	unsigned int texture;
 	Vector color;
 	double alpha;
+
+	Vector rainbowColors[6] = {
+		Vector(1,0,0),
+		Vector(1,.5,0),
+		Vector(1,1,0),
+		Vector(0,1,0),
+		Vector(0,0,1),
+		Vector(.5,0,1)
+	};
 
 public:
 	Button();

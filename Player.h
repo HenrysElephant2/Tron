@@ -41,8 +41,10 @@ private:
 	Hitbox * hitbox;
 	Model * model;
 	Vector color;
-
 	bool left, right, alive;
+
+	double rainbowColors[7][3] = { {1,0,0}, {1,.5,0}, {1,1,0}, {0,1,0}, {0,1,1}, {0,0,1}, {1,0,1} };
+	Vector getRainbowColor();
 
 public:
 	// default constructor

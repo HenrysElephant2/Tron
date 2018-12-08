@@ -92,9 +92,9 @@ void Hitbox::yaw( double degrees ) {
 
 void Hitbox::renderSelf( bool colliding ) {
 	glPushMatrix();
-	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// glEnable(GL_LINE_SMOOTH);
+	// glEnable(GL_BLEND);
+	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// glLineWidth(3);
 
 	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if colliding, green if not
@@ -121,8 +121,8 @@ void Hitbox::renderSelf( bool colliding ) {
 	glEnd();
 
 
-	glDisable(GL_LINE_SMOOTH);
-	glDisable(GL_BLEND);
+	// glDisable(GL_LINE_SMOOTH);
+	// glDisable(GL_BLEND);
 	glPopMatrix();
 }
 

@@ -2,7 +2,6 @@
 
 Menu::Menu() {
 	state = MAIN_MENU;
-	mouseState = NONE_DOWN;
 
 	ph = 20;
 	th = 45;
@@ -18,18 +17,15 @@ Menu::Menu() {
 	player2->setLoc( Vector( (MAP_LENGTH-1)/2.0*TILE_SIZE-25, 0, (MAP_LENGTH-1)/2.0*TILE_SIZE ) );
 	player2->setDir( Vector(1,0,-1) );
 
-	unsigned int floorTex = LoadTexBMP("tile.bmp");
-	unsigned int wallTex = LoadTexBMP("wall.bmp");
+	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
+	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
 	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
 
 
-	unsigned int otherTextures = LoadTransBMP("others.bmp");
-	tronLogo = Button(.48,.7,.7,.175,otherTextures,0,1,.75,1,menuButtonColor);
-
-	unsigned int buttonTexture = LoadTransBMP("buttons.bmp");
-	unsigned int buttonTexture2 = LoadTransBMP("buttons2.bmp");
-	playButton = Button(.5,.5,.5,.125,buttonTexture,0,1,.75,1,menuButtonColor);
-	colorsButton = Button(.5,.35,.5,.125,buttonTexture,0,1,.5,.75,menuButtonColor);
+	tronLogo = Button(.48,.72,.7,.175,labelTextures,0,1,.75,1,menuButtonColor);
+	playButton = Button(.5,.52,.5,.125,buttonTexture,0,1,.75,1,menuButtonColor);
+	colorsButton = Button(.5,.37,.5,.125,buttonTexture,0,1,.5,.75,menuButtonColor);
+	quitButton = Button(.5,.22,.5,.125,buttonTexture,0,1,0,.25,menuButtonColor);
 
 	backButton = Button(.5,.9,.4,.1,buttonTexture,0,1,.25,.5,menuButtonColor);
 
@@ -61,6 +57,8 @@ void Menu::mouseDown(int x, int y) {
 			mouseState = PLAY_DOWN;
 		else if( colorsButton.testClicked(x,y,wWidth,wHeight) ) 
 			mouseState = COLORS_DOWN;
+		else if( quitButton.testClicked(x,y,wWidth,wHeight) ) 
+			mouseState = QUIT_DOWN;
 	}
 	else if( state == COLOR_SELECT ) {
 		if( backButton.testClicked(x,y,wWidth,wHeight) )
@@ -84,6 +82,9 @@ void Menu::mouseUp(int x, int y) {
 		}
 		else if( mouseState == COLORS_DOWN && colorsButton.testClicked(x,y,wWidth,wHeight) ) {
 			state = COLOR_SELECT;
+		}
+		else if( mouseState == QUIT_DOWN && quitButton.testClicked(x,y,wWidth,wHeight) ) {
+			setQuit(true);
 		}
 	}
 	else if( state == COLOR_SELECT ) {
@@ -194,24 +195,13 @@ void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 
 
 
-	// switch to 2D displaying
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glOrtho(0, asp, 0, 1, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-   	glLoadIdentity();
-
-	glTranslated((asp-1)/2,0,0);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	switchToOverlay();
 
 	if( state == MAIN_MENU ) {
 		tronLogo.display();
 	   	playButton.display();
 	   	colorsButton.display();
+	   	quitButton.display();
 	}
 	else if( state == COLOR_SELECT ) {
 		backButton.display();
@@ -221,11 +211,5 @@ void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 		}
 	}
 
-	glDisable(GL_BLEND);
-	
-	//go back to 3d
-	glMatrixMode(GL_PROJECTION);
-   	glPopMatrix();   
-   	glMatrixMode(GL_MODELVIEW);
-   	glPopMatrix();
+	switchTo3D();
 }

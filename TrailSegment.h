@@ -41,6 +41,7 @@ public:
 	Vector getColor();
 
 	void setNext( TrailSegment *newNext );
+	void setColor( Vector newColor );
 
 	Vector getTopVector();
 	Vector getBottomVector();

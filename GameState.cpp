@@ -7,13 +7,20 @@ GameState::GameState() {
 	fov = 45;
 	asp = 1.4;
 	split = false;
+	mouseState = NONE_DOWN;
+
+	buttonTexture = LoadTransBMP("Textures/buttons.bmp");
+	buttonTexture2 = LoadTransBMP("Textures/buttons2.bmp");
+	labelTextures = LoadTransBMP("Textures/labels1.bmp");
+	labelTextures2 = LoadTransBMP("Textures/labels2.bmp");
 
 	nextState = NULL;
+	quit = false;
 
 	char model_name[] = "bike.obj";
-	char tex_name[] = "bike_texture.bmp";
+	char tex_name[] = "Textures/bike_texture.bmp";
 	char body_name[] = "body.obj";
-	char body_tex[] = "body_texture.bmp";
+	char body_tex[] = "Textures/body_texture.bmp";
 	bike = new Model(model_name,tex_name);
 	bike->append(body_name,body_tex);
 
@@ -346,5 +353,34 @@ void GameState::postProcessing()
 	glActiveTexture(GL_TEXTURE0);
 }
 
+void GameState::switchToOverlay() {
+	// switch to 2D displaying
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glOrtho(0, asp, 0, 1, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+   	glLoadIdentity();
+
+	glTranslated((asp-1)/2,0,0);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void GameState::switchTo3D() {
+	glDisable(GL_BLEND);
+	
+	//go back to 3d
+	glMatrixMode(GL_PROJECTION);
+   	glPopMatrix();   
+   	glMatrixMode(GL_MODELVIEW);
+   	glPopMatrix();
+}
+
 void GameState::setNextState( GameState *newState ) { nextState = newState; }
 GameState* GameState::getNextState() { return nextState; }
+
+void GameState::setQuit( bool newVal ) { quit = newVal; }
+bool GameState::getQuit() { return quit; }

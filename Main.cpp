@@ -123,6 +123,17 @@ int main( int argc, char* args[] ) {
         printf( "Failed to initialize!\n" );
     }
     else {
+        // // Set blending
+        glEnable( GL_BLEND );
+        glDisable( GL_DEPTH_TEST );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+        // //Set antialiasing/multisampling
+        // glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+        // glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+        // glEnable(GL_POLYGON_SMOOTH);
+        // glEnable(GL_LINE_SMOOTH);
+        glEnable( GL_MULTISAMPLE );
         // Initialize the state to hitbox test
         GameState *currentState = new Menu();
         currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -139,7 +150,6 @@ int main( int argc, char* args[] ) {
                     int x = 0, y = 0;
                     SDL_GetMouseState( &x, &y );
                     SDL_Keycode key = e.key.keysym.sym;
-                    quit = testQuit( key );
                     currentState->keyDown( key, x, y );
                 }
                 else if( e.type == SDL_KEYUP ) {
@@ -173,6 +183,9 @@ int main( int argc, char* args[] ) {
                 currentState = nextState;
                 currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
             }
+
+            if( currentState->getQuit() )
+                quit = true;
 
             if( glGetError() != GL_NO_ERROR )
                 std::cout << "Hurghhhh" << std::endl;

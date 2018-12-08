@@ -3,57 +3,52 @@
 Gameplay::Gameplay() {
 	p1color = Vector(1,.3,0);
 	p2color = Vector(.5,.8,1);
-
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
-
-	unsigned int floorTex = LoadTexBMP("tile.bmp");
-	unsigned int wallTex = LoadTexBMP("wall.bmp");
-	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
-
-	state = STATE_WAITING;
-
-	ph = 30;	  //  Elevation of view angle
-	th = 45;	  //  Azimuth of view angle
-
-	// Booleans to control window movement
-	thup = false;
-	thdown = false;
-	phup = false;
-	phdown = false;
-
-	split = true; // Split screen
+	init();
 }
 
 Gameplay::Gameplay( Vector p1c, Vector p2c ) {
 	p1color = p1c;
 	p2color = p2c;
-
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
-
-	unsigned int floorTex = LoadTexBMP("tile.bmp");
-	unsigned int wallTex = LoadTexBMP("wall.bmp");
-	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
-
-	state = STATE_WAITING;
-
-	ph = 30;	  //  Elevation of view angle
-	th = 45;	  //  Azimuth of view angle
-
-	// Booleans to control window movement
-	thup = false;
-	thdown = false;
-	phup = false;
-	phdown = false;
-
-	split = true; // Split screen
+	init();
 }
 
 Gameplay::~Gameplay() {
 	delete player1;
 	delete player2;
 	delete map;
+}
+
+void Gameplay::init() {
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
+
+	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
+	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
+	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
+
+	state = STATE_WAITING;
+
+	timer = 0;
+
+	ph = 30;	  //  Elevation of view angle
+	th = 45;	  //  Azimuth of view angle
+
+	// Booleans to control window movement
+	thup = false;
+	thdown = false;
+	phup = false;
+	phdown = false;
+
+	split = true; // Split screen
+
+	resetButton = Button(.5,.5,.5,.125,buttonTexture2,0,1,.75,1,menuButtonColor);
+	menuButton = Button(.5,.35,.5,.125,buttonTexture2,0,1,.5,.75,menuButtonColor);
+	p1winsLogo = Button(.5,.65,.8,.2,labelTextures,0,1,.5,.75,p1color);
+	p2winsLogo = Button(.5,.65,.8,.2,labelTextures,0,1,.25,.5,p2color);
+	tieLogo = Button(.5,.65,.8,.2,labelTextures,0,1,0,.25,menuButtonColor);
+	spaceStart = Button(.5,.5,1,.25,labelTextures2,0,1,.75,1,menuButtonColor);
+	p1Controls = Button(.5,.7,.5,.125,labelTextures2,0,1,.5,.75,p1color);
+	p2Controls = Button(.5,.2,.5,.125,labelTextures2,0,1,.25,.5,p2color);
 }
 
 void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
@@ -116,8 +111,26 @@ void Gameplay::keyUp( SDL_Keycode key, int x, int y ) {
 }
 
 void Gameplay::special(int key, int x, int y) {}
-void Gameplay::mouseDown(int x, int y) {}
-void Gameplay::mouseUp(int x, int y) {}
+
+void Gameplay::mouseDown(int x, int y) {
+	if( state == STATE_TIE || state == STATE_P1_WIN || state == STATE_P2_WIN ) {
+		if( resetButton.testClicked(x,y,wWidth,wHeight) )
+			mouseState = RESET_DOWN;
+		else if( menuButton.testClicked(x,y,wWidth,wHeight) )
+			mouseState = MENU_DOWN;
+	}
+}
+
+void Gameplay::mouseUp(int x, int y) {
+	if( state == STATE_TIE || state == STATE_P1_WIN || state == STATE_P2_WIN ) {
+		if( mouseState == RESET_DOWN && resetButton.testClicked(x,y,wWidth,wHeight) )
+			reset();
+		else if( mouseState == MENU_DOWN && menuButton.testClicked(x,y,wWidth,wHeight) ) {
+			GameState *newState = new Menu();
+			setNextState( newState );
+		}
+	}
+}
 
 void Gameplay::update() {
 	double tDiff = getElapsedTime();
@@ -125,26 +138,27 @@ void Gameplay::update() {
 	th += (thup-thdown)*50*tDiff;
 	ph += (phup-phdown)*50*tDiff;
 
-	if( state == STATE_PLAYING ) {
+	if( state != STATE_WAITING && timer < 8 ) {
 		player1->movePlayer(tDiff);
 		player2->movePlayer(tDiff);
 
 		if( testCollision( player1->getHitbox(), player2->getHitbox() ) ) {
-			state = STATE_TIE;
+			if( state == STATE_PLAYING ) state = STATE_TIE;
 			player1->commitNotAlive();
 			player2->commitNotAlive();
 		}
 		if( player1->getTrail()->testTrailHit( player2->getHitbox() ) || player2->getTrail()->testTrailHit( player2->getHitbox() ) || map->testWallHits( player2->getHitbox() ) ) {
-			state = STATE_P1_WIN;
+			if( state == STATE_PLAYING ) state = STATE_P1_WIN;
 			player2->commitNotAlive();
 		}
 		if( player2->getTrail()->testTrailHit( player1->getHitbox() ) || player1->getTrail()->testTrailHit( player1->getHitbox() ) || map->testWallHits( player1->getHitbox() ) ) {
-			if( state == STATE_P1_WIN )
-				state = STATE_TIE;
-			else
-				state = STATE_P2_WIN;
+			if( state == STATE_P1_WIN && timer == 0 ) state = STATE_TIE;
+			else if( state == STATE_PLAYING ) state = STATE_P2_WIN;
 			player1->commitNotAlive();
 		}
+
+		if( state != STATE_PLAYING )
+			timer += tDiff;
 	}
 }
 
@@ -153,7 +167,7 @@ void Gameplay::reset() {
 	delete player2;
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
 	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
-
+	timer = 0;
 	state = STATE_WAITING;
 }
 
@@ -185,6 +199,31 @@ void Gameplay::display() {
 				  0,1,0);
 		displayAll( &bottomView, false);
 
+		// Any overlays
+		glViewport(0,0,wWidth,wHeight);
+		switchToOverlay();
+
+		if( state == STATE_WAITING ) {
+			spaceStart.display();
+			p1Controls.display();
+			p2Controls.display();
+		}
+		else if( timer > 2 ) {
+			if( state == STATE_TIE || state == STATE_P1_WIN || state == STATE_P2_WIN ) {
+				resetButton.display();
+				menuButton.display();
+			}
+			if( state == STATE_TIE )
+				tieLogo.display();
+			else if( state == STATE_P1_WIN )
+				p1winsLogo.display();
+			else if( state == STATE_P2_WIN )
+				p2winsLogo.display();
+		}
+
+		// Switch back
+		switchTo3D();
+
 
 		// render to blurTexture - render only the bright spots of the scene
 		//postProcessingStep2();
@@ -209,11 +248,11 @@ void Gameplay::display() {
 
 	}
 	else {
-		double Ex = -500*Sin(th)*Cos(ph) + 2*TILE_SIZE;
+		double Ex = -500*Sin(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
 		double Ey = +500*Sin(ph);
-		double Ez = +500*Cos(th)*Cos(ph) + 2*TILE_SIZE;
+		double Ez = +500*Cos(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
 		Vector viewLoc(Ex, Ey, Ez);
-		gluLookAt(Ex,Ey,Ez , 2*TILE_SIZE,0,2*TILE_SIZE , 0,Cos(ph),0);
+		gluLookAt(Ex,Ey,Ez , (MAP_LENGTH-1)/2.0*TILE_SIZE,0,(MAP_LENGTH-1)/2.0*TILE_SIZE , 0,Cos(ph),0);
 		postProcessingSetup();
 		displayAll( &viewLoc,false);
 		postProcessingStep2();

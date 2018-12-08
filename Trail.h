@@ -2,8 +2,8 @@
 #define TRAIL_H
 
 
-#define MAX_TRAIL_SEGMENTS 375 // 20 meters
-#define MAX_SEGMENT_LENGTH 2 // decimeter
+#define MAX_TRAIL_SEGMENTS 300 // 20 meters
+#define MAX_SEGMENT_LENGTH 3 // decimeter
 
 #include "Vector.h"
 #include "Hitbox.h"
@@ -27,14 +27,14 @@ public:
 	TrailSegment* getEnd();
 	TrailSegment* getStart();
  	
-	void update( Vector *newBottom, Vector *newTop );
+	void update( Vector *newBottom, Vector *newTop, Vector newColor );
 
-	void addSegment( Vector *newFB, Vector *newFT );
+	void addSegment( Vector *newFB, Vector *newFT, Vector newColor );
 	void removeSegment();
 
 	bool testTrailHit( Hitbox* other );
 
-	void stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos );
+	void stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos, Vector newColor );
 };
 
 #endif

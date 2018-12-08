@@ -44,51 +44,53 @@ Player::~Player() {
 // turns on the trail of the bike. Once turned on, cannot be turned off
 void Player::beginTrail( bool limit )
 {
-	unsigned int trailTexture = LoadTexBMP("trail.bmp");
+	unsigned int trailTexture = LoadTexBMP("Textures/trail.bmp");
 	trail_on = true;
 	trail = new Trail( getTrailBottom(), getTrailTop(), limit, trailTexture, color );
 }
 
 // move the player in the current direction it is pointed based on its velocity
 void Player::movePlayer( double dt )
-{
-	//turn forward vector
-	turn = right - left;
+{	
+	if(alive) {
+		//turn forward vector
+		turn = right - left;
 
-	// change tilt of model
-	double old_angle = angle;
-	angle += turn*TILT_RATE*dt; // tilt if key is pressed
-	// make sure angle of tilt doesn't go over or under max
-	if(angle < -MAX_TILT) 
-		angle = -MAX_TILT;
-	if(angle > MAX_TILT)
-		angle = MAX_TILT;
-	// tilt back to angle 0 if no key is pressed
-	if(turn == 0 && angle != 0)
-	{
-		double toChange = TILT_RATE*dt;
-		if( fabs(angle) < toChange )
-			angle = 0;
-		else if(angle < 0)
-			angle += toChange;
-		else angle -= toChange;
+		// change tilt of model
+		double old_angle = angle;
+		angle += turn*TILT_RATE*dt; // tilt if key is pressed
+		// make sure angle of tilt doesn't go over or under max
+		if(angle < -MAX_TILT) 
+			angle = -MAX_TILT;
+		if(angle > MAX_TILT)
+			angle = MAX_TILT;
+		// tilt back to angle 0 if no key is pressed
+		if(turn == 0 && angle != 0)
+		{
+			double toChange = TILT_RATE*dt;
+			if( fabs(angle) < toChange )
+				angle = 0;
+			else if(angle < 0)
+				angle += toChange;
+			else angle -= toChange;
 
-	}
-	if(angle != 0)
-		tilt_vector->Rotate(angle - old_angle, direction);
-	else if (old_angle != angle){
-		tilt_vector->setX(0);
-		tilt_vector->setY(1);
-		tilt_vector->setZ(0);
-	}
-	if(angle != 0) {
-		direction->Rotate(-angle*TURN_RATE*dt, up_vector);
-		tilt_vector->Rotate(-angle*TURN_RATE*dt, up_vector);
-	}
+		}
+		if(angle != 0)
+			tilt_vector->Rotate(angle - old_angle, direction);
+		else if (old_angle != angle){
+			tilt_vector->setX(0);
+			tilt_vector->setY(1);
+			tilt_vector->setZ(0);
+		}
+		if(angle != 0) {
+			direction->Rotate(-angle*TURN_RATE*dt, up_vector);
+			tilt_vector->Rotate(-angle*TURN_RATE*dt, up_vector);
+		}
 
-	loc->Add( direction, velocity*dt );
-	hitbox->updateVecs( loc, direction, tilt_vector );
-	trail->update( getTrailBottom(), getTrailTop() );
+		loc->Add( direction, velocity*dt );
+		hitbox->updateVecs( loc, direction, tilt_vector );
+		trail->update( getTrailBottom(), getTrailTop(), (color.getX() == -1 ? getRainbowColor() : color) );
+	}
 }
 
 void Player::commitNotAlive() {
@@ -98,14 +100,18 @@ void Player::commitNotAlive() {
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
-	// hitbox->renderSelf(false);
-	glColor3d(color.getX(), color.getY(), color.getZ());
-	if(model != NULL)
-		model->display(loc,direction,tilt_vector,PLAYER_SCALE);
+	if(model != NULL) {
+		if( color.getX() != -1 ) {
+			glColor3d(color.getX(), color.getY(), color.getZ());
+			model->display(loc,direction,tilt_vector,PLAYER_SCALE);
+		}
+		else
+			model->displayRainbow(loc,direction,tilt_vector,PLAYER_SCALE);
+	}
 
 	if( trail != NULL ) {
 		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
-		trail->stage( emmiter, tilt_vector, tr, cameraPos );
+		trail->stage( emmiter, tilt_vector, tr, cameraPos, getRainbowColor() );
 	}
 }
 
@@ -149,5 +155,18 @@ Vector Player::getViewLocation() {
 
 Vector Player::getViewTarget() {
 	return Add0( *loc, Scale0( *up_vector, TARGET_HEIGHT ) );
+}
+
+Vector Player::getRainbowColor() {
+	double x = -4.08997; //-7.86188;
+	float time = SDL_GetPerformanceCounter()/1000000000.0;
+	double frequency = 2;
+	double rawI = frequency * (time + x);
+	int colorI = (int)rawI % 7;
+	double weight = rawI - (int)rawI;
+	double red   = rainbowColors[(colorI+1)%7][0] * weight + rainbowColors[colorI][0] * (1-weight);
+	double green = rainbowColors[(colorI+1)%7][1] * weight + rainbowColors[colorI][1] * (1-weight);
+	double blue  = rainbowColors[(colorI+1)%7][2] * weight + rainbowColors[colorI][2] * (1-weight);
+	return Vector(red,green,blue);
 }
 

@@ -216,7 +216,6 @@ void Model::displayBasicRainbow()
 
 	float time = SDL_GetPerformanceCounter()/1000000000.0;
 	
-
 	glBegin(GL_TRIANGLES);
 	for(int i = 0; i < num_faces*9; i+=3)
 	{ // i * 3 is due to num_faces*3, can be switched to i * 9 if num_faces is not multiplied by 3
@@ -238,11 +237,19 @@ void Model::displayBasicRainbow()
 
 void Model::setRainbowColor(float x, float time)
 {
-	double frequency = .7;
-	double speed = 20;
-	double red   = sin(frequency * (x + time*speed) + 0) * .5 + .5;
-	double green = sin(frequency * (x + time*speed) + 2) * .5 + .5;
-	double blue  = sin(frequency * (x + time*speed) + 4) * .5 + .5;
+	double frequency = 2;
+	double rawI = frequency * (time + x);
+	int colorI = (int)rawI % 7;
+	double weight = rawI - (int)rawI;
+	double red   = rainbowColors[(colorI+1)%7][0] * weight + rainbowColors[colorI][0] * (1-weight);
+	double green = rainbowColors[(colorI+1)%7][1] * weight + rainbowColors[colorI][1] * (1-weight);
+	double blue  = rainbowColors[(colorI+1)%7][2] * weight + rainbowColors[colorI][2] * (1-weight);
+
+	// double frequency = .2;
+	// double speed = 20;
+	// double red   = sin(frequency * (x + time*speed) + 0) * .5 + .5;
+	// double green = sin(frequency * (x + time*speed) + 2) * .5 + .5;
+	// double blue  = sin(frequency * (x + time*speed) + 4) * .5 + .5;
 
 	glColor3d(red, green, blue);
 }

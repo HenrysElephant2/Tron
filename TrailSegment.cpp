@@ -31,6 +31,7 @@ TrailSegment* TrailSegment::getNext() { return next; }
 Hitbox* TrailSegment::getHitbox() { return hitbox; }
 Vector TrailSegment::getColor() { return color; }
 void TrailSegment::setNext( TrailSegment *newNext ) { next = newNext; }
+void TrailSegment::setColor( Vector newColor ) { color = newColor; }
 
 
 Vector TrailSegment::getTopVector() {
@@ -144,35 +145,43 @@ void TrailSegment::display( Vector *cameraPos ) {
 
 void TrailSegment::displayFace( int face ) {
 	Hitbox *nhb = next->getHitbox();
+	double curR = color.getX();
+	double curG = color.getY();
+	double curB = color.getZ();
+	double nextR = next->getColor().getX();
+	double nextG = next->getColor().getY();
+	double nextB = next->getColor().getZ();
+
+	// std::cout<<curR<<","<<curG<<","<<curB<<"-->"<<nextR<<","<<nextG<<","<<nextB<<std::endl;
 
 	glBegin(GL_QUADS);
 	switch( face ) {
 		case FACE_L:
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFL)->gl();
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFL)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,1); nhb->getPoint(TFL)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,1); hitbox->getPoint(TFL)->gl();
 		break;
 
 		case FACE_T:
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFL)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFL)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFR)->gl();
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFR)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,1); hitbox->getPoint(TFL)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,1); nhb->getPoint(TFL)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,1); nhb->getPoint(TFR)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,1); hitbox->getPoint(TFR)->gl();
 		break;
 
 		case FACE_R:
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,1); hitbox->getPoint(TFR)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,1); nhb->getPoint(TFR)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFR)->gl();
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFR)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,1); hitbox->getPoint(TFR)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,1); nhb->getPoint(TFR)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,0); nhb->getPoint(BFR)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,0); hitbox->getPoint(BFR)->gl();
 		break;
 
 		case FACE_B:
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFR)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFR)->gl();
-			glColor4f(next->getColor().getX(), color.getY(), color.getZ(), .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
-			glColor4f(color.getX(), color.getY(), color.getZ(), .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,0); hitbox->getPoint(BFR)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,0); nhb->getPoint(BFR)->gl();
+			glColor4f(nextR, nextG, nextB, .5); glTexCoord2i(1,0); nhb->getPoint(BFL)->gl();
+			glColor4f(curR, curG, curB, .5); glTexCoord2i(0,0); hitbox->getPoint(BFL)->gl();
 		break;
 	}
 	glEnd();

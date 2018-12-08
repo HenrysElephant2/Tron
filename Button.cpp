@@ -26,14 +26,24 @@ void Button::display() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,texture);
 
-	// glColor4d(color.getX(), color.getY(), color.getZ(), alpha);
-	glColor3d(color.getX(), color.getY(), color.getZ());
-	glBegin( GL_QUADS );
-		glTexCoord2d(texl,texb); glVertex2d(lx,by);
-		glTexCoord2d(texl,text); glVertex2d(lx,ty);
-		glTexCoord2d(texr,text); glVertex2d(rx,ty);
-		glTexCoord2d(texr,texb); glVertex2d(rx,by);
-	glEnd();
+	if( color.getX() != -1 ) {
+		glColor3d(color.getX(), color.getY(), color.getZ());
+		glBegin( GL_QUADS );
+			glTexCoord2d(texl,texb); glVertex2d(lx,by);
+			glTexCoord2d(texl,text); glVertex2d(lx,ty);
+			glTexCoord2d(texr,text); glVertex2d(rx,ty);
+			glTexCoord2d(texr,texb); glVertex2d(rx,by);
+		glEnd();
+	}
+	else {
+		glBegin(GL_QUAD_STRIP);
+		for( int i=0; i<RCOLORS; i++ ) {
+			glColor3d(rainbowColors[i].getX(), rainbowColors[i].getY(), rainbowColors[i].getZ());
+			glTexCoord2d(texl+((double)i/(RCOLORS-1)*(texr-texl)), texb); glVertex2d(lx+((double)i/(RCOLORS-1)*(rx-lx)),by);
+			glTexCoord2d(texl+((double)i/(RCOLORS-1)*(texr-texl)), text); glVertex2d(lx+((double)i/(RCOLORS-1)*(rx-lx)),ty);
+		}
+		glEnd();
+	}
 
 	glDisable(GL_TEXTURE_2D);
 }

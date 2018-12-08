@@ -24,7 +24,7 @@ TrailSegment* Trail::getEnd() { return end; }
 TrailSegment* Trail::getStart() { return start; }
 
 
-void Trail::update( Vector *newBottom, Vector *newTop ) {
+void Trail::update( Vector *newBottom, Vector *newTop, Vector newColor ) {
 	Vector curTilt = Add0( *newTop, Scale0( *newBottom, -1 ) );
 	double diff = Vector( newBottom, start->getFB() ).getMagnitude();
 
@@ -43,11 +43,11 @@ void Trail::update( Vector *newBottom, Vector *newTop ) {
 			Vector* curTop = new Vector();
 			*curTop = Add0( *(start->getFT()), modVec );
 
-			addSegment( curBottom, curTop );
+			addSegment( curBottom, curTop, newColor );
 
 			toAdd -= MAX_SEGMENT_LENGTH;
 		}
-		addSegment( newBottom, newTop );
+		addSegment( newBottom, newTop, newColor );
 	}
 
 	if( limit && length > MAX_TRAIL_SEGMENTS ) {
@@ -60,10 +60,10 @@ void Trail::update( Vector *newBottom, Vector *newTop ) {
 }
 
 
-void Trail::addSegment( Vector *newFB, Vector *newFT ) {
+void Trail::addSegment( Vector *newFB, Vector *newFT, Vector newColor ) {
 	Vector *newBB = new Vector(); newBB->set(start->getFB());
 	Vector *newBT = new Vector(); newBT->set(start->getFT());
-	TrailSegment *newSegment = new TrailSegment( newBB, newBT, newFB, newFT, texture, color );
+	TrailSegment *newSegment = new TrailSegment( newBB, newBT, newFB, newFT, texture, (color.getX()==-1?newColor:color) );
 	if( start->getNext() != NULL )
 		delete start->getNext();
 	start->setNext( newSegment );
@@ -83,7 +83,7 @@ bool Trail::testTrailHit( Hitbox *other ) {
 	return end == NULL ? false : end->testSegmentHit( other );
 }
 
-void Trail::stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos ) {
+void Trail::stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos, Vector newColor ) {
 	Vector* newBB = new Vector();
 	newBB->set( start->getFB() );
 	Vector* newBT = new Vector();
@@ -93,7 +93,7 @@ void Trail::stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vecto
 	Vector *newFT = new Vector();
 	*newFT = Add0( trailEnd, Scale0( *tilt, TRAIL_HEIGHT ) );
 
-	TrailSegment *trailStart = new TrailSegment( newBB, newBT, newFB, newFT, texture, color );
+	TrailSegment *trailStart = new TrailSegment( newBB, newBT, newFB, newFT, texture, (color.getX()==-1?newColor:color) );
 	start->setNext( trailStart );
 
 	if( end != NULL )

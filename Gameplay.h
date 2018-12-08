@@ -12,6 +12,8 @@
 #include "Vector.h"
 #include "Model.h"
 #include "TransparentRenderer.h"
+#include "Button.h"
+#include "Menu.h"
 
 
 #ifndef MATH_FUNCTIONS
@@ -31,6 +33,9 @@
 
 #define NUMBER_GAUSSIAN_PASSES 16
 
+#define RESET_DOWN 1
+#define MENU_DOWN 2
+
 class Gameplay: public GameState {
 private:
 	double ph;      //  Elevation of view angle
@@ -42,6 +47,13 @@ private:
 	Map *map;
 	int state;
 
+	Button resetButton, menuButton;
+	Button p1winsLogo, p2winsLogo, tieLogo;
+	Button spaceStart, p1Controls, p2Controls;
+
+	double timer;
+
+	void init();
 
 public:
 	Gameplay();
@@ -64,33 +76,3 @@ public:
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
