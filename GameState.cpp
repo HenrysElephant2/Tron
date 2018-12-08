@@ -176,6 +176,8 @@ GameState::GameState() {
 	exposureLoc = glGetUniformLocation(blendProgram, "exposure");
 	widthLoc = glGetUniformLocation(blurProgram, "width");
 	heightLoc = glGetUniformLocation(blurProgram, "height");
+
+	exp = new Explosion();
 }
 
 // Should return elapsed time in seconds

@@ -19,8 +19,8 @@ Gameplay::~Gameplay() {
 }
 
 void Gameplay::init() {
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, exp, p1color);
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, exp, p2color);
 
 	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
 	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
@@ -165,13 +165,19 @@ void Gameplay::update() {
 void Gameplay::reset() {
 	delete player1;
 	delete player2;
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1color );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2color );
-	timer = 0;
+
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, exp, p1color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, exp, p2color);
+
 	state = STATE_WAITING;
+	exp->reset();
 }
 
 void Gameplay::display() {
+
+	if(!player1->isAlive() || !player2->isAlive())
+		exp->calculate();
+
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glLoadIdentity();
@@ -259,6 +265,7 @@ void Gameplay::display() {
 		displayAll( &viewLoc,true);
 		postProcessing();
 	}
+	
 
 }
 
@@ -269,16 +276,18 @@ void Gameplay::displayAll( Vector *cameraPos, bool renderBloom) {
 
 	map->displayWalls();
 
+
 	// Reflections/Underside of map
 	Vector reflectCamera = Add0( *cameraPos, Vector(0,-2*cameraPos->getY(), 0) );
 	TransparentRenderer *tr = new TransparentRenderer();
 	glPushMatrix();
 	glTranslated(0,-.12,0);
 	glScaled(1,-1,1);
-	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	glUseProgram(bikeProgram);
 	player1->display(tr, &reflectCamera);
+	glUseProgram(bikeProgram);
 	player2->display(tr, &reflectCamera);
-	glUseProgram(renderBloom ? brightProgram:0);
+	glUseProgram(0);
 	tr->display( &reflectCamera );
 	glPopMatrix();
 	delete tr;
@@ -288,10 +297,13 @@ void Gameplay::displayAll( Vector *cameraPos, bool renderBloom) {
 
 	// Top of map
 	tr = new TransparentRenderer();
-	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	glUseProgram(bikeProgram);
 	player1->display(tr, cameraPos);
+	glUseProgram(bikeProgram);
 	player2->display(tr, cameraPos);
-	glUseProgram(renderBloom ? brightProgram:0);
+	glUseProgram(0);
 	tr->display( cameraPos );
 	delete tr;
+	//exp->display();
+
 }
