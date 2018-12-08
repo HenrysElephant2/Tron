@@ -166,6 +166,8 @@ void Gameplay::reset() {
 	delete player1;
 	delete player2;
 
+	timer = 0;
+
 	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, exp, p1color );
 	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, exp, p2color);
 
