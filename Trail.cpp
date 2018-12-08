@@ -9,6 +9,7 @@ Trail::Trail( Vector *startBottom, Vector *startTop, bool l, unsigned int t, Vec
 	limit = l;
 	texture = t;
 	color = c;
+	add = true;
 }
 
 Trail::~Trail() {
@@ -28,26 +29,28 @@ void Trail::update( Vector *newBottom, Vector *newTop, Vector newColor ) {
 	Vector curTilt = Add0( *newTop, Scale0( *newBottom, -1 ) );
 	double diff = Vector( newBottom, start->getFB() ).getMagnitude();
 
-	start->updateFront( newBottom, newTop );
-	if( start->getBottomVector().getMagnitude() > MAX_SEGMENT_LENGTH ) {
-		start->scaleToLengthF(MAX_SEGMENT_LENGTH, curTilt);
+	if( add ) {
+		start->updateFront( newBottom, newTop );
+		if( start->getBottomVector().getMagnitude() > MAX_SEGMENT_LENGTH ) {
+			start->scaleToLengthF(MAX_SEGMENT_LENGTH, curTilt);
 
-		Vector modVec = Add0( *newBottom, Scale0( *(start->getFB()), -1 ) );
-		double toAdd = modVec.getMagnitude();
-		modVec.Normalize(); modVec.Scale( MAX_SEGMENT_LENGTH );
+			Vector modVec = Add0( *newBottom, Scale0( *(start->getFB()), -1 ) );
+			double toAdd = modVec.getMagnitude();
+			modVec.Normalize(); modVec.Scale( MAX_SEGMENT_LENGTH );
 
-		while( toAdd > MAX_SEGMENT_LENGTH ) {
-			Vector* curBottom = new Vector();
-			*curBottom = Add0( *(start->getFB()), modVec );
+			while( toAdd > MAX_SEGMENT_LENGTH ) {
+				Vector* curBottom = new Vector();
+				*curBottom = Add0( *(start->getFB()), modVec );
 
-			Vector* curTop = new Vector();
-			*curTop = Add0( *(start->getFT()), modVec );
+				Vector* curTop = new Vector();
+				*curTop = Add0( *(start->getFT()), modVec );
 
-			addSegment( curBottom, curTop, newColor );
+				addSegment( curBottom, curTop, newColor );
 
-			toAdd -= MAX_SEGMENT_LENGTH;
+				toAdd -= MAX_SEGMENT_LENGTH;
+			}
+			addSegment( newBottom, newTop, newColor );
 		}
-		addSegment( newBottom, newTop, newColor );
 	}
 
 	if( limit && length > MAX_TRAIL_SEGMENTS ) {
@@ -72,10 +75,12 @@ void Trail::addSegment( Vector *newFB, Vector *newFT, Vector newColor ) {
 }
 
 void Trail::removeSegment() {
-	TrailSegment *newEnd = end->getNext();
-	delete end;
-	end = newEnd;
-	length--;
+	if( end != NULL ) {
+		TrailSegment *newEnd = end->getNext();
+		delete end;
+		end = (newEnd==start?NULL:newEnd);
+		length--;
+	}
 }
 
 
@@ -99,3 +104,5 @@ void Trail::stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vecto
 	if( end != NULL )
 		end->stage( tr, cameraPos ); // Will loop from end to front displaying hitboxes
 }
+
+void Trail::setAdd( bool newVal ) { add = newVal; }

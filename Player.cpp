@@ -23,6 +23,7 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 
 	model = m;
 	color = c;
+	lastColor = c;
 
 	alive = true;
 	left = false;
@@ -30,6 +31,8 @@ Player::Player(double loc_x, double loc_y, double loc_z, double dir_x, double di
 
 	velocity = MOVE_RATE;
 	exp = explosion;
+	if( color.getX() == -1 )
+		explosion->setRainbow(true);
 }
 
 // destructor for the player
@@ -90,12 +93,17 @@ void Player::movePlayer( double dt )
 
 		loc->Add( direction, velocity*dt );
 		hitbox->updateVecs( loc, direction, tilt_vector );
-		trail->update( getTrailBottom(), getTrailTop(), (color.getX() == -1 ? getRainbowColor() : color) );
 	}
+
+	trail->update( getTrailBottom(), getTrailTop(), (color.getX() == -1 ? getRainbowColor() : color) );
 }
 
 void Player::commitNotAlive() {
-	alive = false;
+	if( alive ) {
+		alive = false;
+		trail->setAdd(false);
+		lastColor = getRainbowColor();
+	}
 }
 
 // do all the opengl to render the model for the player model. will call the trail render through this
@@ -112,7 +120,7 @@ void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 
 	if( trail != NULL ) {
 		Vector emmiter = Add0( *loc, Scale0(*direction, -10) );
-		trail->stage( emmiter, tilt_vector, tr, cameraPos, getRainbowColor() );
+		trail->stage( emmiter, tilt_vector, tr, cameraPos, (alive?getRainbowColor():lastColor) );
 	}
 
 	if(!alive && exp != NULL)
@@ -152,7 +160,8 @@ void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 		glTranslated(loc->getX(),loc->getY(),loc->getZ());
 		glMultMatrixd(mat);
 		//glScaled(s,s,s);
-
+		
+		if(color.getX() != -1) glColor3d(color.getX(), color.getY(), color.getZ());
 		exp->display();
 
 		glPopMatrix();

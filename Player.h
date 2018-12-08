@@ -41,7 +41,7 @@ private:
 	Trail *trail;
 	Hitbox * hitbox;
 	Model * model;
-	Vector color;
+	Vector color, lastColor;
 
 	Explosion * exp;
 

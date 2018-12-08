@@ -15,7 +15,7 @@ class Trail {
 private:
 	TrailSegment *end, *start; // Trail linked list will be ordered from back to front, so end is actually the first segment
 	int length;
-	bool limit;
+	bool limit, add;
 	unsigned int texture;
 	Vector color;
 
@@ -35,6 +35,7 @@ public:
 	bool testTrailHit( Hitbox* other );
 
 	void stage( Vector trailEnd, Vector *tilt, TransparentRenderer *tr, Vector *cameraPos, Vector newColor );
+	void setAdd( bool newVal );
 };
 
 #endif
