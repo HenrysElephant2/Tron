@@ -1,9 +1,16 @@
-//  Per Pixel Lighting shader with texture
+#version 120
+//#extension GL_ARB_explicit_attrib_location : require
+//#extension GL_ARB_explicit_uniform_location : require
 
 varying vec3 View;
 varying vec3 Light;
 varying vec3 Normal;
 uniform sampler2D tex;
+
+//layout (location = 0) out vec4 FragColor;
+//layout (location = 1) out vec4 BrightColor;
+//attribute vec4 FragColor;
+//attribute vec4 BrightColor;
 
 void main()
 {
@@ -22,7 +29,7 @@ void main()
    float Is = (Id>0.0) ? pow(max(dot(R,V),0.0) , gl_FrontMaterial.shininess) : 0.0;
 
    //  Sum color types
-   vec4 color = gl_FrontMaterial.emission
+   vec4 color_mat = gl_FrontMaterial.emission
               + gl_FrontLightProduct[0].ambient
               + Id*gl_FrontLightProduct[0].diffuse
               + Is*gl_FrontLightProduct[0].specular;
@@ -31,7 +38,12 @@ void main()
    vec4 texcolor = texture2D(tex,gl_TexCoord[0].xy);
 
    if(texcolor.r >= 0.8 && texcolor.g >= 0.8 && texcolor.b >= 0.8)
-   gl_FragColor = gl_Color;
-   else
-	gl_FragColor = color * texture2D(tex,gl_TexCoord[0].xy);
+   {
+	gl_FragColor = gl_Color;
+	//BrightColor = gl_Color;
+   }
+   else {
+	gl_FragColor = color_mat * texture2D(tex,gl_TexCoord[0].xy);
+	//BrightColor = vec4(0,0,0,0);
+   }
 }

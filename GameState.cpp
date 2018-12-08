@@ -21,8 +21,14 @@ GameState::GameState() {
 	char tex_name[] = "Textures/bike_texture.bmp";
 	char body_name[] = "body.obj";
 	char body_tex[] = "Textures/body_texture.bmp";
+	char helmet_name[] = "helmet.obj";
+	char visor_name[] = "visor.obj";
+	char helmet_texture[] = "Textures/helmet.bmp";
+	char visor_texture[] = "Textures/visor.bmp";
 	bike = new Model(model_name,tex_name);
 	bike->append(body_name,body_tex);
+	bike->append(helmet_name, helmet_texture);
+	bike->append(visor_name, visor_texture);
 
 	// set up programs
 
@@ -177,7 +183,8 @@ GameState::GameState() {
 	widthLoc = glGetUniformLocation(blurProgram, "width");
 	heightLoc = glGetUniformLocation(blurProgram, "height");
 
-	exp = new Explosion();
+	p1exp = new Explosion();
+	p2exp = new Explosion();
 }
 
 // Should return elapsed time in seconds
@@ -282,8 +289,8 @@ void GameState::postProcessingSetup()
 void GameState::postProcessingStep2()
 {
 	
-	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	//glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
+	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 }
 

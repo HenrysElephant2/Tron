@@ -39,13 +39,14 @@ void main()
 		vec3 velocity = texture2D(data, gl_TexCoord[0].xy).rgb;
 		vec2 locXY = vec2(gl_TexCoord[0].x - .5, gl_TexCoord[0].y);  
 		vec3 location = texture2D(data, locXY).rgb;
-		float random1 = random(gl_TexCoord[0].xy * dTime);
-		float random2 = random(vec2(dTime, random1));
-		float random3 = random(vec2(random1, random2));
+		
 
 		if(init)
 		{
-			gl_FragColor = vec4(random1*90.0,random2*70.0,random3*60.0 - 30.0,1.0);
+			float random1 = random(gl_TexCoord[0].xy * dTime);
+			float random2 = random(vec2(dTime, random1));
+			float random3 = random(vec2(random1, random2));
+			gl_FragColor = vec4(random1*100.0,random2*200.0-90.0,random3*80.0 - 40.0,1.0);
 		}
 		else {
 			if(location.y <= 0.0)
@@ -60,7 +61,7 @@ void main()
 				if(velocity.z < 0.0)
 					velocity.z = 0.0;
 			}
-			gl_FragColor = vec4(velocity.x,velocity.y - (98.0 * dTime), velocity.z, 1.0);
+			gl_FragColor = vec4(velocity.x,velocity.y - (98.0/1.5 * dTime), velocity.z, 1.0);
 			//gl_FragColor = vec4(velocity,1.0);
 		}
     }

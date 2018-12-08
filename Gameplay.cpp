@@ -15,12 +15,14 @@ Gameplay::Gameplay( Vector p1c, Vector p2c ) {
 Gameplay::~Gameplay() {
 	delete player1;
 	delete player2;
+	delete p1exp;
+	delete p2exp;
 	delete map;
 }
 
 void Gameplay::init() {
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, exp, p1color);
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, exp, p2color);
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1exp, p1color);
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 0, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2exp, p2color);
 
 	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
 	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
@@ -168,17 +170,20 @@ void Gameplay::reset() {
 
 	timer = 0;
 
-	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, exp, p1color );
-	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, exp, p2color);
+	player1 = new Player( 0, 0, 0, 0, 0, 1, bike, p1exp, p1color );
+	player2 = new Player( (MAP_LENGTH-1)*TILE_SIZE, 1, (MAP_WIDTH-1)*TILE_SIZE, 0, 0, -1, bike, p2exp, p2color);
 
 	state = STATE_WAITING;
-	exp->reset();
+	p1exp->reset();
+	p2exp->reset();
 }
 
 void Gameplay::display() {
 
-	if(!player1->isAlive() || !player2->isAlive())
-		exp->calculate();
+	if(!player1->isAlive())
+		p1exp->calculate();
+	if(!player2->isAlive())
+		p2exp->calculate();
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);

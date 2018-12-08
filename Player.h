@@ -1,10 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#define GL_GLEXT_PROTOTYPES
 #include "Hitbox.h"
 #include "Vector.h"
 #include "Trail.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <math.h>
 #include <iostream>
 #include "Model.h"
@@ -42,6 +44,7 @@ private:
 	Hitbox * hitbox;
 	Model * model;
 	Vector color, lastColor;
+	float deathTime;
 
 	Explosion * exp;
 

@@ -2,6 +2,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#define GL_GLEXT_PROTOTYPES
 #include <string>
 #include <sstream>
 #include <cstdio>
@@ -50,11 +51,11 @@ public:
 
 	Model * getNext();
 
-	void display(Vector * v, Vector * direction, Vector * up, double s);
-	void displayBasic();
+	void display(Vector * v, Vector * direction, Vector * up, double s, bool texOn);
+	void displayBasic(bool texOn);
 
-	void displayRainbow(Vector * v, Vector * direction, Vector * up, double s);
-	void displayBasicRainbow();
+	void displayRainbow(Vector * v, Vector * direction, Vector * up, double s, bool texOn);
+	void displayBasicRainbow(bool texOn);
 	
 };
 

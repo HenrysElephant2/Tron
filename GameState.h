@@ -73,7 +73,8 @@ protected:
 	bool bloomOn = true;
 	//float bloomThreshold = .8;
 
-	Explosion * exp;
+	Explosion * p1exp;
+	Explosion * p2exp;
 
 public:
 	GameState();

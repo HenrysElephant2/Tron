@@ -1,6 +1,8 @@
 //#version 330 core
 //layout (location = 0) in vec3 aPos;
 //layout (location = 1) in vec2 aTexCoords;
+#extension GL_EXT_geometry_shader4: require
+
 
 //varying vec3 aPos;
 //varying vec2 aTexCoords;

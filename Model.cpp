@@ -48,7 +48,7 @@ Model::~Model()
 
 // maybe change the calculations to normalize these later. might not be needed
 // set the color before displaying the model
-void Model::display(Vector * v, Vector * direction, Vector * up, double s)
+void Model::display(Vector * v, Vector * direction, Vector * up, double s, bool texOn = true)
 {
 	double dx = direction->getX();
 	double dy = direction->getY();
@@ -81,31 +81,13 @@ void Model::display(Vector * v, Vector * direction, Vector * up, double s)
 
 	//  Save current transforms
 	glPushMatrix();
-	//  Offset, scale and rotate
-	if(texture != -1)
-		glBindTexture(GL_TEXTURE_2D,texture);
+	
 
 	glTranslated(v->getX(),v->getY(),v->getZ());
 	glMultMatrixd(mat);
 	glScaled(s,s,s);
 
-	glEnable(GL_TEXTURE_2D); // need to place call to glTexEnvi somewhere in the setup for opengl
-
-	glBegin(GL_TRIANGLES);
-	for(int i = 0; i < num_faces*9; i+=3)
-	{ // i * 3 is due to num_faces*3, can be switched to i * 9 if num_faces is not multiplied by 3
-		// vertex one of face
-		int uv_index = (faces[i + 1]-1) * 2;
-		glTexCoord2f(uv[uv_index],uv[uv_index + 1]);
-		int normal_index = (faces[i + 2]-1) * 3;
-		glNormal3f(normals[normal_index],normals[normal_index+1],normals[normal_index+2]);
-		int vertex_index = (faces[i]-1) * 3;
-		glVertex3d(vertices[vertex_index],vertices[vertex_index+1],vertices[vertex_index+2]);
-	}
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	if(child != NULL)
-		child->displayBasic();
+	displayBasic(texOn);
 	glPopMatrix();
 }
 
@@ -131,13 +113,17 @@ void Model::append(char * name)
 }
 
 
-void Model::displayBasic()
+void Model::displayBasic(bool texOn)
 {
-	if(texture != -1)
+	if(texOn && texture != -1)
 		glBindTexture(GL_TEXTURE_2D,texture);
-	glEnable(GL_TEXTURE_2D); // need to place call to glTexEnvi somewhere in the setup for opengl
+	else glBindTexture(GL_TEXTURE_2D, 0); // need to place call to glTexEnvi somewhere in the setup for opengl
 
-	glBegin(GL_TRIANGLES);
+	if(texOn)
+	{	
+		glEnable(GL_TEXTURE_2D); 
+	}
+		glBegin(GL_TRIANGLES);
 	for(int i = 0; i < num_faces*9; i+=3)
 	{ // i * 3 is due to num_faces*3, can be switched to i * 9 if num_faces is not multiplied by 3
 		// vertex one of face
@@ -149,10 +135,15 @@ void Model::displayBasic()
 		glVertex3d(vertices[vertex_index],vertices[vertex_index+1],vertices[vertex_index+2]);
 	}
 	glEnd();
-	glDisable(GL_TEXTURE_2D);
+
+	if(texOn)
+	{
+		glDisable(GL_TEXTURE_2D);
+	}
+
 	if(child != NULL)
 	{
-		child->displayBasic();
+		child->displayBasic(texOn);
 	}
 }
 
@@ -161,7 +152,7 @@ Model * Model::getNext()
 	return child;
 }
 
-void Model::displayRainbow(Vector * v, Vector * direction, Vector * up, double s)
+void Model::displayRainbow(Vector * v, Vector * direction, Vector * up, double s, bool texOn = true)
 {
 	double dx = direction->getX();
 	double dy = direction->getY();
@@ -200,19 +191,22 @@ void Model::displayRainbow(Vector * v, Vector * direction, Vector * up, double s
 	glScaled(s,s,s);
 
 
-	displayBasicRainbow();
+	displayBasicRainbow(texOn);
 	glPopMatrix();
 }
 
-void Model::displayBasicRainbow()
+void Model::displayBasicRainbow(bool texOn)
 {
 	//  Offset, scale and rotate
-	if(texture != -1)
+	if(texOn && texture != -1)
 		glBindTexture(GL_TEXTURE_2D,texture);
+	else glBindTexture(GL_TEXTURE_2D, 0);
 
 	
-
-	glEnable(GL_TEXTURE_2D); // need to place call to glTexEnvi somewhere in the setup for opengl
+	if(texOn)
+	{
+		glEnable(GL_TEXTURE_2D); // need to place call to glTexEnvi somewhere in the setup for opengl
+	}
 
 	float time = SDL_GetPerformanceCounter()/1000000000.0;
 	
@@ -226,13 +220,15 @@ void Model::displayBasicRainbow()
 		glNormal3f(normals[normal_index],normals[normal_index+1],normals[normal_index+2]);
 		int vertex_index = (faces[i]-1) * 3;
 
+		
 		setRainbowColor(vertices[vertex_index], time);
 		glVertex3d(vertices[vertex_index],vertices[vertex_index+1],vertices[vertex_index+2]);
 	}
 	glEnd();
-	glDisable(GL_TEXTURE_2D);
+	if(texOn)
+		glDisable(GL_TEXTURE_2D);
 	if(child != NULL)
-		child->displayBasicRainbow();
+		child->displayBasicRainbow(texOn);
 }
 
 void Model::setRainbowColor(float x, float time)
@@ -253,4 +249,3 @@ void Model::setRainbowColor(float x, float time)
 
 	glColor3d(red, green, blue);
 }
-

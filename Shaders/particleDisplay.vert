@@ -27,7 +27,7 @@ const float rainbowColors[21] = float[21](
 	);
 
 void setColor(float x) {
-	float frequency = .3;
+	float frequency = 2;
 	float rawI = frequency * (x);
 	float colorI = mod(floor(rawI),7.0);
 	float weight = rawI - floor(rawI);
@@ -63,7 +63,7 @@ void main()
 	    	float frequency = 6.0;
 	    	gl_FrontColor = vec4(sin(rand*frequency)*.5+.5,sin(rand*frequency+2.0)*.5+.5,sin(rand*frequency+4.0)*.5+.5,1.0);
 	    }
-    	else setColor(loc.x);
+    	else setColor(loc.y * loc.y + loc.z * loc.z);
     }
     else gl_FrontColor = gl_Color;
 }

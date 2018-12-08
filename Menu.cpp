@@ -147,8 +147,6 @@ void Menu::display() {
 
 	postProcessingSetup();
 	displayAll( &viewLoc, &targetLoc, false );
-	postProcessingStep2();
-	displayAll( &viewLoc, &targetLoc, true );
 	postProcessing();
 }
 
@@ -173,10 +171,11 @@ void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 	glPushMatrix();
 	glTranslated(0,-.12,0);
 	glScaled(1,-1,1);
-	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	glUseProgram(bikeProgram);
 	player1->display(tr, &reflectCamera);
+	glUseProgram(bikeProgram);
 	player2->display(tr, &reflectCamera);
-	glUseProgram(renderBloom ? brightProgram:0);
+	glUseProgram(0);
 	tr->display( &reflectCamera );
 	glPopMatrix();
 	delete tr;
@@ -186,10 +185,11 @@ void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 
 	// Top of map
 	tr = new TransparentRenderer();
-	glUseProgram(renderBloom?bikeBrightProgram:bikeProgram);
+	glUseProgram(bikeProgram);
 	player1->display(tr, cameraPos);
+	glUseProgram(bikeProgram);
 	player2->display(tr, cameraPos);
-	glUseProgram(renderBloom ? brightProgram:0);
+	glUseProgram(0);
 	tr->display( cameraPos );
 	delete tr;
 
