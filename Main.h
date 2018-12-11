@@ -19,7 +19,6 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "GameState.h"
-#include "HitboxTest.h"
 #include "Gameplay.h"
 #include "Menu.h"
 

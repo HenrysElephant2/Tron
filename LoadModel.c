@@ -60,21 +60,21 @@ void LoadModel(char * filename, float ** vertices_return, int * num_v_return,
 
 	*vertices_return = vertices;
 	*num_v_return = num_vertices;
-	printf("Vertices: %d\n", num_vertices);
+	// printf("Vertices: %d\n", num_vertices);
 
 	*uv_return = uv;
 	*num_uv_return = num_uv;
-	printf("UVs: %d\n",num_uv);
+	// printf("UVs: %d\n",num_uv);
 
 	*normals_return = normals;
 	*num_norm_return = num_normal;
-	printf("Normals: %d\n",num_normal);
+	// printf("Normals: %d\n",num_normal);
 
 	*faces_return = faces;
 	*num_f_return = num_faces;
-	printf("Faces: %d\n",num_faces);
+	// printf("Faces: %d\n",num_faces);
 
-	printf("Finished loading model: %s\n", filename);
+	// printf("Finished loading model: %s\n", filename);
 }
 
 

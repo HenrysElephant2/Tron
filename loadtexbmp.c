@@ -172,7 +172,7 @@ unsigned int LoadTransBMP(const char* file)
       aimage[k+1] = image[k*3/4+1];
       aimage[k+2] = image[k*3/4+2];
       // aimage[k+3] = (aimage[k]-aimage[k+1] > 5 ? 0 : 255);
-      aimage[k+3] = (aimage[k] > 20 && aimage[k+1] < 20 && aimage[k+2] < 20 ? 0 : 255);
+      aimage[k+3] = (aimage[k] > aimage[k+1]+5 ? 0 : 255);
    }
 
    //  Sanity check

@@ -2,10 +2,14 @@
 
 Tile::Tile(){}
 
-Tile::Tile( int tileType, int mx, int my, int mz, unsigned int t ) {
+Tile::Tile( int tileType, int mx, int my, int mz, unsigned int t, double tl, double tr, double tb, double tt ) {
 	map_x = mx; map_y = my; map_z = mz;
 	type = tileType;
 	texture = t;
+	texl = tl;
+	texr = tr;
+	texb = tb;
+	text = tt;
 
 	if( type == FLAT_TILE ) {
 		Vector *pos = new Vector( map_x * TILE_SIZE, (map_y - .1) * TILE_SIZE, map_z * TILE_SIZE );
@@ -44,10 +48,10 @@ void Tile::display() {
 
 		glColor4d(.8,.9,1,FLOOR_TILE_ALPHA);
 		glBegin( GL_POLYGON );
-			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
-			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
-			glTexCoord2f(1,1); hitbox->getPoint(TFR)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(TFL)->gl();
+			glTexCoord2f(texl,texb); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(texb,text); hitbox->getPoint(TFL)->gl();
 		glEnd();
 
 		glDisable(GL_BLEND);
@@ -55,33 +59,51 @@ void Tile::display() {
 	}
 	else if( type == WALL_TILE ) {
 		glColor3d(.8,.9,1);
-		glBegin(GL_QUAD_STRIP);
-			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
-			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
-			glTexCoord2f(1,1); hitbox->getPoint(BBR)->gl();
-			glTexCoord2f(0,0); hitbox->getPoint(TFR)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BFR)->gl();
-			glTexCoord2f(1,0); hitbox->getPoint(TFL)->gl();
-			glTexCoord2f(1,1); hitbox->getPoint(BFL)->gl();
-			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+		glBegin(GL_QUADS);
+			glTexCoord2f(texl,texb); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(texl,text); hitbox->getPoint(TBL)->gl();
+
+			glTexCoord2f(texl,texb); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(texl,text); hitbox->getPoint(TBR)->gl();
+			
+			glTexCoord2f(texl,texb); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(TFL)->gl();
+			glTexCoord2f(texl,text); hitbox->getPoint(TFR)->gl();
+			
+			glTexCoord2f(texl,texb); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(texl,text); hitbox->getPoint(TFL)->gl();
 		glEnd();
 
 		glPushMatrix();
 		glTranslated(0,-TILE_SIZE,0);
 		glColor3d(.8,.9,1);
-		glBegin(GL_QUAD_STRIP);
-			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
-			glTexCoord2f(1,0); hitbox->getPoint(TBR)->gl();
-			glTexCoord2f(1,1); hitbox->getPoint(BBR)->gl();
-			glTexCoord2f(0,0); hitbox->getPoint(TFR)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BFR)->gl();
-			glTexCoord2f(1,0); hitbox->getPoint(TFL)->gl();
-			glTexCoord2f(1,1); hitbox->getPoint(BFL)->gl();
-			glTexCoord2f(0,0); hitbox->getPoint(TBL)->gl();
-			glTexCoord2f(0,1); hitbox->getPoint(BBL)->gl();
+		glBegin(GL_QUADS);
+			glTexCoord2f(texl,text); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(TBR)->gl();
+			glTexCoord2f(texl,texb); hitbox->getPoint(TBL)->gl();
+
+			glTexCoord2f(texl,text); hitbox->getPoint(BBR)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(TFR)->gl();
+			glTexCoord2f(texl,texb); hitbox->getPoint(TBR)->gl();
+			
+			glTexCoord2f(texl,text); hitbox->getPoint(BFR)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(TFL)->gl();
+			glTexCoord2f(texl,texb); hitbox->getPoint(TFR)->gl();
+			
+			glTexCoord2f(texl,text); hitbox->getPoint(BFL)->gl();
+			glTexCoord2f(texr,text); hitbox->getPoint(BBL)->gl();
+			glTexCoord2f(texr,texb); hitbox->getPoint(TBL)->gl();
+			glTexCoord2f(texl,texb); hitbox->getPoint(TFL)->gl();
 		glEnd();
 		glPopMatrix();
 	}

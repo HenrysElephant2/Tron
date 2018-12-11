@@ -20,10 +20,11 @@ private:
 	int type;
 	unsigned int texture;
 	Hitbox *hitbox;
+	double texl, texr, text, texb;
 
 public:
 	Tile();
-	Tile( int tileType, int mx, int my, int mz, unsigned int t );
+	Tile( int tileType, int mx, int my, int mz, unsigned int t, double tl = 0 , double tr = 1, double tb = 0, double tt = 1);
 	~Tile();
 
 	bool testTileHit( Hitbox *other );

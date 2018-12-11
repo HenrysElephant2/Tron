@@ -66,7 +66,7 @@ public:
 
 	// turns on the trail of the bike. Once turned on, cannot be turned off
 	void beginTrail( bool limit );
-
+	
 	// move the player in the current direction it is pointed based on its velocity
 	void movePlayer( double dt );
 

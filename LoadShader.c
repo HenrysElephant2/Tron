@@ -10,7 +10,7 @@ int CreateShader(GLenum type,char* file)
    glShaderSource(shader,1,(const char**)&source,NULL);
    free(source);
    //  Compile the shader
-   fprintf(stderr,"Compile %s\n",file);
+   // fprintf(stderr,"Compile %s\n",file);
    glCompileShader(shader);
    //  Check for errors
    PrintShaderLog(shader,file);

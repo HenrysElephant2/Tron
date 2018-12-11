@@ -1,10 +1,7 @@
 #include "Menu.h"
 
-Menu::Menu() {
+Menu::Menu( int w, int h ) : GameState(w,h) {
 	state = MAIN_MENU;
-
-	ph = 20;
-	th = 45;
 
 	p1color = 6;
 	p2color = 2;
@@ -18,8 +15,9 @@ Menu::Menu() {
 	player2->setDir( Vector(1,0,-1) );
 
 	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
-	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
-	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex );
+	unsigned int wallTex = LoadTexBMP("Textures/wall2.bmp");
+	unsigned int skyTex = LoadTexBMP("Textures/sky.bmp");
+	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex, skyTex );
 
 
 	tronLogo = Button(.48,.72,.7,.175,labelTextures,0,1,.75,1,menuButtonColor);
@@ -43,13 +41,8 @@ Menu::~Menu() {
 	delete map;
 }
 
-void Menu::keyDown(SDL_Keycode key, int x, int y) {
-
-}
-
-void Menu::keyUp(SDL_Keycode key, int x, int y) {
-
-}
+void Menu::keyDown(SDL_Keycode key, int x, int y) {}
+void Menu::keyUp(SDL_Keycode key, int x, int y) {}
 
 void Menu::mouseDown(int x, int y) {
 	if( state == MAIN_MENU ) {
@@ -77,15 +70,13 @@ void Menu::mouseDown(int x, int y) {
 void Menu::mouseUp(int x, int y) {
 	if( state == MAIN_MENU ) {
 		if( mouseState == PLAY_DOWN && playButton.testClicked(x,y,wWidth,wHeight) ) {
-			GameState *newState = new Gameplay(colors[p1color], colors[p2color]);
+			GameState *newState = new Gameplay(wWidth, wHeight, colors[p1color], colors[p2color]);
 			setNextState( newState );
 		}
-		else if( mouseState == COLORS_DOWN && colorsButton.testClicked(x,y,wWidth,wHeight) ) {
+		else if( mouseState == COLORS_DOWN && colorsButton.testClicked(x,y,wWidth,wHeight) )
 			state = COLOR_SELECT;
-		}
-		else if( mouseState == QUIT_DOWN && quitButton.testClicked(x,y,wWidth,wHeight) ) {
+		else if( mouseState == QUIT_DOWN && quitButton.testClicked(x,y,wWidth,wHeight) )
 			setQuit(true);
-		}
 	}
 	else if( state == COLOR_SELECT ) {
 		if( mouseState == BACK_DOWN && backButton.testClicked(x,y,wWidth,wHeight) )
@@ -118,45 +109,24 @@ void Menu::display() {
 
 	Vector viewLoc;
 	Vector targetLoc;
-	// if( state == MAIN_MENU ) {
-	// 	double Ex = -500*Sin(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
-	// 	double Ey = +500*Sin(ph);
-	// 	double Ez = +500*Cos(th)*Cos(ph) + (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	double Ex = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	double Ey = 3;
+	double Ez = -60 + (MAP_LENGTH-1)/2.0*TILE_SIZE;
 
-	// 	double Tx = (MAP_LENGTH-1)/2.0*TILE_SIZE;
-	// 	double Ty = 0;
-	// 	double Tz = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	double Tx = (MAP_LENGTH-1)/2.0*TILE_SIZE;
+	double Ty = 10;
+	double Tz = (MAP_LENGTH-1)/2.0*TILE_SIZE;
 
-	// 	viewLoc = Vector(Ex, Ey, Ez);
-	// 	targetLoc = Vector(Tx, Ty, Tz);
-	// 	gluLookAt(Ex,Ey,Ez , Tx,Ty, Tz, 0,1,0);
-	// }
-	// else if( state == COLOR_SELECT ) {
-		double Ex = (MAP_LENGTH-1)/2.0*TILE_SIZE;
-		double Ey = 3;
-		double Ez = -60 + (MAP_LENGTH-1)/2.0*TILE_SIZE;
-
-		double Tx = (MAP_LENGTH-1)/2.0*TILE_SIZE;
-		double Ty = 10;
-		double Tz = (MAP_LENGTH-1)/2.0*TILE_SIZE;
-
-		viewLoc = Vector(Ex, Ey, Ez);
-		targetLoc = Vector(Tx, Ty, Tz);
-		gluLookAt(Ex,Ey,Ez , Tx,Ty, Tz, 0,1,0);
-	// }
+	viewLoc = Vector(Ex, Ey, Ez);
+	targetLoc = Vector(Tx, Ty, Tz);
+	gluLookAt(Ex,Ey,Ez , Tx,Ty, Tz, 0,1,0);
 
 	postProcessingSetup();
 	displayAll( &viewLoc, &targetLoc, false );
 	postProcessing();
 }
 
-void Menu::update() {
-	double dt = getElapsedTime();
-	th = th + 20.0*dt;
-	if( th > 360 )
-		th -= 360;
-}
-
+void Menu::update() {}
 
 void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 
@@ -164,6 +134,7 @@ void Menu::displayAll( Vector *cameraPos, Vector *targetLoc, bool renderBloom) {
 	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_MODULATE);
 
 	map->displayWalls();
+	map->displaySkybox();
 
 	// Reflections/Underside of map
 	Vector reflectCamera = Add0( *cameraPos, Vector(0,-2*cameraPos->getY(), 0) );

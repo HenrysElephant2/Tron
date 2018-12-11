@@ -77,7 +77,7 @@ protected:
 	Explosion * p2exp;
 
 public:
-	GameState();
+	GameState( int w, int h );
 
 	virtual void keyDown(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT
 	virtual void keyUp(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT

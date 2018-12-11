@@ -34,13 +34,13 @@ bool init() {
 
 
         //Create window
-        gWindow = SDL_CreateWindow( "Tron", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+        gWindow = SDL_CreateWindow( "Tron", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP );
         if( gWindow == NULL ) {
             printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
             success = false;
         }
         else {
-            SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
+            // SDL_SetWindowResizable(gWindow, SDL_TRUE); // Allow resizable window
 
             // Create context
             gContext = SDL_GL_CreateContext( gWindow );
@@ -124,8 +124,10 @@ int main( int argc, char* args[] ) {
     }
     else {
         // Initialize the state to hitbox test
-        GameState *currentState = new Menu();
-        currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
+        int curW, curH;
+        SDL_GetWindowSize(gWindow, &curW, &curH);
+        GameState *currentState = new Menu(curW,curH);
+        currentState->reshape(curW, curH);
 
         SDL_Event e;
         SDL_StartTextInput();

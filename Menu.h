@@ -28,9 +28,6 @@ class Menu: public GameState {
 private:
 	int state;
 
-	double ph;      //  Elevation of view angle
-	double th;      //  Azimuth of view angle
-
 	Player *player1, *player2;
 	int p1color, p2color;
 	Map *map;
@@ -57,7 +54,7 @@ private:
 	};
 
 public:
-	Menu();
+	Menu(int w, int h);
 	~Menu();
 
 	// Inherited methods

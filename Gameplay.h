@@ -24,9 +24,10 @@
 
 #define STATE_WAITING 0
 #define STATE_PLAYING 1
-#define STATE_P1_WIN 2
-#define STATE_P2_WIN 3
-#define STATE_TIE 4
+#define STATE_PENDING 2
+#define STATE_P1_WIN 3
+#define STATE_P2_WIN 4
+#define STATE_TIE 5
 
 #define MAP_WIDTH 8
 #define MAP_LENGTH 8
@@ -56,8 +57,8 @@ private:
 	void init();
 
 public:
-	Gameplay();
-	Gameplay( Vector p1c, Vector p2c );
+	Gameplay( int w, int h );
+	Gameplay( int w, int h, Vector p1c, Vector p2c );
 	~Gameplay();
 
 	// Inherited methods

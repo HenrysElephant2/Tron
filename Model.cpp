@@ -12,7 +12,6 @@ Model::Model(char * filename)
 	num_normal = 0;
 	texture = -1;
 	child = NULL;
-
 	LoadModel(filename, &vertices, &num_vertices, &uv, &num_uv, &normals, &num_normal, &faces, &num_faces);
 	
 }
@@ -28,9 +27,7 @@ Model::Model(char * filename, char * texturename)
 	num_uv = 0;
 	num_normal = 0;
 	child = NULL;
-	printf("Loading Texture\n");
 	texture = LoadTexBMP(texturename);
-	printf("Successfully Loaded Texture\n");
 	LoadModel(filename, &vertices, &num_vertices, &uv, &num_uv, &normals, &num_normal, &faces, &num_faces);
 	
 }

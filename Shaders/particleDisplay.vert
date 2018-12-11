@@ -1,12 +1,4 @@
 #version 120
-//struct _Particle{
-//	float x;
-//	float y;
-//	float z;
-//	int ID;
-//} Particle;
-
-//layout(location = 0) in 
 
 float random (vec2 st) {
     return fract(sin(dot(st.xy,

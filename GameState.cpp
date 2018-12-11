@@ -1,8 +1,8 @@
 #include "Gameplay.h"
 
-GameState::GameState() {
-	wWidth = SCREEN_WIDTH;
-	wHeight = SCREEN_HEIGHT;
+GameState::GameState( int w, int h ) {
+	wWidth = w;
+	wHeight = h;
 	previousTime = 0;
 	fov = 45;
 	asp = 1.4;
@@ -91,7 +91,7 @@ GameState::GameState() {
 	glGenTextures(1,&renderNormalTexture);
 	// set up first output texture
 	glBindTexture(GL_TEXTURE_2D, renderNormalTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wWidth, wHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	//set texture settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -102,7 +102,7 @@ GameState::GameState() {
 	GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, wWidth, wHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
 
@@ -120,7 +120,7 @@ GameState::GameState() {
 	glGenTextures(1,&blurTexture);
 	// set up first output texture
 	glBindTexture(GL_TEXTURE_2D, blurTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wWidth, wHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	//set texture settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -130,7 +130,7 @@ GameState::GameState() {
 	//GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, wWidth, wHeight);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
 	// attach texture
@@ -148,7 +148,7 @@ GameState::GameState() {
 	glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[0]);
 	glBindTexture(GL_TEXTURE_2D, pingpongTextures[0]);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wWidth, wHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	//set texture settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -165,7 +165,7 @@ GameState::GameState() {
 	glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[1]);
 	glBindTexture(GL_TEXTURE_2D, pingpongTextures[1]);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, wWidth, wHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	//set texture settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -204,7 +204,7 @@ void GameState::Project( bool split )
     //  Undo previous transformations
     glLoadIdentity();
     //  Perspective transformation
-    split ? gluPerspective(fov*2,asp*2,1,2000) : gluPerspective(fov,asp,10,5000);
+    split ? gluPerspective(fov*2,asp*2,1,5000) : gluPerspective(fov,asp,10,5000);
     // gluPerspective(fov,asp,10,5000);
     //  Switch to manipulating the model matrix
     glMatrixMode(GL_MODELVIEW);
@@ -321,8 +321,8 @@ void GameState::postProcessing()
 	    glViewport(0, 0, wWidth, wHeight);
 	    glActiveTexture(GL_TEXTURE0);
 	    glUniform1ui(horizontalLocation, horizontal);
-	    //glUniform1i(SCREEN_WIDTH, widthLoc);
-	    //glUniform1i(SCREEN_HEIGHT, heightLoc);
+	    //glUniform1i(wWidth, widthLoc);
+	    //glUniform1i(wHeight, heightLoc);
 	    glBindTexture(GL_TEXTURE_2D, first_iteration ? blurTexture : pingpongTextures[!horizontal]); 
 	    
 	    render2DScreen();

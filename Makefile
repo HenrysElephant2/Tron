@@ -34,7 +34,6 @@ Player.o: Player.cpp Player.h
 Tile.o: Tile.cpp Tile.h
 Map.o: Map.cpp Map.h
 GameState.o: GameState.cpp GameState.h
-HitboxTest.o: HitboxTest.cpp HitboxTest.h
 Gameplay.o: Gameplay.cpp Gameplay.h
 Button.o: Button.cpp Button.h
 Menu.o: Menu.cpp Menu.h
@@ -52,7 +51,7 @@ Explosion.o: Explosion.cpp Explosion.h
 	g++ -std=c++11 -c $(CFLG) $<
 
 #  Link
-Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o HitboxTest.o Button.o Menu.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o Explosion.o
+Main:Main.o Vector.o Matrix.o Hitbox.o TransparentRenderer.o TrailSegment.o Trail.o Player.o Tile.o Map.o GameState.o Button.o Menu.o Gameplay.o Model.o LoadModel.o loadtexbmp.o LoadShader.o Explosion.o
 
 	g++ -O3 -o $@ $^   $(LIBS)
 
