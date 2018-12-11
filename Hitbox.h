@@ -52,11 +52,6 @@ public:
 	void setHeight( double toSet );
 
 	void move( Vector *dv );
-	void roll( double degrees );
-	void pitch( double degrees );
-	void yaw( double degrees );
-
-	void renderSelf( bool colliding );
 
 	friend bool testCollision( Hitbox *h1, Hitbox *h2 );
 };

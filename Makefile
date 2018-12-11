@@ -7,7 +7,7 @@ all: $(EXE)
 #  MinGW
 ifeq "$(OS)" "Windows_NT"
 CFLG=-O3 -Wall
-LIBS=-lglut32cu -lglu32 -lopengl32
+LIBS=-lglut32cu -lglu32 -lopengl32 -lSDL2
 CLEAN=del *.exe *.o *.a
 else
 #  OSX

@@ -79,13 +79,12 @@ protected:
 public:
 	GameState( int w, int h );
 
-	virtual void keyDown(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT
-	virtual void keyUp(SDL_Keycode key, int x, int y) = 0; // need to format this specifically for SDL instead of GLUT
+	virtual void keyDown(SDL_Keycode key) = 0; // need to format this specifically for SDL instead of GLUT
+	virtual void keyUp(SDL_Keycode key) = 0; // need to format this specifically for SDL instead of GLUT
 
 	virtual void mouseDown(int x, int y) = 0;
 	virtual void mouseUp(int x, int y) = 0;
 
-	virtual void special(int key, int x, int y) = 0; /*NEEDED in GLUT, maybe different in other system */
 	virtual void display() = 0;
 	virtual void update() = 0;
 

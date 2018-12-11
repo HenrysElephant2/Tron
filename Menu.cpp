@@ -41,8 +41,13 @@ Menu::~Menu() {
 	delete map;
 }
 
-void Menu::keyDown(SDL_Keycode key, int x, int y) {}
-void Menu::keyUp(SDL_Keycode key, int x, int y) {}
+void Menu::keyDown(SDL_Keycode key) {
+	switch(key) {
+		case SDLK_1: bloomOn = true; break;
+		case SDLK_2: bloomOn = false; break;
+	}
+}
+void Menu::keyUp(SDL_Keycode key) {}
 
 void Menu::mouseDown(int x, int y) {
 	if( state == MAIN_MENU ) {
@@ -99,8 +104,6 @@ void Menu::mouseUp(int x, int y) {
 	}
 	mouseState = NONE_DOWN;
 }
-
-void Menu::special(int key, int x, int y) {}
 
 void Menu::display() {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);

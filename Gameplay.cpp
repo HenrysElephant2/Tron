@@ -33,14 +33,8 @@ void Gameplay::init() {
 
 	timer = 0;
 
-	ph = 15;	  //  Elevation of view angle
-	th = 45;	  //  Azimuth of view angle
-
-	// Booleans to control window movement
-	thup = false;
-	thdown = false;
-	phup = false;
-	phdown = false;
+	ph = 15;
+	th = 45;
 
 	split = true; // Split screen
 
@@ -54,19 +48,13 @@ void Gameplay::init() {
 	p2Controls = Button(.5,.2,.5,.125,labelTextures2,0,1,.25,.5,p2color);
 }
 
-void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
+void Gameplay::keyDown( SDL_Keycode key ) {
 	switch( key ) {
 		case SDLK_a: player1->setLeft(true); break;
 		case SDLK_d: player1->setRight(true); break;
 
 		case SDLK_j: player2->setLeft(true); break;
 		case SDLK_l: player2->setRight(true); break;
-
-
-		case SDLK_t: phup = true; break;
-		case SDLK_g: phdown = true; break;
-		case SDLK_f: thdown = true; break;
-		case SDLK_h: thup = true; break;
 
 		case SDLK_SPACE:
 			if( state == STATE_WAITING ) {
@@ -86,22 +74,15 @@ void Gameplay::keyDown( SDL_Keycode key, int x, int y ) {
 	}
 }
 
-void Gameplay::keyUp( SDL_Keycode key, int x, int y ) {
+void Gameplay::keyUp( SDL_Keycode key ) {
 	switch( key ) {
 		case SDLK_a: player1->setLeft(false); break;
 		case SDLK_d: player1->setRight(false); break;
 
 		case SDLK_j: player2->setLeft(false); break;
 		case SDLK_l: player2->setRight(false); break;
-
-		case SDLK_t: phup = false; break;
-		case SDLK_g: phdown = false; break;
-		case SDLK_f: thdown = false; break;
-		case SDLK_h: thup = false; break;
 	}
 }
-
-void Gameplay::special(int key, int x, int y) {}
 
 void Gameplay::mouseDown(int x, int y) {
 	if( state == STATE_TIE || state == STATE_P1_WIN || state == STATE_P2_WIN ) {

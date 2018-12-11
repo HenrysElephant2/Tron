@@ -58,13 +58,12 @@ public:
 	~Menu();
 
 	// Inherited methods
-	void keyDown(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
-	void keyUp(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
+	void keyDown(SDL_Keycode key);
+	void keyUp(SDL_Keycode key);
 
 	void mouseDown(int x, int y);
 	void mouseUp(int x, int y);
 
-	void special(int key, int x, int y); /*NEEDED in GLUT, maybe different in other system */
 	void display();
 	void update();
 

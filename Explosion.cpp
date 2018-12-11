@@ -24,11 +24,6 @@ Explosion::Explosion()
 	PrintProgramLog(displayProgram);
 
 
-
-
-
-
-
 	// generate textures/ frame buffers for ping pong gaussian blur
 	glGenFramebuffers(2, pingpongFrameBuffer);
 	glGenTextures(2,pingpongTextures);
@@ -46,8 +41,6 @@ Explosion::Explosion()
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongTextures[0],0);
 	glDrawBuffers(1,colorAttachments);
-
-
 
 
 	// set up 2nd frame buffer and texture for gaussian blur
@@ -73,28 +66,20 @@ Explosion::Explosion()
 
 }
 
-Explosion::~Explosion()
-{
-
-}
+Explosion::~Explosion(){}
 
 
 void Explosion::calculate()
 {
 	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_REPLACE);
 	float currentTime = SDL_GetTicks()/1000.0;
-	//printf("Current: %f\n",currentTime);
-	//printf("Previous: %f\n", previousTime);
 	glDisable( GL_DEPTH_TEST );
 	glUseProgram(calcProgram);
 	glEnable(GL_TEXTURE_2D);
-	//printf("blurring\n");
     glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[activeCalcTexture]); 
-    //glViewport(0, 0, PARTICLE_TEXTURE_SIZE, PARTICLE_TEXTURE_SIZE);
     glActiveTexture(GL_TEXTURE0);
     glUniform1ui(initLocation, init);
     glUniform1f(timeLocation, currentTime - previousTime);
-    //printf("%f\n", currentTime - previousTime);
 
 
 

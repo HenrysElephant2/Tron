@@ -41,7 +41,6 @@ class Gameplay: public GameState {
 private:
 	double ph;      //  Elevation of view angle
 	double th;      //  Azimuth of view angle
-	bool thup, thdown, phup, phdown; // Booleans to control window movement
 
 	Player *player1, *player2;
 	Vector p1color, p2color;
@@ -62,13 +61,12 @@ public:
 	~Gameplay();
 
 	// Inherited methods
-	void keyDown(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
-	void keyUp(SDL_Keycode key, int x, int y); // need to format this specifically for SDL instead of GLUT
+	void keyDown(SDL_Keycode key);
+	void keyUp(SDL_Keycode key);
 
 	void mouseDown(int x, int y);
 	void mouseUp(int x, int y);
 
-	void special(int key, int x, int y); /*NEEDED in GLUT, maybe different in other system */
 	void display();
 	void update();
 

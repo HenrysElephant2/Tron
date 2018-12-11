@@ -71,61 +71,6 @@ void Hitbox::move( Vector *dv ) {
 	calculatePoints();
 }
 
-void Hitbox::roll( double degrees ) {
-	up->Rotate(degrees, forward);
-	cross->Rotate(degrees, forward);
-	calculatePoints();
-}
-
-void Hitbox::pitch( double degrees ) {
-	up->Rotate(degrees, cross);
-	forward->Rotate(degrees, cross);
-	calculatePoints();
-}
-
-void Hitbox::yaw( double degrees ) {
-	forward->Rotate(degrees, up);
-	cross->Rotate(degrees, up);
-	calculatePoints();
-}
-
-
-void Hitbox::renderSelf( bool colliding ) {
-	glPushMatrix();
-	// glEnable(GL_LINE_SMOOTH);
-	// glEnable(GL_BLEND);
-	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// glLineWidth(3);
-
-	colliding ? glColor3d(1,0,0) : glColor3d(0,1,0); // Red if colliding, green if not
-	// Back face
-	glBegin(GL_LINE_LOOP);
-		points[BBL]->gl();
-		points[BBR]->gl();
-		points[TBR]->gl();
-		points[TBL]->gl();
-	glEnd();
-	// Front face
-	glBegin(GL_LINE_LOOP);
-		points[BFL]->gl();
-		points[BFR]->gl();
-		points[TFR]->gl();
-		points[TFL]->gl();
-	glEnd();
-	// Connecting lines
-	glBegin(GL_LINES);
-		points[BBL]->gl(); points[BFL]->gl();
-		points[BBR]->gl(); points[BFR]->gl();
-		points[TBR]->gl(); points[TFR]->gl();
-		points[TBL]->gl(); points[TFL]->gl();
-	glEnd();
-
-
-	// glDisable(GL_LINE_SMOOTH);
-	// glDisable(GL_BLEND);
-	glPopMatrix();
-}
-
 bool testCollision( Hitbox *h1, Hitbox *h2 ) {
 	// l, m, and n form a new coordinate system to convert h2's coordinates into and test using AABB.
 	Vector l( h1->points[BBL], h1->points[BBR] );
