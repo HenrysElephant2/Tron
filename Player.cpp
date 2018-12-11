@@ -94,6 +94,8 @@ void Player::movePlayer( double dt )
 		loc->Add( direction, velocity*dt );
 		hitbox->updateVecs( loc, direction, tilt_vector );
 	}
+	if(!this->isAlive())
+		exp->calculate();
 
 	trail->update( getTrailBottom(), getTrailTop(), (color.getX() == -1 ? getRainbowColor() : color) );
 }
@@ -101,7 +103,6 @@ void Player::movePlayer( double dt )
 void Player::commitNotAlive() {
 	if( alive ) {
 		alive = false;
-		deathTime = SDL_GetTicks();
 		trail->setAdd(false);
 		lastColor = getRainbowColor();
 	}
@@ -110,12 +111,7 @@ void Player::commitNotAlive() {
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
-	if(model != NULL && (alive || SDL_GetTicks() - deathTime < 15)) {
-		if(!alive) 
-			{
-				glUseProgram(0);
-				//glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_COMBINE);
-			}
+	if(model != NULL && alive) {
 		if( color.getX() != -1 ) {
 			glColor3d(color.getX(), color.getY(), color.getZ());
 			model->display(loc,direction,tilt_vector,PLAYER_SCALE, alive);

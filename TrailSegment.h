@@ -7,7 +7,6 @@
 #include "TransparentRenderer.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
-#include <iostream>
 
 #define TRAIL_WIDTH .5
 #define TRAIL_HEIGHT 10

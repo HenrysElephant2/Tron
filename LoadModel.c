@@ -129,20 +129,13 @@ static char* readline(FILE* f)
 
 void readcoord(char * line, int num_coord, float ** array, int num_in_array, int size)
 {
-	if(num_in_array + num_coord > size)
-	{
-		*array = (float *)realloc(*array,(size + num_coord)*sizeof(float));
-	}
+	*array = (float *)realloc(*array,(size + num_coord)*sizeof(float));
 	readfloat(line, num_coord, *array + num_in_array);
-	//printf("Read %d coordinates", num_coord);
 }
 
 void readIntCoord(char * line, int num_coord, int ** array, int num_in_array, int size)
 {
-	if(num_in_array + num_coord > size)
-	{
-		*array = (int *)realloc(*array,(size + num_coord)*sizeof(int));
-	}
+	*array = (int *)realloc(*array,(size + num_coord)*sizeof(int));
 	readInts(line, num_coord, *array + num_in_array);
 }
 

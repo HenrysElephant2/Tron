@@ -37,7 +37,7 @@ void main()
    //  Apply texture
    vec4 texcolor = texture2D(tex,gl_TexCoord[0].xy);
 
-   if(texcolor.r >= 0.8 && texcolor.g >= 0.8 && texcolor.b >= 0.8)
+   if(texcolor.r >= 0.5 && texcolor.g >= 0.5 && texcolor.b >= 0.5)
    {
 	gl_FragColor = gl_Color;
 	//BrightColor = gl_Color;

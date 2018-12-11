@@ -9,7 +9,6 @@
 #include "Hitbox.h"
 #include "TrailSegment.h"
 #include "TransparentRenderer.h"
-#include <iostream>
 
 class Trail {
 private:

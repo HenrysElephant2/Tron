@@ -127,6 +127,7 @@ int main( int argc, char* args[] ) {
 
             GameState *nextState = currentState->getNextState();
             if( nextState != NULL ) {
+                delete currentState;
                 currentState = nextState;
                 currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
             }

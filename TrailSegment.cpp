@@ -72,16 +72,12 @@ void TrailSegment::scaleToLengthB( double length ) {
 }
 
 void TrailSegment::updateFront( Vector *bPos, Vector *tPos ) {
-	//delete fb;
-	//delete ft;
 	fb = bPos;
 	ft = tPos;
 	calculateHitbox();
 }
 
 void TrailSegment::updateBack( Vector *bPos, Vector *tPos ) {
-	// delete bb;
-	// delete bt;
 	bb = bPos;
 	bt = tPos;
 	calculateHitbox();
@@ -101,12 +97,9 @@ bool TrailSegment::testSegmentHit( Hitbox *other ) {
 
 void TrailSegment::stage( TransparentRenderer *tr, Vector *cameraPos ) {
 	double dist = Add0( *cameraPos, Scale0( *bb, -1 ) ).getMagnitude();
-	// double dist2 = Add0( *cameraPos, Scale0( *fb, -1 ) ).getMagnitude();
-	// double dist = dist1<dist2 ? dist1 : dist2;
 	tr->add( this, dist );
-	if( next != NULL ) {
+	if( next != NULL )
 		next->stage( tr, cameraPos );
-	}
 }
 
 void TrailSegment::display( Vector *cameraPos ) {
@@ -151,8 +144,6 @@ void TrailSegment::displayFace( int face ) {
 	double nextR = next->getColor().getX();
 	double nextG = next->getColor().getY();
 	double nextB = next->getColor().getZ();
-
-	// std::cout<<curR<<","<<curG<<","<<curB<<"-->"<<nextR<<","<<nextG<<","<<nextB<<std::endl;
 
 	glBegin(GL_QUADS);
 	switch( face ) {

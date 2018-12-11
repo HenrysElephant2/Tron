@@ -71,13 +71,13 @@ protected:
 	// blend program variables - exposure currently turned off in shader
 	float exposure = .1f;
 	bool bloomOn = true;
-	//float bloomThreshold = .8;
 
 	Explosion * p1exp;
 	Explosion * p2exp;
 
 public:
 	GameState( int w, int h );
+	virtual ~GameState();
 
 	virtual void keyDown(SDL_Keycode key) = 0; // need to format this specifically for SDL instead of GLUT
 	virtual void keyUp(SDL_Keycode key) = 0; // need to format this specifically for SDL instead of GLUT

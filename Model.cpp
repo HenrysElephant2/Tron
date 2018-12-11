@@ -10,7 +10,7 @@ Model::Model(char * filename)
 	num_faces = 0;
 	num_uv = 0;
 	num_normal = 0;
-	texture = -1;
+	texture = 0;
 	child = NULL;
 	LoadModel(filename, &vertices, &num_vertices, &uv, &num_uv, &normals, &num_normal, &faces, &num_faces);
 	
@@ -112,7 +112,7 @@ void Model::append(char * name)
 
 void Model::displayBasic(bool texOn)
 {
-	if(texOn && texture != -1)
+	if(texOn && texture != 0)
 		glBindTexture(GL_TEXTURE_2D,texture);
 	else glBindTexture(GL_TEXTURE_2D, 0); // need to place call to glTexEnvi somewhere in the setup for opengl
 
@@ -195,7 +195,7 @@ void Model::displayRainbow(Vector * v, Vector * direction, Vector * up, double s
 void Model::displayBasicRainbow(bool texOn)
 {
 	//  Offset, scale and rotate
-	if(texOn && texture != -1)
+	if(texOn && texture != 0)
 		glBindTexture(GL_TEXTURE_2D,texture);
 	else glBindTexture(GL_TEXTURE_2D, 0);
 

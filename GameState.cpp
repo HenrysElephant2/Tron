@@ -17,12 +17,12 @@ GameState::GameState( int w, int h ) {
 	nextState = NULL;
 	quit = false;
 
-	char model_name[] = "bike.obj";
+	char model_name[] = "Objects/bike.obj";
 	char tex_name[] = "Textures/bike_texture.bmp";
-	char body_name[] = "body.obj";
+	char body_name[] = "Objects/body.obj";
 	char body_tex[] = "Textures/body_texture.bmp";
-	char helmet_name[] = "helmet.obj";
-	char visor_name[] = "visor.obj";
+	char helmet_name[] = "Objects/helmet.obj";
+	char visor_name[] = "Objects/visor.obj";
 	char helmet_texture[] = "Textures/helmet.bmp";
 	char visor_texture[] = "Textures/visor.bmp";
 	bike = new Model(model_name,tex_name);
@@ -71,17 +71,7 @@ GameState::GameState( int w, int h ) {
 	glAttachShader(brightProgram,c8);
 	glLinkProgram(brightProgram);
 	PrintProgramLog(brightProgram);
-
-	bikeBrightProgram = glCreateProgram();
-	char bikeBrightShaderFrag[] = "Shaders/bike_bright.frag";
-	int c9 = CreateShader(GL_FRAGMENT_SHADER, bikeBrightShaderFrag);
-	glAttachShader(bikeBrightProgram,c9);
-	char bikeBrightShaderVert[] = "Shaders/bike_bright.vert";
-	int c10 = CreateShader(GL_VERTEX_SHADER, bikeBrightShaderVert);
-	glAttachShader(bikeBrightProgram,c10);
-	glLinkProgram(bikeBrightProgram);
-	PrintProgramLog(bikeBrightProgram);
-
+	
 
 	// Set up texture to write to for rendering the scene
 
@@ -185,6 +175,12 @@ GameState::GameState( int w, int h ) {
 
 	p1exp = new Explosion();
 	p2exp = new Explosion();
+}
+
+GameState::~GameState() {
+	delete bike;
+	delete p1exp;
+	delete p2exp;
 }
 
 // Should return elapsed time in seconds
@@ -298,7 +294,6 @@ void GameState::postProcessing()
 {
 	glViewport(0, 0, wWidth, wHeight);
 	//glUniform1f(glGetUniformLocation(brightProgram, "threshold"),bloomThreshold);
-	//printf("\rBloom Threshold: %f", bloomThreshold);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, blurBuffer);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -313,20 +308,16 @@ void GameState::postProcessing()
 	int amount = NUMBER_GAUSSIAN_PASSES;
 	glUseProgram(blurProgram);
 	glEnable(GL_TEXTURE_2D);
-	//printf("blurring\n");
-	for (unsigned int i = 0; i < amount; i++)
+	for (int i = 0; i < amount; i++)
 	{
 
 	    glBindFramebuffer(GL_FRAMEBUFFER, pingpongFrameBuffer[horizontal]); 
 	    glViewport(0, 0, wWidth, wHeight);
 	    glActiveTexture(GL_TEXTURE0);
 	    glUniform1ui(horizontalLocation, horizontal);
-	    //glUniform1i(wWidth, widthLoc);
-	    //glUniform1i(wHeight, heightLoc);
 	    glBindTexture(GL_TEXTURE_2D, first_iteration ? blurTexture : pingpongTextures[!horizontal]); 
 	    
 	    render2DScreen();
-	    //glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	    
 	    horizontal = !horizontal;
 	    if (first_iteration)
@@ -335,12 +326,10 @@ void GameState::postProcessing()
  	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_TEXTURE_2D);
 	glUseProgram(0);
-	//printf("displaying\n");
 
 
 	glUseProgram(blendProgram);
 	glUniform1ui(bloomBoolLoc, bloomOn);
-	//printf("Bloom: %s\n", bloomOn ? "True":"False");
 	glUniform1f(exposureLoc, exposure);
 
 	glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_REPLACE);//:GL_MODULATE);

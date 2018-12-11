@@ -10,7 +10,6 @@ Vector::Vector(double X, double Y, double Z)
 }
 Vector::Vector(Vector *v1, Vector *v2)
 {
-
 	x = v2->getX() - v1->getX();
 	y = v2->getY() - v1->getY();
 	z = v2->getZ() - v1->getZ();
@@ -102,11 +101,6 @@ Vector* Vector::Cross( Vector *v ) {
 	double vj = z * v->getX() - x * v->getZ();
 	double vk = x * v->getY() - y * v->getX();
 	return new Vector(vi, vj, vk);
-}
-
-// Angle between this and v (right hand from this to v)
-double Vector::Angle( Vector *v ) {
-	return acos( this->Dot(v) / (this->getMagnitude() * v->getMagnitude()) );
 }
 
 

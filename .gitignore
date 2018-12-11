@@ -1,6 +1,10 @@
 *
+*/**
 
 !*.cpp
 !*.h
 !.gitignore
 !Makefile
+!Textures/*.bmp
+!Shaders/*
+!Objects/*

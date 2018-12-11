@@ -15,7 +15,7 @@ Menu::Menu( int w, int h ) : GameState(w,h) {
 	player2->setDir( Vector(1,0,-1) );
 
 	unsigned int floorTex = LoadTexBMP("Textures/tile.bmp");
-	unsigned int wallTex = LoadTexBMP("Textures/wall2.bmp");
+	unsigned int wallTex = LoadTexBMP("Textures/wall.bmp");
 	unsigned int skyTex = LoadTexBMP("Textures/sky.bmp");
 	map = new Map( MAP_LENGTH, 1, MAP_WIDTH, floorTex, wallTex, skyTex );
 

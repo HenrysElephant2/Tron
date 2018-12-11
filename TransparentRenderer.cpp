@@ -1,6 +1,5 @@
 #include "TransparentRenderer.h"
 
-// Transparent::Transparent() {}
 Transparent::~Transparent(){}
 
 TLL::TLL( Transparent* o, double d ) {
@@ -107,7 +106,6 @@ void TransparentRenderer::MergeSort( Transparent *obs[], double dists[], int low
 		mid = (low+high)/2;
 		MergeSort( obs, dists, low, mid );
 		MergeSort( obs, dists, mid+1, high );
- 		
 		Merge( obs, dists, low, high, mid );
 	}
 }

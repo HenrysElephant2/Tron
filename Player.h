@@ -44,7 +44,6 @@ private:
 	Hitbox * hitbox;
 	Model * model;
 	Vector color, lastColor;
-	float deathTime;
 
 	Explosion * exp;
 
