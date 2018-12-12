@@ -60,6 +60,10 @@ void Gameplay::keyDown( SDL_Keycode key ) {
 				player1->beginTrail(true);
 				player2->beginTrail(true);
 			}
+			else if( state == STATE_PAUSED )
+				state = STATE_PLAYING;
+			else
+				state = STATE_PAUSED;
 		break;
 
 		case SDLK_r:
@@ -105,7 +109,7 @@ void Gameplay::mouseUp(int x, int y) {
 void Gameplay::update() {
 	double tDiff = getElapsedTime();
 
-	if( state != STATE_WAITING && timer < 5 ) {
+	if( state != STATE_WAITING && state != STATE_PAUSED && timer < 5 ) {
 		player1->movePlayer(tDiff);
 		player2->movePlayer(tDiff);
 

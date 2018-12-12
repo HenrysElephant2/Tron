@@ -28,6 +28,7 @@
 #define STATE_P1_WIN 3
 #define STATE_P2_WIN 4
 #define STATE_TIE 5
+#define STATE_PAUSED 6
 
 #define MAP_WIDTH 8
 #define MAP_LENGTH 8
