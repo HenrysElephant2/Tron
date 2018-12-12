@@ -28,8 +28,8 @@ Menu::Menu( int w, int h ) : GameState(w,h) {
 	backButton = Button(.5,.9,.4,.1,buttonTexture,0,1,.25,.5,menuButtonColor);
 
 	for( int i=0; i<NCOLORS; i++ ) {
-		p1cButtons[i] = Button(.4,.8-(i*.08),.18,.06,buttonTexture2,0,1,0,.25,colors[i]);
-		p2cButtons[i] = Button(.6,.8-(i*.08),.18,.06,buttonTexture2,0,1,0,.25,colors[i]);
+		p1cButtons[i] = Button(.4,.8-(i*.08),.18,.06,buttonTexture2,0,1.005,0,.25,colors[i]);
+		p2cButtons[i] = Button(.6,.8-(i*.08),.18,.06,buttonTexture2,0,1.005,0,.25,colors[i]);
 	}
 	p1cButtons[p1color].setText(.25); p1cButtons[p1color].setTexb(.5);
 	p2cButtons[p2color].setText(.25); p2cButtons[p2color].setTexb(.5);
