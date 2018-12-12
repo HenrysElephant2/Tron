@@ -19,3 +19,6 @@ One of our most prominent features is bloom. Adding bloom to the program gives t
 
 Notes:
 There are some occasions where the explosions do not render when the game is run for the first time. They should show up in the next round. Also, we both use Mac and we were only able to test the program on Linux through the school VM, which yields some graphical differences. We’re not sure if this is something to do with what the VM has installed or if it’s a general difference on Linux, so we’ve included a couple of reference screenshots of how the game looks on our machines. The game has never been tested on Windows.
+
+Contributions:
+Jason built most of the game mechanics and did the graphics for the map and skybox, the trails and other transparent objects, and built the menus. Alex created all of the models for the players, as well as coded all of the shaders to color them correctly and display the particle explosions. He also implemented bloom. Both helped the other at various point throughout the project and contributed to the overall functionality of the game.
