@@ -95,11 +95,14 @@ void Map::displaySkybox() {
 		glTexCoord2d((i%90)/90.0,1); glVertex3d(350+3000*Sin(i),3000,350+3000*Cos(i));
 	}
 	glEnd();
-	glBegin(GL_TRIANGLE_FAN);
+	glBegin(GL_QUAD_STRIP);
 	glTexCoord2d(.5,0); glVertex3d(350,4000,350);
 	for( int i=0; i<=360; i+=5 ) {
-		if( i%90 == 0 )
+		if( i%90 == 0 ) {
+			glTexCoord2d(1,0); glVertex3d(350,4000,350);
 			glTexCoord2d(1,1); glVertex3d(350+3000*Sin(i),3000,350+3000*Cos(i));
+		}
+		glTexCoord2d((i%90)/90.0,0); glVertex3d(350,4000,350);
 		glTexCoord2d((i%90)/90.0,1); glVertex3d(350+3000*Sin(i),3000,350+3000*Cos(i));
 	}
 	glEnd();
