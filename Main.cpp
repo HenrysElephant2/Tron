@@ -85,10 +85,9 @@ int main( int argc, char* args[] ) {
         printf( "Failed to initialize!\n" );
     }
     else {
-        int curW, curH;
-        SDL_GetWindowSize(gWindow, &curW, &curH);
-        GameState *currentState = new Menu(curW,curH);
-        currentState->reshape(curW, curH);
+        SDL_GetWindowSize(gWindow, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+        GameState *currentState = new Menu(SCREEN_WIDTH, SCREEN_HEIGHT);
+        currentState->reshape(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         SDL_Event e;
         SDL_StartTextInput();
