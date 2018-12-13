@@ -142,23 +142,18 @@ void Explosion::render2DScreen()
 void Explosion::display()
 {
 	if(!init)
-	{
-		//printf("Starting calculations\n");
-		//calculate();
-		//printf("Starting displaying\n");
-		
+	{	
 		glUseProgram(displayProgram);
 		//glTexEnvi(GL_TEXTURE_ENV , GL_TEXTURE_ENV_MODE , GL_REPLACE);//:GL_MODULATE);
 		
 		glBindTexture(GL_TEXTURE_2D, pingpongTextures[!activeCalcTexture]);
-		glUniform1ui(rainbowLocation, rainbow);
+		glUniform1ui(rainbowLocation, !rainbow);
 		
 		//glEnable(GL_TEXTURE_2D);
 		
 		glBegin(GL_POINTS);
 		for(int i = 0; i < 50000; i++)
 		{
-			
 			glVertex4d(0,0,0,i);
 		}
 		//glDisable(GL_TEXTURE_2D);

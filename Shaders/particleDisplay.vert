@@ -47,7 +47,7 @@ void main()
     gl_Position = gl_ModelViewProjectionMatrix * loc;
     //gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
-    if(rainbow)
+    if(!rainbow)
     {
     	if(loc.y <= 5)
 	    {

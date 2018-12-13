@@ -92,6 +92,8 @@ int main( int argc, char* args[] ) {
         SDL_Event e;
         SDL_StartTextInput();
 
+        // glEnable(GL_LIGHTING);
+        // glEnable(GL_LIGHT0);
         while( !quit ) {
             while( SDL_PollEvent( &e ) != 0 ) {
                 if( e.type == SDL_QUIT ) {

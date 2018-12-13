@@ -111,14 +111,42 @@ void Player::commitNotAlive() {
 // do all the opengl to render the model for the player model. will call the trail render through this
 void Player::display( TransparentRenderer *tr, Vector *cameraPos )
 {
+	glEnable(GL_LIGHTING);
+
+	float Ambient[] = {2, 2, 2, 0.0};
+	float Diffuse[] = {.7 ,.7 ,.7 ,0.0};
+	float Specular[] = {.3, .3, .3, 0.0};
+	float Position[] = {350, 200, 350};
+
+	glColor3f(1,1,1);
+	glEnable(GL_NORMALIZE);
+
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, 1);
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, Diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
+	glLightfv(GL_LIGHT0, GL_POSITION, Position);
+
+	float white[] = {1,1,1,1};
+	float black[] = {0,0,0,1};
+	glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,32);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
 	if(model != NULL && alive) {
 		if( color.getX() != -1 ) {
 			glColor3d(color.getX(), color.getY(), color.getZ());
 			model->display(loc,direction,tilt_vector,PLAYER_SCALE, alive);
 		}
-		else
+		else {
 			model->displayRainbow(loc,direction,tilt_vector,PLAYER_SCALE, alive);
+		}
 	}
+	glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHT0);
+	glDisable(GL_NORMALIZE);
 
 
 	if( trail != NULL ) {
